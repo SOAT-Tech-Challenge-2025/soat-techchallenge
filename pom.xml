@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.store</groupId>
     <artifactId>soat-techchallenge</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>soat-techchallenge</name>
     <description>soat-techchallenge</description>
     <url/>
