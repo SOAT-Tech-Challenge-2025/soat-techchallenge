@@ -2,9 +2,7 @@ package com.store.soattechchallenge.identification.domain.model;
 
 import java.time.LocalDateTime;
 
-public class Identification {
-
-    private Long id;
+public class IdentificationDTO {
 
     private String nameClient;
 
@@ -16,11 +14,10 @@ public class Identification {
 
     private LocalDateTime updatedAt;
 
-    public Identification() {
+    public IdentificationDTO() {
     }
 
-    public Identification(Long id, String nameClient, String numberDocument, String email, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
+    public IdentificationDTO(Long id, String nameClient, String numberDocument, String email, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.nameClient = nameClient;
         this.numberDocument = numberDocument;
         this.email = email;
@@ -28,13 +25,6 @@ public class Identification {
         this.updatedAt = updatedAt;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getNameClient() {
         return nameClient;
