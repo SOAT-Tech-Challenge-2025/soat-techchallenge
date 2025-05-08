@@ -1,4 +1,4 @@
-package com.store.soattechchallenge.identification.infrastructure.adapter.out.model;
+package com.store.soattechchallenge.identification.adapters.driven.jpa.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,4 +32,28 @@ public class IdentificationJpa {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getNameClient() {
+        return nameClient;
+    }
+
+    public String getNumberDocument() {
+        return numberDocument;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 }

@@ -1,4 +1,4 @@
-package com.store.soattechchallenge.identification.domain.model;
+package com.store.soattechchallenge.identification.adapters.driver.rest.dto;
 
 import java.time.LocalDateTime;
 

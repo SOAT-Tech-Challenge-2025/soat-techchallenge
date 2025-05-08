@@ -1,6 +1,6 @@
-package com.store.soattechchallenge.identification.infrastructure.adapter.out.repository;
+package com.store.soattechchallenge.identification.adapters.driven.jpa.repository;
 
-import com.store.soattechchallenge.identification.infrastructure.adapter.out.model.IdentificationJpa;
+import com.store.soattechchallenge.identification.adapters.driven.jpa.model.IdentificationJpa;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
