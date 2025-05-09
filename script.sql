@@ -1,6 +1,6 @@
 -- Tabela de Clientes
 CREATE TABLE tb_cliente (
-    id SERIAL PRIMARY KEY,
+    id VARCHAR(255) PRIMARY KEY,
     nm_cliente VARCHAR(100),
     ds_email VARCHAR(100),
     nr_documento VARCHAR(20),
@@ -18,7 +18,7 @@ CREATE TABLE tb_categoria_itens (
 
 -- Tabela de Produtos
 CREATE TABLE tb_produto (
-    id VARCHAR(255) PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     nm_produto VARCHAR(100),
     id_categoria INTEGER REFERENCES tb_categoria_itens(id),
     vl_unitario_produto NUMERIC(10, 2),
@@ -31,8 +31,8 @@ CREATE TABLE tb_produto (
 CREATE TABLE tb_carrinho_pedido (
     id VARCHAR(255) PRIMARY KEY,
     vl_total_pedido NUMERIC(10, 2),
-    minutagem INTEGER, -- pode ser o tempo total estimado
-    id_cliente INTEGER REFERENCES tb_cliente(id),
+    minutagem INTEGER,
+    id_cliente VARCHAR(255),
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
