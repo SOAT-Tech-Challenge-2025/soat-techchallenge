@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: "soat-techchallenge"
+  sql:
+    init:
+      continue-on-error: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/soat
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    hikari:
+      connection-timeout: 200000
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  metrics:
+    export:
+      prometheus:
+        enabled: true  # Habilita a exportação de métricas para Prometheus
+
+    actuator:
+      endpoints:
+        web:
+          exposure:
+            include: '*'  # Exponha todos os endpoints, incluindo /actuator/prometheus
+      endpoint:
+        prometheus:
+          enabled: true  # Certifica-se de que o endpoint /actuator/prometheus está habilitado
+      metrics:
+        enable:
+          all: true  # Habilita todas as métricas
+management:
+  server:
+    port: 8081  # Porta do Actuator, se for diferente da porta principal da aplicação
+  endpoints:
+    web:
+      exposure:
+        include:
+          - prometheus  # Inclui o endpoint Prometheus na exposição
+          - health  # Inclui o endpoint de saúde
+          - info
+
+sonar:
+  sources: src/main
+  cucumber:
+    jacoco:
+      reportPath: target/cucumber-reports/Cucumber.json
+  java:
+    binaries: target/classes
