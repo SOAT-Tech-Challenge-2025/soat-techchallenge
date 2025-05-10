@@ -4,6 +4,6 @@ ENV POSTGRES_USER postgres
 ENV POSTGRES_PASSWORD postgres
 ENV POSTGRES_DB soat
 
-EXPOSE 5432
+EXPOSE 5433
 
 COPY ./script.sql /docker-entrypoint-initdb.d/script.sql
