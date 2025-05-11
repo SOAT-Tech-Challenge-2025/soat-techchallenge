@@ -5,7 +5,7 @@ spring:
     init:
       continue-on-error: true
   datasource:
-    url: jdbc:postgresql://localhost:5433/soat
+    url: jdbc:postgresql://localhost:5432/soat
     driverClassName: org.postgresql.Driver
     username: postgres
     password: postgres
