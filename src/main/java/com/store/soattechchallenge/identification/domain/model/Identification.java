@@ -1,10 +1,11 @@
 package com.store.soattechchallenge.identification.domain.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class Identification {
 
-    private Long id;
+    private UUID id;
 
     private String nameClient;
 
@@ -19,7 +20,7 @@ public class Identification {
     public Identification() {
     }
 
-    public Identification(Long id, String nameClient, String numberDocument, String email, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Identification(UUID id, String nameClient, String numberDocument, String email, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.nameClient = nameClient;
         this.numberDocument = numberDocument;
@@ -28,11 +29,11 @@ public class Identification {
         this.updatedAt = updatedAt;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
