@@ -38,7 +38,6 @@ public class PagamentoRepositoryImpl implements PagamentoRepository {
     @Override
     public Pagamento save(Pagamento pagamento) {
         JPAPagamento jpaPagamento = new JPAPagamento(pagamento);
-
         jpaPagamento = this.jpaRepository.save(jpaPagamento);
         return new Pagamento(
                 jpaPagamento.getId(),

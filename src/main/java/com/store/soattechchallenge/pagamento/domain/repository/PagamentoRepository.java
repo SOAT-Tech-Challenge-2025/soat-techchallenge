@@ -1,5 +1,6 @@
 package com.store.soattechchallenge.pagamento.domain.repository;
 
+import com.store.soattechchallenge.pagamento.domain.exceptions.NotFound;
 import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 
 public interface PagamentoRepository {

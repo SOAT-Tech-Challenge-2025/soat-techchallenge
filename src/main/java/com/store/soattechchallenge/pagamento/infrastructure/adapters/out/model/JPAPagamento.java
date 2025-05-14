@@ -33,14 +33,14 @@ public class JPAPagamento {
     }
 
     public JPAPagamento (Pagamento pagamento) {
-        this.id = pagamento.id();
-        this.idExterno = pagamento.idExterno();
-        this.stPagamento = pagamento.stPagamento();
-        this.vlTotalPedido = pagamento.vlTotalPedido();
-        this.codigoQr = pagamento.codigoQr();
-        this.expiracao = pagamento.expiracao();
-        this.dtInclusao = pagamento.dtInclusao();
-        this.timestamp = pagamento.timestamp();
+        this.id = pagamento.getId();
+        this.idExterno = pagamento.getIdExterno();
+        this.stPagamento = pagamento.getStPagamento();
+        this.vlTotalPedido = pagamento.getVlTotalPedido();
+        this.codigoQr = pagamento.getCodigoQr();
+        this.expiracao = pagamento.getExpiracao();
+        this.dtInclusao = pagamento.getDtInclusao();
+        this.timestamp = pagamento.getTimestamp();
     }
 
     public String getId() {

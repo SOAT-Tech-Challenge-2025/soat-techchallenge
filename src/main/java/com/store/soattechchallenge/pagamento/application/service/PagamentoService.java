@@ -44,34 +44,16 @@ public class PagamentoService implements PagamentoUseCase {
         );
 
         GatewayPagamentoResponse gatewayPagamentoResponse = this.gatewayPagamento.create(pagamento, produtos);
-        return this.pagamentoRepository.save(
-                new Pagamento(
-                        pagamento.id(),
-                        gatewayPagamentoResponse.id(),
-                        pagamento.stPagamento(),
-                        pagamento.vlTotalPedido(),
-                        gatewayPagamentoResponse.codigoQr(),
-                        pagamento.expiracao(),
-                        pagamento.dtInclusao(),
-                        LocalDateTime.now()
-                )
-        );
+        pagamento.setIdExterno(gatewayPagamentoResponse.getId());
+        pagamento.setCodigoQr(gatewayPagamentoResponse.getCodigoQr());
+        pagamento.setTimestamp(LocalDateTime.now());
+        return this.pagamentoRepository.save(pagamento);
     }
 
     @Override
-    public Pagamento finish(String id, StatusPagamento statusPagamento) {
+    public Pagamento finalize(String id, StatusPagamento statusPagamento) {
         Pagamento pagamento = this.pagamentoRepository.findById(id);
-        return this.pagamentoRepository.save(
-                new Pagamento(
-                    pagamento.id(),
-                    pagamento.idExterno(),
-                    statusPagamento,
-                    pagamento.vlTotalPedido(),
-                    pagamento.codigoQr(),
-                    pagamento.expiracao(),
-                    pagamento.dtInclusao(),
-                    LocalDateTime.now()
-                )
-        );
+        pagamento.finalize(statusPagamento);
+        return this.pagamentoRepository.save(pagamento);
     }
 }

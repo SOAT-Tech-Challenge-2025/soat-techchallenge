@@ -12,6 +12,6 @@ import java.util.List;
 public class MockGatewayPagamento implements GatewayPagamento {
     @Override
     public GatewayPagamentoResponse create(Pagamento pagamento, List<Produto> produtos) {
-        return new GatewayPagamentoResponse(pagamento.id(), "saiodnasodna");
+        return new GatewayPagamentoResponse(pagamento.getId(), "saiodnasodna");
     }
 }

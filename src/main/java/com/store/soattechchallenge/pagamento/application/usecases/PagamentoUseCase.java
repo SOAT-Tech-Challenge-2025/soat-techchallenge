@@ -9,5 +9,5 @@ import java.util.List;
 public interface PagamentoUseCase {
     public Pagamento find (String id);
     public Pagamento create (String id, Double vlTotalPedido, List<Produto> produtos);
-    public Pagamento finish (String id, StatusPagamento statusPagamento);
+    public Pagamento finalize (String id, StatusPagamento statusPagamento);
 }
