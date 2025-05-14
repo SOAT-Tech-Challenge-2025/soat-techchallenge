@@ -2,7 +2,7 @@ package com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dt
 
 import com.store.soattechchallenge.pagamento.domain.model.StatusPagamento;
 
-public record PagamentoFinishRequestDTO (
+public record PagamentoFinalizeRequestDTO(
         StatusPagamento stPagamento
 ) {
 }

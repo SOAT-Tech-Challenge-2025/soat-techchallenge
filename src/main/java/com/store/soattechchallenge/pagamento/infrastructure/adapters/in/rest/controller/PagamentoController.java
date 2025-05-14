@@ -5,7 +5,7 @@ import com.store.soattechchallenge.pagamento.domain.exceptions.NotFound;
 import com.store.soattechchallenge.pagamento.domain.exceptions.PagamentoAlreadyFinalized;
 import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoCreateRequestDTO;
-import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoFinishRequestDTO;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoFinalizeRequestDTO;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -68,10 +68,10 @@ public class PagamentoController {
     @Transactional
     public ResponseEntity<PagamentoResponseDTO> finalize(
             @PathVariable String id,
-            @RequestBody PagamentoFinishRequestDTO pagamentoFinishRequestDTO
+            @RequestBody PagamentoFinalizeRequestDTO pagamentoFinalizeRequestDTO
     ) {
         try {
-            Pagamento pagamento = this.pagamentoService.finalize(id, pagamentoFinishRequestDTO.stPagamento());
+            Pagamento pagamento = this.pagamentoService.finalize(id, pagamentoFinalizeRequestDTO.stPagamento());
             return ResponseEntity.ok(
                     new PagamentoResponseDTO(
                             pagamento.getId(),
