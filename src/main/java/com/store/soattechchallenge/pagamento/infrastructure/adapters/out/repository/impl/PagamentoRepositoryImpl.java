@@ -36,6 +36,26 @@ public class PagamentoRepositoryImpl implements PagamentoRepository {
     }
 
     @Override
+    public Pagamento findByIdExterno(String idExterno) {
+        Optional<JPAPagamento> optionalJPAPagamento = this.jpaRepository.findByIdExterno(idExterno);
+        if (optionalJPAPagamento.isEmpty()) {
+            throw new NotFound("Pagamento não encontrado");
+        }
+
+        JPAPagamento jpaPagamento = optionalJPAPagamento.get();
+        return new Pagamento(
+                jpaPagamento.getId(),
+                jpaPagamento.getIdExterno(),
+                jpaPagamento.getStPagamento(),
+                jpaPagamento.getVlTotalPedido(),
+                jpaPagamento.getCodigoQr(),
+                jpaPagamento.getExpiracao(),
+                jpaPagamento.getDtInclusao(),
+                jpaPagamento.getTimestamp()
+        );
+    }
+
+    @Override
     public Pagamento save(Pagamento pagamento) {
         JPAPagamento jpaPagamento = new JPAPagamento(pagamento);
         jpaPagamento = this.jpaRepository.save(jpaPagamento);

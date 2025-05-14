@@ -1,6 +1,7 @@
 package com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.controller;
 
 import com.store.soattechchallenge.pagamento.application.service.PagamentoService;
+import com.store.soattechchallenge.pagamento.domain.exceptions.AlreadyExists;
 import com.store.soattechchallenge.pagamento.domain.exceptions.NotFound;
 import com.store.soattechchallenge.pagamento.domain.exceptions.PagamentoAlreadyFinalized;
 import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
@@ -44,24 +45,28 @@ public class PagamentoController {
     @PostMapping
     @Transactional
     public ResponseEntity<PagamentoResponseDTO> create(@RequestBody PagamentoCreateRequestDTO pagamentoRequestDTO) {
-        Pagamento pagamento = this.pagamentoService.create(
-                pagamentoRequestDTO.id(),
-                pagamentoRequestDTO.vlTotalPedido(),
-                pagamentoRequestDTO.produtos()
-        );
+        try {
+            Pagamento pagamento = this.pagamentoService.create(
+                    pagamentoRequestDTO.id(),
+                    pagamentoRequestDTO.vlTotalPedido(),
+                    pagamentoRequestDTO.produtos()
+            );
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                new PagamentoResponseDTO(
-                        pagamento.getId(),
-                        pagamento.getIdExterno(),
-                        pagamento.getStPagamento(),
-                        pagamento.getVlTotalPedido(),
-                        pagamento.getCodigoQr(),
-                        pagamento.getExpiracao(),
-                        pagamento.getDtInclusao(),
-                        pagamento.getTimestamp()
-                )
-        );
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                    new PagamentoResponseDTO(
+                            pagamento.getId(),
+                            pagamento.getIdExterno(),
+                            pagamento.getStPagamento(),
+                            pagamento.getVlTotalPedido(),
+                            pagamento.getCodigoQr(),
+                            pagamento.getExpiracao(),
+                            pagamento.getDtInclusao(),
+                            pagamento.getTimestamp()
+                    )
+            );
+        } catch (AlreadyExists error) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, error.getMessage());
+        }
     }
 
     @PostMapping("/{id}/finalize")

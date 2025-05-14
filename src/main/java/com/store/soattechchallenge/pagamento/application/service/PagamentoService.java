@@ -2,6 +2,8 @@ package com.store.soattechchallenge.pagamento.application.service;
 
 import com.store.soattechchallenge.pagamento.application.usecases.PagamentoUseCase;
 import com.store.soattechchallenge.pagamento.domain.GatewayPagamento;
+import com.store.soattechchallenge.pagamento.domain.exceptions.AlreadyExists;
+import com.store.soattechchallenge.pagamento.domain.exceptions.NotFound;
 import com.store.soattechchallenge.pagamento.domain.model.GatewayPagamentoResponse;
 import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 import com.store.soattechchallenge.pagamento.domain.model.Produto;
@@ -28,6 +30,11 @@ public class PagamentoService implements PagamentoUseCase {
 
     @Override
     public Pagamento create(String id, Double vlTotalPedido, List<Produto> produtos) {
+        try {
+            this.pagamentoRepository.findById(id);
+            throw new AlreadyExists("Já existe um pagamento com esse ID");
+        } catch (NotFound ignored) {}
+
         LocalDateTime expiracao = LocalDateTime.now().plusMinutes(10);
         LocalDateTime now = LocalDateTime.now();
         Pagamento pagamento = this.pagamentoRepository.save(
@@ -44,7 +51,13 @@ public class PagamentoService implements PagamentoUseCase {
         );
 
         GatewayPagamentoResponse gatewayPagamentoResponse = this.gatewayPagamento.create(pagamento, produtos);
-        pagamento.setIdExterno(gatewayPagamentoResponse.getId());
+        String idExterno = gatewayPagamentoResponse.getId();
+        try {
+            this.pagamentoRepository.findByIdExterno(idExterno);
+            throw new AlreadyExists("Já existe um pagamento com esse ID externo");
+        } catch (NotFound ignored) {}
+
+        pagamento.setIdExterno(idExterno);
         pagamento.setCodigoQr(gatewayPagamentoResponse.getCodigoQr());
         pagamento.setTimestamp(LocalDateTime.now());
         return this.pagamentoRepository.save(pagamento);
