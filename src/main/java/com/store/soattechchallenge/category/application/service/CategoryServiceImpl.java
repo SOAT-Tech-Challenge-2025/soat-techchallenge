@@ -1,6 +1,6 @@
-package com.store.soattechchallenge.category.application.service.impl;
+package com.store.soattechchallenge.category.application.service;
 
-import com.store.soattechchallenge.category.application.service.CategoryService;
+import com.store.soattechchallenge.category.application.usecases.CategoryUseCases;
 import com.store.soattechchallenge.category.infrastructure.adapters.in.dto.CategoryRequestDTO;
 import com.store.soattechchallenge.category.infrastructure.adapters.in.dto.CategoryResponseDTO;
 import org.springframework.stereotype.Service;
@@ -9,7 +9,7 @@ import java.util.List;
 
 
 @Service
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryServiceImpl implements CategoryUseCases {
 
 
     @Override
