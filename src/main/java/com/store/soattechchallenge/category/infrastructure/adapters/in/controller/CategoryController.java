@@ -1,6 +1,6 @@
 package com.store.soattechchallenge.category.infrastructure.adapters.in.controller;
 
-import com.store.soattechchallenge.category.application.service.CategoryService;
+import com.store.soattechchallenge.category.application.service.CategoryServiceImpl;
 import com.store.soattechchallenge.category.infrastructure.adapters.in.dto.CategoryRequestDTO;
 import com.store.soattechchallenge.category.infrastructure.adapters.in.dto.CategoryResponseDTO;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +12,10 @@ import java.util.List;
 @RequestMapping("/category")
 public class CategoryController {
 
-    private final CategoryService categoryService;
+    private final CategoryServiceImpl categoryService;
 
 
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(CategoryServiceImpl categoryService) {
         this.categoryService = categoryService;
     }
 
