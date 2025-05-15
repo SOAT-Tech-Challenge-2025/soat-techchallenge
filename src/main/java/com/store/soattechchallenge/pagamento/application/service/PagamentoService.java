@@ -4,7 +4,6 @@ import com.store.soattechchallenge.pagamento.application.usecases.PagamentoUseCa
 import com.store.soattechchallenge.pagamento.domain.GatewayPagamento;
 import com.store.soattechchallenge.pagamento.domain.exceptions.AlreadyExists;
 import com.store.soattechchallenge.pagamento.domain.exceptions.NotFound;
-import com.store.soattechchallenge.pagamento.domain.model.GatewayPagamentoResponse;
 import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 import com.store.soattechchallenge.pagamento.domain.model.Produto;
 import com.store.soattechchallenge.pagamento.domain.model.StatusPagamento;
@@ -37,29 +36,18 @@ public class PagamentoService implements PagamentoUseCase {
 
         LocalDateTime expiracao = LocalDateTime.now().plusMinutes(10);
         LocalDateTime now = LocalDateTime.now();
-        Pagamento pagamento = this.pagamentoRepository.save(
-            new Pagamento(
-                    id,
-                    id + "-awaiting-integration",
-                    StatusPagamento.OPENED,
-                    vlTotalPedido,
-                    "",
-                    expiracao,
-                    now,
-                    now
-            )
+        Pagamento pagamento = new Pagamento(
+                id,
+                "empty-" + id,
+                StatusPagamento.OPENED,
+                vlTotalPedido,
+                "",
+                expiracao,
+                now,
+                now
         );
 
-        GatewayPagamentoResponse gatewayPagamentoResponse = this.gatewayPagamento.create(pagamento, produtos);
-        String idExterno = gatewayPagamentoResponse.getId();
-        try {
-            this.pagamentoRepository.findByIdExterno(idExterno);
-            throw new AlreadyExists("Já existe um pagamento com esse ID externo");
-        } catch (NotFound ignored) {}
-
-        pagamento.setIdExterno(idExterno);
-        pagamento.setCodigoQr(gatewayPagamentoResponse.getCodigoQr());
-        pagamento.setTimestamp(LocalDateTime.now());
+        pagamento = this.gatewayPagamento.create(pagamento, produtos);
         return this.pagamentoRepository.save(pagamento);
     }
 
