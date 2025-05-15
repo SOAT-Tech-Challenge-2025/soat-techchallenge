@@ -28,4 +28,8 @@ public class Produto {
     public Integer getQuantidade() {
         return quantidade;
     }
+
+    public Double getValorTotal() {
+        return valorPorUnidade * quantidade;
+    }
 }
