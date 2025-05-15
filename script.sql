@@ -1,6 +1,6 @@
 -- Tabela de Clientes
 CREATE TABLE tb_cliente (
-    id VARCHAR(255) PRIMARY KEY,
+    id UUID PRIMARY KEY,
     nm_cliente VARCHAR(100),
     ds_email VARCHAR(100),
     nr_documento VARCHAR(20),

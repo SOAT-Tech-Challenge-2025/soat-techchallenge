@@ -44,6 +44,9 @@ public class JpaIdentification {
         this.updatedAt = identification.getUpdatedAt();
     }
 
+    public JpaIdentification() {
+    }
+
     public UUID getId() {
         return id;
     }

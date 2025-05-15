@@ -1,14 +1,15 @@
 package com.store.soattechchallenge.identification.application.service.impl;
 
-import com.store.soattechchallenge.identification.application.mapper.IdentificationMapper;
 import com.store.soattechchallenge.identification.application.usecases.IdentificationUseCases;
 import com.store.soattechchallenge.identification.domain.model.Identification;
 import com.store.soattechchallenge.identification.domain.model.IdentificationDTO;
 import com.store.soattechchallenge.identification.domain.repository.IdentificationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.store.soattechchallenge.identification.infrastructure.adapters.out.model.JpaIdentification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class IdentificationServiceImpl implements IdentificationUseCases {
@@ -32,5 +33,21 @@ public class IdentificationServiceImpl implements IdentificationUseCases {
         identificationRepository.createClient(mapperIdentification);
 
         return mapperIdentification;
+    }
+
+    @Override
+    public IdentificationDTO getByClient(UUID identification_id) {
+        Optional<JpaIdentification> identification = identificationRepository.getByClient(identification_id);
+        if (identification.isPresent()) {
+            IdentificationDTO identificationDTO = new IdentificationDTO();
+            identificationDTO.setNameClient(identification.get().getNameClient());
+            identificationDTO.setNumberDocument(identification.get().getNumberDocument());
+            identificationDTO.setEmail(identification.get().getEmail());
+            identificationDTO.setCreatedAt(identification.get().getCreatedAt());
+            identificationDTO.setUpdatedAt(identification.get().getUpdatedAt());
+            return identificationDTO;
+        } else {
+            return null;
+        }
     }
 }

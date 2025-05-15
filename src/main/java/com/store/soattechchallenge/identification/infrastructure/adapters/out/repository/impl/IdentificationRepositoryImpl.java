@@ -6,6 +6,9 @@ import com.store.soattechchallenge.identification.infrastructure.adapters.out.mo
 import com.store.soattechchallenge.identification.infrastructure.adapters.out.repository.JpaIdentificationRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Repository
 public class IdentificationRepositoryImpl implements IdentificationRepository {
 
@@ -21,5 +24,10 @@ public class IdentificationRepositoryImpl implements IdentificationRepository {
         this.jpaIdentificationRepository.save(jpaIdentification);
         return new Identification(jpaIdentification.getId(), jpaIdentification.getNameClient(), jpaIdentification.getEmail(),
                 jpaIdentification.getNumberDocument(), jpaIdentification.getCreatedAt(), jpaIdentification.getUpdatedAt());
+    }
+
+    @Override
+    public Optional<JpaIdentification> getByClient(UUID identification_id) {
+        return jpaIdentificationRepository.findById(identification_id);
     }
 }

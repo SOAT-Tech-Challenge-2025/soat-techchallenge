@@ -4,9 +4,9 @@ import com.store.soattechchallenge.identification.application.service.impl.Ident
 import com.store.soattechchallenge.identification.domain.model.IdentificationDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 public class IdentificationController {
@@ -17,9 +17,15 @@ public class IdentificationController {
         this.service = service;
     }
 
-    @PostMapping("/identification")
+    @PostMapping("/identifications")
     public ResponseEntity<Void> createClient(@RequestBody IdentificationDTO identificationDTO) {
         service.createClient(identificationDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/identifications/{identification_id}")
+    public ResponseEntity<IdentificationDTO> getByClient(@PathVariable UUID identification_id) {
+        IdentificationDTO identificationDTO = service.getByClient(identification_id);
+        return new ResponseEntity<>(identificationDTO, HttpStatus.OK);
     }
 }
