@@ -5,6 +5,8 @@ import com.store.soattechchallenge.identification.domain.model.Identification;
 import com.store.soattechchallenge.identification.domain.model.IdentificationDTO;
 import com.store.soattechchallenge.identification.domain.repository.IdentificationRepository;
 import com.store.soattechchallenge.identification.infrastructure.adapters.out.model.JpaIdentification;
+import com.store.soattechchallenge.utils.exception.CustomException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -47,7 +49,13 @@ public class IdentificationServiceImpl implements IdentificationUseCases {
             identificationDTO.setUpdatedAt(identification.get().getUpdatedAt());
             return identificationDTO;
         } else {
-            return null;
+            throw new CustomException(
+                    "Cliente não encontrado",
+                    HttpStatus.BAD_REQUEST,
+                    "001",
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
         }
     }
 }
