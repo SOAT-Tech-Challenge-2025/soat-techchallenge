@@ -30,4 +30,14 @@ public class IdentificationRepositoryImpl implements IdentificationRepository {
     public Optional<JpaIdentification> getByClient(UUID identification_id) {
         return jpaIdentificationRepository.findById(identification_id);
     }
+
+    @Override
+    public boolean existsByNumberDocument(String numberDocument) {
+        return jpaIdentificationRepository.existsByNumberDocument(numberDocument);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return jpaIdentificationRepository.existsByEmail(email);
+    }
 }

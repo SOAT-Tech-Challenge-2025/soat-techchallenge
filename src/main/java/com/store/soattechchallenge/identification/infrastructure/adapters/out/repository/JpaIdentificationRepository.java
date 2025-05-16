@@ -8,4 +8,8 @@ import java.util.UUID;
 
 @Repository
 public interface JpaIdentificationRepository extends JpaRepository<JpaIdentification, UUID> {
+
+    boolean existsByNumberDocument(String numberDocument);
+
+    boolean existsByEmail(String email);
 }

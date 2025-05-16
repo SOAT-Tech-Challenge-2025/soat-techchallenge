@@ -11,4 +11,8 @@ public interface IdentificationRepository {
     Identification createClient(Identification identification);
 
     Optional<JpaIdentification> getByClient(UUID identification_id);
+
+    boolean existsByNumberDocument(String numberDocument);
+
+    boolean existsByEmail(String email);
 }

@@ -1,7 +1,8 @@
 package com.store.soattechchallenge.identification.infrastructure.adapters.in.controller;
 
 import com.store.soattechchallenge.identification.application.service.impl.IdentificationServiceImpl;
-import com.store.soattechchallenge.identification.domain.model.IdentificationDTO;
+import com.store.soattechchallenge.identification.infrastructure.adapters.out.model.IdentificationDTO;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class IdentificationController {
     }
 
     @PostMapping("/identifications")
-    public ResponseEntity<Void> createClient(@RequestBody IdentificationDTO identificationDTO) {
+    public ResponseEntity<Void> createClient(@RequestBody @Valid IdentificationDTO identificationDTO) {
         service.createClient(identificationDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

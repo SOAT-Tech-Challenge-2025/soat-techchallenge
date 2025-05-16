@@ -1,7 +1,7 @@
 //package com.store.soattechchallenge.identification.application.mapper;
 //
 //import com.store.soattechchallenge.identification.domain.model.Identification;
-//import com.store.soattechchallenge.identification.domain.model.IdentificationDTO;
+//import com.store.soattechchallenge.identification.infrastructure.adapters.out.model.IdentificationDTO;
 //
 //@Mapper(componentModel = "spring")
 //public interface IdentificationMapper {
