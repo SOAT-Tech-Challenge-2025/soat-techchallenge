@@ -12,7 +12,7 @@ CREATE TABLE tb_cliente (
 CREATE TABLE tb_categoria_itens (
     id SERIAL PRIMARY KEY,
     nm_categoria VARCHAR(100),
-    dt_inclusao TIMESTAMP,
+    dt_inclusao DATE,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

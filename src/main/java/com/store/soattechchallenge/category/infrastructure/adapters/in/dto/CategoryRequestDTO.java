@@ -12,10 +12,7 @@ import java.util.Date;
 @EqualsAndHashCode
 
 public class CategoryRequestDTO {
-    private Long id;
     private String categoryName;
-    private Date dateInclusion;
-    private Timestamp timestamp;
 
 
 }
