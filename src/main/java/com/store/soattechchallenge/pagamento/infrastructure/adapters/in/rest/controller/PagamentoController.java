@@ -1,13 +1,15 @@
 package com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.controller;
 
-import com.store.soattechchallenge.pagamento.application.service.PagamentoService;
+import com.store.soattechchallenge.pagamento.application.usecases.PagamentoUseCase;
 import com.store.soattechchallenge.pagamento.domain.exceptions.AlreadyExists;
 import com.store.soattechchallenge.pagamento.domain.exceptions.NotFound;
 import com.store.soattechchallenge.pagamento.domain.exceptions.PagamentoAlreadyFinalized;
 import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.MercadoPagoWebhookDTO;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoCreateRequestDTO;
-import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoFinalizeRequestDTO;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoResponseDTO;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.MPOrderStatus;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.mappers.StatusPagamentoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/pagamento")
 public class PagamentoController {
     @Autowired
-    PagamentoService pagamentoService;
+    PagamentoUseCase pagamentoService;
 
     @GetMapping("/{id}")
     public ResponseEntity<PagamentoResponseDTO> find(@PathVariable String id) {
@@ -69,14 +71,23 @@ public class PagamentoController {
         }
     }
 
-    @PostMapping("/{id}/finalize")
+    @PostMapping("/notificacoes/mercado-pago")
     @Transactional
-    public ResponseEntity<PagamentoResponseDTO> finalize(
-            @PathVariable String id,
-            @RequestBody PagamentoFinalizeRequestDTO pagamentoFinalizeRequestDTO
-    ) {
+    public ResponseEntity<PagamentoResponseDTO> finalize(@RequestBody MercadoPagoWebhookDTO mercadoPagoWebhookDTO) {
+        if (
+                mercadoPagoWebhookDTO.action() == null ||
+                mercadoPagoWebhookDTO.type() == null ||
+                !mercadoPagoWebhookDTO.action().equals("payment.created") ||
+                !mercadoPagoWebhookDTO.type().equals("payment")
+        ) {
+            return ResponseEntity.noContent().build();
+        }
+
         try {
-            Pagamento pagamento = this.pagamentoService.finalize(id, pagamentoFinalizeRequestDTO.stPagamento());
+            Pagamento pagamento = this.pagamentoService.finalizeByMercadoPagoPaymentId(
+                    mercadoPagoWebhookDTO.data().id()
+            );
+
             return ResponseEntity.ok(
                     new PagamentoResponseDTO(
                             pagamento.getId(),

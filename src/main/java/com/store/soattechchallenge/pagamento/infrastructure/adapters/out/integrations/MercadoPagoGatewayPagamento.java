@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class MercadoPagoGatewayPagamento implements GatewayPagamento {
-    String ACCESS_TOKEN = "";
+    private final String CALLBACK_URI = "";
+    private final String ACCESS_TOKEN = "";
     private final String USER_ID = "";
     private final String POS = "";
     private final MercadoPagoClient mercadoPagoClient = new MercadoPagoClient(this.ACCESS_TOKEN);
@@ -42,7 +43,8 @@ public class MercadoPagoGatewayPagamento implements GatewayPagamento {
                 description,
                 description,
                 offsetDateTime.format(formatter),
-                MPItems
+                MPItems,
+                this.CALLBACK_URI
         );
 
         MPCreateOrderResponse MPCreateOrderResponse = this.mercadoPagoClient.createDynamicQROrder(

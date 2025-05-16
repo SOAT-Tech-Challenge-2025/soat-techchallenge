@@ -8,7 +8,7 @@ import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integra
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.MPCreateOrderRequest;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.MPCreateOrderResponse;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.MPOrder;
-import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.MPSearchOrderResponse;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.MPPayment;
 
 import java.io.IOException;
 import java.net.URI;
@@ -58,10 +58,8 @@ public class MercadoPagoClient {
         }
     }
 
-    public MPOrder findOrderByExternalId(String externalId) {
-        String url = String.format(
-                "https://api.mercadopago.com/merchant_orders/search?external_reference=%s", externalId
-        );
+    public MPOrder findOrderById(String id) {
+        String url = String.format("https://api.mercadopago.com/merchant_orders/%s", id);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -71,20 +69,24 @@ public class MercadoPagoClient {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             this.checkResponse(response);
-            MPSearchOrderResponse MPSearchOrderResponse = this.gson.fromJson(
-                    response.body(), MPSearchOrderResponse.class
-            );
+            return this.gson.fromJson(response.body(), MPOrder.class);
+        } catch (IOException | InterruptedException e) {
+            throw new MPClientError("Ocorreu um erro na requisição para obter o pedido no Mercado Pago");
+        }
+    }
 
-            if (MPSearchOrderResponse.total() == 0) {
-                throw new MPNotFoundError("Não encontrado");
-            } else if (MPSearchOrderResponse.total() > 1) {
-                throw new MPClientError(
-                        "Foi encontrada uma quantidade inesperada de itens com o id externo informado: "
-                                + MPSearchOrderResponse.total()
-                );
-            }
+    public MPPayment findPaymentById(String id) {
+        String url = String.format("https://api.mercadopago.com/v1/payments/%s", id);
 
-            return MPSearchOrderResponse.elements().get(0);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Authorization", "Bearer " + ACCESS_TOKEN)
+                .build();
+
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            this.checkResponse(response);
+            return this.gson.fromJson(response.body(), MPPayment.class);
         } catch (IOException | InterruptedException e) {
             throw new MPClientError("Ocorreu um erro na requisição para obter o pagamento no Mercado Pago");
         }
@@ -98,7 +100,7 @@ public class MercadoPagoClient {
 
         if (!acceptedStatus.contains(response.statusCode())) {
             throw new MPClientError(
-                    "Ocorreu um erro ao obter a resposta do Mercado Pago, status code " + response.statusCode()
+                    "Ocorreu um erro ao obter a resposta do Mercado Pago, status code " + response.statusCode() + response.body()
             );
         }
     }

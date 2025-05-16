@@ -8,6 +8,7 @@ public record MPCreateOrderRequest(
         String title,
         String description,
         String expirationDate,
-        List<MPItem> items
+        List<MPItem> items,
+        String notificationUrl
 ) {
 }
