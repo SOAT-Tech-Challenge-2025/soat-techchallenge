@@ -45,10 +45,9 @@ public class PagamentoService implements PagamentoUseCase {
 
     @Override
     public Pagamento create(String id, Double vlTotalPedido, List<Produto> produtos) {
-        try {
-            this.pagamentoRepository.findById(id);
+        if (this.pagamentoRepository.existsById(id)) {
             throw new AlreadyExists("Já existe um pagamento com esse ID");
-        } catch (NotFound ignored) {}
+        }
 
         LocalDateTime expiracao = LocalDateTime.now().plusMinutes(10);
         LocalDateTime now = LocalDateTime.now();
@@ -72,10 +71,9 @@ public class PagamentoService implements PagamentoUseCase {
         try {
             MPPayment mpPayment = this.mercadoPagoClient.findPaymentById(paymentId);
             MPOrder mpOrder = this.mercadoPagoClient.findOrderById(mpPayment.order().id());
-            try {
-                this.pagamentoRepository.findByIdExterno(mpOrder.externalReference());
+            if (pagamentoRepository.existsByIdExterno(mpOrder.externalReference())) {
                 throw new AlreadyExists("Já existe um pagamento com esse ID externo");
-            } catch (NotFound ignored) {}
+            }
 
             Pagamento pagamento = this.pagamentoRepository.findById(mpOrder.externalReference());
             pagamento.setIdExterno(Long.toString(mpOrder.id()));

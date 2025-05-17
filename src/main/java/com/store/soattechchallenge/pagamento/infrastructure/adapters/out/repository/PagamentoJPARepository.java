@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface PagamentoJPARepository extends JpaRepository<JPAPagamento, String> {
     public Optional<JPAPagamento> findByIdExterno(String idExterno);
+    public Boolean existsByIdExterno(String idExterno);
 }

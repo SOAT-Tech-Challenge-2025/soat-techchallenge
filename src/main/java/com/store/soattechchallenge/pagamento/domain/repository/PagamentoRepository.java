@@ -5,6 +5,7 @@ import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 
 public interface PagamentoRepository {
     public Pagamento findById (String id);
-    public Pagamento findByIdExterno (String idExterno);
+    public Boolean existsById(String id);
+    public Boolean existsByIdExterno(String id);
     public Pagamento save (Pagamento pagamento);
 }
