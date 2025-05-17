@@ -1,6 +1,7 @@
 package com.store.soattechchallenge.pagamento.application.service;
 
 import com.store.soattechchallenge.pagamento.application.usecases.PagamentoUseCase;
+import com.store.soattechchallenge.pagamento.configuration.PagamentoConfiguration;
 import com.store.soattechchallenge.pagamento.domain.GatewayPagamento;
 import com.store.soattechchallenge.pagamento.domain.exceptions.AlreadyExists;
 import com.store.soattechchallenge.pagamento.domain.exceptions.FinalizePagamentoError;
@@ -28,8 +29,11 @@ public class PagamentoService implements PagamentoUseCase {
     @Autowired
     private GatewayPagamento gatewayPagamento;
 
-    private final String MERCADO_PAGO_ACCESS_TOKEN = "";
-    private final MercadoPagoClient mercadoPagoClient = new MercadoPagoClient(this.MERCADO_PAGO_ACCESS_TOKEN);
+    private MercadoPagoClient mercadoPagoClient;
+
+    public PagamentoService(PagamentoConfiguration pagamentoConfiguration) {
+        this.mercadoPagoClient = new MercadoPagoClient(pagamentoConfiguration.getAccessToken());
+    }
 
     @Override
     public Pagamento find(String id) {

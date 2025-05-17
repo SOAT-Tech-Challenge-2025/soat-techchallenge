@@ -19,6 +19,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  mercado-pago:
+    access-token: ${MERCADO_PAGO_ACCESS_TOKEN}
+    user-id: ${MERCADO_PAGO_USER_ID}
+    pos: ${MERCADO_PAGO_POS}
+    callback-url: ${MERCADO_PAGO_CALLBACK_URL}
+
   metrics:
     export:
       prometheus:

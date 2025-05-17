@@ -1,5 +1,6 @@
 package com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations;
 
+import com.store.soattechchallenge.pagamento.configuration.PagamentoConfiguration;
 import com.store.soattechchallenge.pagamento.domain.GatewayPagamento;
 import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 import com.store.soattechchallenge.pagamento.domain.model.Produto;
@@ -14,11 +15,22 @@ import java.util.stream.Collectors;
 
 @Component
 public class MercadoPagoGatewayPagamento implements GatewayPagamento {
-    private final String CALLBACK_URI = "";
-    private final String ACCESS_TOKEN = "";
-    private final String USER_ID = "";
-    private final String POS = "";
-    private final MercadoPagoClient mercadoPagoClient = new MercadoPagoClient(this.ACCESS_TOKEN);
+    private final String ACCESS_TOKEN;
+    private final String USER_ID;
+    private final String POS;
+    private final String CALLBACK_URL;
+
+    private MercadoPagoClient mercadoPagoClient;
+
+    public MercadoPagoGatewayPagamento(
+            PagamentoConfiguration pagamentoConfiguration
+    ) {
+        this.ACCESS_TOKEN = pagamentoConfiguration.getAccessToken();
+        this.USER_ID = pagamentoConfiguration.getUserId();
+        this.POS = pagamentoConfiguration.getPos();
+        this.CALLBACK_URL = pagamentoConfiguration.getCallbackUrl();
+        this.mercadoPagoClient = new MercadoPagoClient(this.ACCESS_TOKEN);
+    }
 
     @Override
     public Pagamento create(Pagamento pagamento, List<Produto> produtos) {
@@ -44,7 +56,7 @@ public class MercadoPagoGatewayPagamento implements GatewayPagamento {
                 description,
                 offsetDateTime.format(formatter),
                 MPItems,
-                this.CALLBACK_URI
+                this.CALLBACK_URL
         );
 
         MPCreateOrderResponse MPCreateOrderResponse = this.mercadoPagoClient.createDynamicQROrder(
