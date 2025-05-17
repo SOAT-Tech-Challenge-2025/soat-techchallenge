@@ -1,9 +1,7 @@
 package com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.controller;
 
 import com.store.soattechchallenge.pagamento.application.usecases.PagamentoUseCase;
-import com.store.soattechchallenge.pagamento.domain.exceptions.AlreadyExists;
-import com.store.soattechchallenge.pagamento.domain.exceptions.NotFound;
-import com.store.soattechchallenge.pagamento.domain.exceptions.PagamentoAlreadyFinalized;
+import com.store.soattechchallenge.pagamento.domain.exceptions.*;
 import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.MercadoPagoWebhookDTO;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoCreateRequestDTO;
@@ -68,6 +66,8 @@ public class PagamentoController {
             );
         } catch (AlreadyExists error) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, error.getMessage());
+        } catch (CreatePagamentoError error) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, error.getMessage());
         }
     }
 
@@ -104,6 +104,8 @@ public class PagamentoController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, error.getMessage());
         } catch (PagamentoAlreadyFinalized error) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, error.getMessage());
+        } catch (FinalizePagamentoError error) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, error.getMessage());
         }
     }
 }
