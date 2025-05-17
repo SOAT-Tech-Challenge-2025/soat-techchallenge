@@ -5,15 +5,17 @@ import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 import com.store.soattechchallenge.pagamento.domain.repository.PagamentoRepository;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.model.JPAPagamento;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.repository.PagamentoJPARepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
 public class PagamentoRepositoryImpl implements PagamentoRepository {
-    @Autowired
-    private PagamentoJPARepository jpaRepository;
+    private final PagamentoJPARepository jpaRepository;
+
+    public PagamentoRepositoryImpl (PagamentoJPARepository pagamentoJPARepository) {
+        this.jpaRepository = pagamentoJPARepository;
+    }
 
     @Override
     public Pagamento findById(String id) {

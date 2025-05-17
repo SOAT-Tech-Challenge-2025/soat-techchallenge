@@ -2,7 +2,6 @@ package com.store.soattechchallenge.pagamento.application.usecases;
 
 import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 import com.store.soattechchallenge.pagamento.domain.model.Produto;
-import com.store.soattechchallenge.pagamento.domain.model.StatusPagamento;
 
 import java.util.List;
 

@@ -15,7 +15,6 @@ import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integra
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.MPOrder;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.MPPayment;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.mappers.StatusPagamentoMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,16 +22,18 @@ import java.util.List;
 
 @Service
 public class PagamentoService implements PagamentoUseCase {
-    @Autowired
-    private PagamentoRepository pagamentoRepository;
+    private final PagamentoRepository pagamentoRepository;
+    private final GatewayPagamento gatewayPagamento;
+    private final MercadoPagoClient mercadoPagoClient;
 
-    @Autowired
-    private GatewayPagamento gatewayPagamento;
-
-    private MercadoPagoClient mercadoPagoClient;
-
-    public PagamentoService(PagamentoConfiguration pagamentoConfiguration) {
+    public PagamentoService(
+            PagamentoConfiguration pagamentoConfiguration,
+            PagamentoRepository pagamentoRepository,
+            GatewayPagamento gatewayPagamento
+    ) {
+        this.pagamentoRepository = pagamentoRepository;
         this.mercadoPagoClient = new MercadoPagoClient(pagamentoConfiguration.getAccessToken());
+        this.gatewayPagamento = gatewayPagamento;
     }
 
     @Override

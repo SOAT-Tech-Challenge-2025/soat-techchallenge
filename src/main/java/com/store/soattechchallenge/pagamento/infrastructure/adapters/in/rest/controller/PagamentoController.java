@@ -8,9 +8,6 @@ import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.MercadoPagoWebhookDTO;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoCreateRequestDTO;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoResponseDTO;
-import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.MPOrderStatus;
-import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.mappers.StatusPagamentoMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,8 +17,11 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/pagamento")
 public class PagamentoController {
-    @Autowired
-    PagamentoUseCase pagamentoService;
+    private final PagamentoUseCase pagamentoService;
+
+    public PagamentoController (PagamentoUseCase pagamentoService) {
+        this.pagamentoService = pagamentoService;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<PagamentoResponseDTO> find(@PathVariable String id) {
