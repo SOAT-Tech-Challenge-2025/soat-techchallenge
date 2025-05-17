@@ -15,21 +15,19 @@ import java.util.stream.Collectors;
 
 @Component
 public class MercadoPagoGatewayPagamento implements GatewayPagamento {
-    private final String ACCESS_TOKEN;
     private final String USER_ID;
     private final String POS;
     private final String CALLBACK_URL;
-
-    private MercadoPagoClient mercadoPagoClient;
+    private final MercadoPagoClient mercadoPagoClient;
 
     public MercadoPagoGatewayPagamento(
-            PagamentoConfiguration pagamentoConfiguration
+            PagamentoConfiguration pagamentoConfiguration,
+            MercadoPagoClient mercadoPagoClient
     ) {
-        this.ACCESS_TOKEN = pagamentoConfiguration.getAccessToken();
         this.USER_ID = pagamentoConfiguration.getUserId();
         this.POS = pagamentoConfiguration.getPos();
         this.CALLBACK_URL = pagamentoConfiguration.getCallbackUrl();
-        this.mercadoPagoClient = new MercadoPagoClient(this.ACCESS_TOKEN);
+        this.mercadoPagoClient = mercadoPagoClient;
     }
 
     @Override

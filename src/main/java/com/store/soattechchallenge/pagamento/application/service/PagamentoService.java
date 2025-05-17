@@ -1,7 +1,6 @@
 package com.store.soattechchallenge.pagamento.application.service;
 
 import com.store.soattechchallenge.pagamento.application.usecases.PagamentoUseCase;
-import com.store.soattechchallenge.pagamento.configuration.PagamentoConfiguration;
 import com.store.soattechchallenge.pagamento.domain.GatewayPagamento;
 import com.store.soattechchallenge.pagamento.domain.exceptions.AlreadyExists;
 import com.store.soattechchallenge.pagamento.domain.exceptions.FinalizePagamentoError;
@@ -25,15 +24,18 @@ public class PagamentoService implements PagamentoUseCase {
     private final PagamentoRepository pagamentoRepository;
     private final GatewayPagamento gatewayPagamento;
     private final MercadoPagoClient mercadoPagoClient;
+    private final StatusPagamentoMapper statusPagamentoMapper;
 
     public PagamentoService(
-            PagamentoConfiguration pagamentoConfiguration,
+            MercadoPagoClient mercadoPagoClient,
             PagamentoRepository pagamentoRepository,
-            GatewayPagamento gatewayPagamento
+            GatewayPagamento gatewayPagamento,
+            StatusPagamentoMapper statusPagamentoMapper
     ) {
         this.pagamentoRepository = pagamentoRepository;
-        this.mercadoPagoClient = new MercadoPagoClient(pagamentoConfiguration.getAccessToken());
+        this.mercadoPagoClient = mercadoPagoClient;
         this.gatewayPagamento = gatewayPagamento;
+        this.statusPagamentoMapper = statusPagamentoMapper;
     }
 
     @Override
@@ -77,7 +79,7 @@ public class PagamentoService implements PagamentoUseCase {
 
             Pagamento pagamento = this.pagamentoRepository.findById(mpOrder.externalReference());
             pagamento.setIdExterno(Long.toString(mpOrder.id()));
-            pagamento.finalize(StatusPagamentoMapper.toStatusPagamento(mpOrder.status()));
+            pagamento.finalize(this.statusPagamentoMapper.toStatusPagamento(mpOrder.status()));
             return this.pagamentoRepository.save(pagamento);
         } catch (NotFound error) {
             throw new FinalizePagamentoError("O pagamento não foi identificado");
