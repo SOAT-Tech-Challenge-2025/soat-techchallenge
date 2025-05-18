@@ -2,6 +2,7 @@ package com.store.soattechchallenge.category.infrastructure.adapters.in.controll
 
 import com.store.soattechchallenge.category.application.service.CategoryServiceImpl;
 import com.store.soattechchallenge.category.infrastructure.adapters.in.dto.CategoryRequestDTO;
+import com.store.soattechchallenge.category.infrastructure.adapters.in.dto.CategoryResponseDTO;
 import com.store.soattechchallenge.category.infrastructure.adapters.out.entity.CategoryEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,9 +23,8 @@ public class CategoryController {
 
 
     @PostMapping
-    public ResponseEntity<Void> createCategory(@RequestBody CategoryRequestDTO category) {
-        categoryService.saveCategory(category);
-        return ResponseEntity.status(201).build();
+    public ResponseEntity<CategoryResponseDTO> createCategory(@RequestBody CategoryRequestDTO category) {
+        return ResponseEntity.status(201).body(categoryService.saveCategory(category));
     }
 
     @GetMapping
@@ -39,19 +39,17 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryResponseDTO> getCategory(@PathVariable("id") Long id) {
+    public ResponseEntity<CategoryEntity> getCategory(@PathVariable("id") Long id) {
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateCategory(@PathVariable("id") Long id, @RequestBody CategoryRequestDTO category) {
-        categoryService.updateCategory(id,category);
-        return ResponseEntity.status(201).build();
+    public ResponseEntity<CategoryResponseDTO> updateCategory(@PathVariable("id") Long id, @RequestBody CategoryRequestDTO category) {
+        return ResponseEntity.status(200).body(categoryService.updateCategory(id,category));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable("id") Long id) {
-        categoryService.deleteCategory(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<CategoryResponseDTO> deleteCategory(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(categoryService.deleteCategory(id));
     }
 }

@@ -1,18 +1,45 @@
 package com.store.soattechchallenge.category.infrastructure.adapters.in.dto;
 
-import lombok.*;
+import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
-import java.util.Date;
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-@EqualsAndHashCode
-
+@Component
 public class CategoryRequestDTO {
     private String categoryName;
 
+    public CategoryRequestDTO() {
+    }
 
+    public CategoryRequestDTO(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    @Override
+    public String toString() {
+        return "CategoryRequestDTO{" +
+                "categoryName='" + categoryName + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CategoryRequestDTO that = (CategoryRequestDTO) o;
+
+        return categoryName != null ? categoryName.equals(that.categoryName) : that.categoryName == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return categoryName != null ? categoryName.hashCode() : 0;
+    }
 }

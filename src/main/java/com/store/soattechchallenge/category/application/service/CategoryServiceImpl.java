@@ -3,11 +3,14 @@ package com.store.soattechchallenge.category.application.service;
 import com.store.soattechchallenge.category.application.usecases.CategoryUseCases;
 import com.store.soattechchallenge.category.domain.model.Category;
 import com.store.soattechchallenge.category.infrastructure.adapters.in.dto.CategoryRequestDTO;
+import com.store.soattechchallenge.category.infrastructure.adapters.in.dto.CategoryResponseDTO;
 import com.store.soattechchallenge.category.infrastructure.adapters.out.entity.CategoryEntity;
 import com.store.soattechchallenge.category.infrastructure.adapters.out.repository.impl.CategoryRepositoryImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -20,13 +23,16 @@ public class CategoryServiceImpl implements CategoryUseCases {
     }
 
     @Override
-    public void saveCategory(CategoryRequestDTO category) {
+    public CategoryResponseDTO saveCategory(CategoryRequestDTO category) {
         Category categoryRequestModelModel = new Category(category.getCategoryName());
+        CategoryResponseDTO responseDTO = new CategoryResponseDTO();
         try {
             adaptersRepository.save(categoryRequestModelModel);
+            responseDTO.setMessage("Category created successful");
         }catch (Exception e) {
             throw new RuntimeException("Error saving category: " + e.getMessage());
         }
+        return responseDTO;
     }
 
     @Override
@@ -40,13 +46,33 @@ public class CategoryServiceImpl implements CategoryUseCases {
 
     @Override
     public CategoryEntity getCategoryById(Long id) {
+        Optional<CategoryEntity> categoryEntityOptional;
+        try {
+            categoryEntityOptional = adaptersRepository.findById(id);
+        }catch (Exception e) {
+            throw new RuntimeException("Error getting category: " + e.getMessage());
+        }
+        return categoryEntityOptional.orElseThrow(() -> new RuntimeException("Category not found"));
     }
 
     @Override
-    public void updateCategory(Long id, CategoryRequestDTO categoryDto) {
+    public CategoryResponseDTO updateCategory(Long id, CategoryRequestDTO categoryDto) {
+        Category category = new Category(categoryDto.getCategoryName());
+        CategoryResponseDTO categoryResponseDTO = new CategoryResponseDTO();
+        try {
+            categoryResponseDTO = adaptersRepository.update(category,id);
+        }catch (Exception e) {
+            throw new RuntimeException("Error updating category: " + e.getMessage());
+        }
+        return categoryResponseDTO;
     }
 
     @Override
-    public void deleteCategory(Long id) {
+    public CategoryResponseDTO deleteCategory(Long id) {
+        try {
+           return adaptersRepository.deoleteById(id);
+        }catch (Exception e) {
+            throw new RuntimeException("Error deleting category: " + e.getMessage());
+        }
     }
 }
