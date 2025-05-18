@@ -77,7 +77,7 @@ public class PagamentoService implements PagamentoUseCase {
 
             Pagamento pagamento = this.pagamentoRepository.findById(mpOrder.externalReference());
             pagamento.setIdExterno(Long.toString(mpOrder.id()));
-            pagamento.finalize(this.statusPagamentoMapper.toStatusPagamento(mpOrder.status()));
+            pagamento.finalize(this.statusPagamentoMapper.toDomain(mpOrder.status()));
             return this.pagamentoRepository.save(pagamento);
         } catch (NotFound error) {
             throw new FinalizePagamentoError("O pagamento não foi identificado");

@@ -7,19 +7,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class StatusPagamentoMapperImpl implements StatusPagamentoMapper {
-    public StatusPagamento toStatusPagamento(MPOrderStatus mpStatus) {
+    public StatusPagamento toDomain(MPOrderStatus mpStatus) {
         return switch (mpStatus) {
             case opened -> StatusPagamento.OPENED;
             case closed -> StatusPagamento.CLOSED;
             case expired -> StatusPagamento.EXPIRED;
-        };
-    }
-
-    public MPOrderStatus toMPOrderStatus(StatusPagamento statusPagamento) {
-        return switch (statusPagamento) {
-            case OPENED -> MPOrderStatus.opened;
-            case CLOSED -> MPOrderStatus.closed;
-            case EXPIRED -> MPOrderStatus.expired;
         };
     }
 }

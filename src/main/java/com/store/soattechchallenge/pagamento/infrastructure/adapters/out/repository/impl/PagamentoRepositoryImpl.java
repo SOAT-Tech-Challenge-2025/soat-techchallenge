@@ -3,6 +3,7 @@ package com.store.soattechchallenge.pagamento.infrastructure.adapters.out.reposi
 import com.store.soattechchallenge.pagamento.domain.exceptions.NotFound;
 import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 import com.store.soattechchallenge.pagamento.domain.repository.PagamentoRepository;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.mappers.PagamentoMapper;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.model.JPAPagamento;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.repository.PagamentoJPARepository;
 import org.springframework.stereotype.Repository;
@@ -12,9 +13,14 @@ import java.util.Optional;
 @Repository
 public class PagamentoRepositoryImpl implements PagamentoRepository {
     private final PagamentoJPARepository jpaRepository;
+    private final PagamentoMapper pagamentoMapper;
 
-    public PagamentoRepositoryImpl (PagamentoJPARepository pagamentoJPARepository) {
+    public PagamentoRepositoryImpl (
+            PagamentoJPARepository pagamentoJPARepository,
+            PagamentoMapper pagamentoMapper
+    ) {
         this.jpaRepository = pagamentoJPARepository;
+        this.pagamentoMapper = pagamentoMapper;
     }
 
     @Override
@@ -24,17 +30,7 @@ public class PagamentoRepositoryImpl implements PagamentoRepository {
             throw new NotFound("Pagamento não encontrado");
         }
 
-        JPAPagamento jpaPagamento = optionalJPAPagamento.get();
-        return new Pagamento(
-                jpaPagamento.getId(),
-                jpaPagamento.getIdExterno(),
-                jpaPagamento.getStPagamento(),
-                jpaPagamento.getVlTotalPedido(),
-                jpaPagamento.getCodigoQr(),
-                jpaPagamento.getExpiracao(),
-                jpaPagamento.getDtInclusao(),
-                jpaPagamento.getTimestamp()
-        );
+        return this.pagamentoMapper.toDomain(optionalJPAPagamento.get());
     }
 
     @Override
@@ -49,17 +45,10 @@ public class PagamentoRepositoryImpl implements PagamentoRepository {
 
     @Override
     public Pagamento save(Pagamento pagamento) {
-        JPAPagamento jpaPagamento = new JPAPagamento(pagamento);
-        jpaPagamento = this.jpaRepository.save(jpaPagamento);
-        return new Pagamento(
-                jpaPagamento.getId(),
-                jpaPagamento.getIdExterno(),
-                jpaPagamento.getStPagamento(),
-                jpaPagamento.getVlTotalPedido(),
-                jpaPagamento.getCodigoQr(),
-                jpaPagamento.getExpiracao(),
-                jpaPagamento.getDtInclusao(),
-                jpaPagamento.getTimestamp()
+        JPAPagamento jpaPagamento = this.jpaRepository.save(
+                this.pagamentoMapper.toJPA(pagamento)
         );
+
+        return this.pagamentoMapper.toDomain(jpaPagamento);
     }
 }
