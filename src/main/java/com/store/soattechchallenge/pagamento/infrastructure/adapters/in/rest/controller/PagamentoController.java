@@ -7,11 +7,17 @@ import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoCreateRequestDTO;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoResponseDTO;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.mappers.PagamentoMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/pagamento")
@@ -34,6 +40,17 @@ public class PagamentoController {
             return ResponseEntity.ok(this.pagamentoMapper.toDTO(pagamento));
         } catch (NotFound error) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, error.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/qr")
+    public void getCodigoQr(@PathVariable String id, HttpServletResponse response) {
+        try {
+            BufferedImage qrImage = this.pagamentoService.renderCodigoQr(id, 600, 600);
+            response.setContentType(MediaType.IMAGE_PNG_VALUE);
+            ImageIO.write(qrImage, "PNG", response.getOutputStream());
+        } catch (IOException error) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, error.getMessage());
         }
     }
 
