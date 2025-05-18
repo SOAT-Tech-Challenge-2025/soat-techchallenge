@@ -1,12 +1,13 @@
 package com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.controller;
 
 import com.store.soattechchallenge.pagamento.application.usecases.PagamentoUseCase;
-import com.store.soattechchallenge.pagamento.domain.exceptions.*;
+import com.store.soattechchallenge.pagamento.domain.exception.*;
 import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.MercadoPagoWebhookDTO;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoCreateRequestDTO;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoResponseDTO;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.mappers.PagamentoMapper;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.repository.exception.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,7 +39,7 @@ public class PagamentoController {
         try {
             Pagamento pagamento = this.pagamentoService.find(id);
             return ResponseEntity.ok(this.pagamentoMapper.toDTO(pagamento));
-        } catch (NotFound error) {
+        } catch (EntityNotFoundException error) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, error.getMessage());
         }
     }
@@ -49,7 +50,7 @@ public class PagamentoController {
             BufferedImage qrImage = this.pagamentoService.renderCodigoQr(id, 600, 600);
             response.setContentType(MediaType.IMAGE_PNG_VALUE);
             ImageIO.write(qrImage, "PNG", response.getOutputStream());
-        } catch (IOException error) {
+        } catch (IOException | CodigoQRGenerationException error) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, error.getMessage());
         }
     }
@@ -65,9 +66,9 @@ public class PagamentoController {
             );
 
             return ResponseEntity.status(HttpStatus.CREATED).body(this.pagamentoMapper.toDTO(pagamento));
-        } catch (AlreadyExists error) {
+        } catch (PagamentoAlreadyExists error) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, error.getMessage());
-        } catch (CreatePagamentoError error) {
+        } catch (PagamentoCreationException error) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, error.getMessage());
         }
     }
@@ -90,11 +91,11 @@ public class PagamentoController {
             );
 
             return ResponseEntity.ok(this.pagamentoMapper.toDTO(pagamento));
-        } catch (NotFound error) {
+        } catch (EntityNotFoundException error) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, error.getMessage());
-        } catch (PagamentoAlreadyFinalized error) {
+        } catch (PagamentoAlreadyFinalizedException error) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, error.getMessage());
-        } catch (FinalizePagamentoError error) {
+        } catch (PagamentoFinalizationException error) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, error.getMessage());
         }
     }

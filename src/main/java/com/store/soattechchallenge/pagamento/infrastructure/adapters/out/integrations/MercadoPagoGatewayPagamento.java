@@ -2,11 +2,11 @@ package com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integr
 
 import com.store.soattechchallenge.pagamento.configuration.PagamentoConfiguration;
 import com.store.soattechchallenge.pagamento.domain.GatewayPagamento;
-import com.store.soattechchallenge.pagamento.domain.exceptions.CreatePagamentoError;
+import com.store.soattechchallenge.pagamento.domain.exception.PagamentoCreationException;
 import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 import com.store.soattechchallenge.pagamento.domain.model.Produto;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.MercadoPagoClient;
-import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.exceptions.MPClientError;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.exception.MPClientException;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.*;
 import org.springframework.stereotype.Component;
 
@@ -66,8 +66,8 @@ public class MercadoPagoGatewayPagamento implements GatewayPagamento {
 
             pagamento.setCodigoQr(MPCreateOrderResponse.qrData());
             return pagamento;
-        } catch (MPClientError error) {
-            throw new CreatePagamentoError("Ocorreu um erro ao gerar o pagamento.");
+        } catch (MPClientException error) {
+            throw new PagamentoCreationException("Error creating payment");
         }
     }
 }

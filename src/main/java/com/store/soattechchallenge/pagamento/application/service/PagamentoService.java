@@ -7,16 +7,16 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.store.soattechchallenge.pagamento.application.usecases.PagamentoUseCase;
 import com.store.soattechchallenge.pagamento.domain.GatewayPagamento;
-import com.store.soattechchallenge.pagamento.domain.exceptions.AlreadyExists;
-import com.store.soattechchallenge.pagamento.domain.exceptions.FinalizePagamentoError;
-import com.store.soattechchallenge.pagamento.domain.exceptions.GenerateCodigoQRError;
-import com.store.soattechchallenge.pagamento.domain.exceptions.NotFound;
+import com.store.soattechchallenge.pagamento.domain.exception.PagamentoAlreadyExists;
+import com.store.soattechchallenge.pagamento.domain.exception.PagamentoFinalizationException;
+import com.store.soattechchallenge.pagamento.domain.exception.CodigoQRGenerationException;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.repository.exception.EntityNotFoundException;
 import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 import com.store.soattechchallenge.pagamento.domain.model.Produto;
 import com.store.soattechchallenge.pagamento.domain.model.StatusPagamento;
 import com.store.soattechchallenge.pagamento.domain.repository.PagamentoRepository;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.MercadoPagoClient;
-import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.exceptions.MPClientError;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.exception.MPClientException;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.MPOrder;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.MPPayment;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.mappers.StatusPagamentoMapper;
@@ -53,7 +53,7 @@ public class PagamentoService implements PagamentoUseCase {
     @Override
     public Pagamento create(String id, Double vlTotalPedido, List<Produto> produtos) {
         if (this.pagamentoRepository.existsById(id)) {
-            throw new AlreadyExists("Já existe um pagamento com esse ID");
+            throw new PagamentoAlreadyExists("Payment with ID " + id + "already exists");
         }
 
         LocalDateTime expiracao = LocalDateTime.now().plusMinutes(10);
@@ -78,18 +78,20 @@ public class PagamentoService implements PagamentoUseCase {
         try {
             MPPayment mpPayment = this.mercadoPagoClient.findPaymentById(paymentId);
             MPOrder mpOrder = this.mercadoPagoClient.findOrderById(mpPayment.order().id());
-            if (pagamentoRepository.existsByIdExterno(mpOrder.externalReference())) {
-                throw new AlreadyExists("Já existe um pagamento com esse ID externo");
+            String id = mpOrder.externalReference();
+            String idExterno = Long.toString(mpOrder.id());
+            if (pagamentoRepository.existsByIdExterno(idExterno)) {
+                throw new PagamentoAlreadyExists("Payment with external ID " + idExterno + " already exists");
             }
 
-            Pagamento pagamento = this.pagamentoRepository.findById(mpOrder.externalReference());
-            pagamento.setIdExterno(Long.toString(mpOrder.id()));
+            Pagamento pagamento = this.pagamentoRepository.findById(id);
+            pagamento.setIdExterno(idExterno);
             pagamento.finalize(this.statusPagamentoMapper.toDomain(mpOrder.status()));
             return this.pagamentoRepository.save(pagamento);
-        } catch (NotFound error) {
-            throw new FinalizePagamentoError("O pagamento não foi identificado");
-        } catch (MPClientError error) {
-            throw new FinalizePagamentoError("Ocorreu um erro na comunicação com o gateway de pagamento");
+        } catch (EntityNotFoundException error) {
+            throw new PagamentoFinalizationException("Payment not found");
+        } catch (MPClientException error) {
+            throw new PagamentoFinalizationException("Error interacting with the payment gateway");
         }
     }
 
@@ -105,10 +107,10 @@ public class PagamentoService implements PagamentoUseCase {
                     height
             );
             return MatrixToImageWriter.toBufferedImage(bitMatrix);
-        } catch (NotFound error) {
-            throw new GenerateCodigoQRError("O pagamento não foi encontrado");
+        } catch (EntityNotFoundException error) {
+            throw new CodigoQRGenerationException("Payment not found");
         } catch (WriterException e) {
-            throw new GenerateCodigoQRError("Ocorreu um erro ao gerar o código QR");
+            throw new CodigoQRGenerationException("Error generation QR Code: " + e.getMessage());
         }
     }
 }

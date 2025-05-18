@@ -1,6 +1,6 @@
 package com.store.soattechchallenge.pagamento.infrastructure.adapters.out.repository.impl;
 
-import com.store.soattechchallenge.pagamento.domain.exceptions.NotFound;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.repository.exception.EntityNotFoundException;
 import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 import com.store.soattechchallenge.pagamento.domain.repository.PagamentoRepository;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.mappers.PagamentoMapper;
@@ -27,7 +27,7 @@ public class PagamentoRepositoryImpl implements PagamentoRepository {
     public Pagamento findById(String id) {
         Optional<JPAPagamento> optionalJPAPagamento = this.jpaRepository.findById(id);
         if (optionalJPAPagamento.isEmpty()) {
-            throw new NotFound("Pagamento não encontrado");
+            throw new EntityNotFoundException("Pagamento não encontrado");
         }
 
         return this.pagamentoMapper.toDomain(optionalJPAPagamento.get());

@@ -5,8 +5,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.store.soattechchallenge.pagamento.configuration.PagamentoConfiguration;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.MercadoPagoClient;
-import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.exceptions.MPClientError;
-import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.exceptions.MPNotFoundError;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.exception.MPClientException;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.exception.MPNotFoundException;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.MPCreateOrderRequest;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.MPCreateOrderResponse;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.MPOrder;
@@ -58,8 +58,8 @@ public class MercadoPagoClientImpl implements MercadoPagoClient {
             this.checkResponse(response);
             return this.gson.fromJson(response.body(), MPCreateOrderResponse.class);
         } catch (IOException | InterruptedException e) {
-            throw new MPClientError(
-                    "Ocorreu um erro na requisição para gerar o código QR dinâmico no Mercado Pago"
+            throw new MPClientException(
+                    "An error occurred while making the request to generate the dynamic QR code on Mercado Pago"
             );
         }
     }
@@ -77,7 +77,9 @@ public class MercadoPagoClientImpl implements MercadoPagoClient {
             this.checkResponse(response);
             return this.gson.fromJson(response.body(), MPOrder.class);
         } catch (IOException | InterruptedException e) {
-            throw new MPClientError("Ocorreu um erro na requisição para obter o pedido no Mercado Pago");
+            throw new MPClientException(
+                    "An error occurred while making the request to retrieve the order on Mercado Pago"
+            );
         }
     }
 
@@ -94,19 +96,22 @@ public class MercadoPagoClientImpl implements MercadoPagoClient {
             this.checkResponse(response);
             return this.gson.fromJson(response.body(), MPPayment.class);
         } catch (IOException | InterruptedException e) {
-            throw new MPClientError("Ocorreu um erro na requisição para obter o pagamento no Mercado Pago");
+            throw new MPClientException(
+                    "An error occurred while making the request to retrieve the payment on Mercado Pago"
+            );
         }
     }
 
     private void checkResponse (HttpResponse<String> response) {
         List<Integer> acceptedStatus = Arrays.asList(200, 201);
         if (response.statusCode() == 404) {
-            throw new MPNotFoundError("Não encontrado");
+            throw new MPNotFoundException("Not found");
         }
 
         if (!acceptedStatus.contains(response.statusCode())) {
-            throw new MPClientError(
-                    "Ocorreu um erro ao obter a resposta do Mercado Pago, status code " + response.statusCode() + response.body()
+            throw new MPClientException(
+                    "An error occurred while retrieving the response from Mercado Pago | [Status= " +
+                            response.statusCode() + "] | [Body] " + response.body()
             );
         }
     }

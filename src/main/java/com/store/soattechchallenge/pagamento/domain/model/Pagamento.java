@@ -1,6 +1,6 @@
 package com.store.soattechchallenge.pagamento.domain.model;
 
-import com.store.soattechchallenge.pagamento.domain.exceptions.PagamentoAlreadyFinalized;
+import com.store.soattechchallenge.pagamento.domain.exception.PagamentoAlreadyFinalizedException;
 
 import java.time.LocalDateTime;
 
@@ -88,8 +88,8 @@ public class Pagamento {
         boolean isValidStatus = this.stPagamento.equals(StatusPagamento.OPENED);
         boolean isValidNewStatus = !newStatusPagamento.equals(StatusPagamento.OPENED);
         if (!isValidStatus || !isValidNewStatus) {
-            throw new PagamentoAlreadyFinalized(
-                "Não é possível atualizar o status de um pagamento de " + this.stPagamento + " para " + newStatusPagamento
+            throw new PagamentoAlreadyFinalizedException(
+                    "Unable to update a payment status from " + this.stPagamento + " to " + newStatusPagamento
             );
         }
     }
