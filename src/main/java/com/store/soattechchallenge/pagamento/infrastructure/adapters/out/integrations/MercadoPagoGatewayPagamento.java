@@ -28,7 +28,9 @@ public class MercadoPagoGatewayPagamento implements GatewayPagamento {
     ) {
         this.USER_ID = pagamentoConfiguration.getUserId();
         this.POS = pagamentoConfiguration.getPos();
-        this.CALLBACK_URL = pagamentoConfiguration.getCallbackUrl();
+        this.CALLBACK_URL = pagamentoConfiguration.getCallbackUrl() + "?apikey=" +
+                pagamentoConfiguration.getWebhookToken();
+
         this.mercadoPagoClient = mercadoPagoClient;
     }
 

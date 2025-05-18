@@ -6,8 +6,10 @@ import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.MercadoPagoWebhookDTO;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoCreateRequestDTO;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.dto.PagamentoResponseDTO;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.validator.impl.MercadoPagoWebhookValidator;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.mappers.PagamentoMapper;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.repository.exception.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,13 +27,16 @@ import java.io.IOException;
 public class PagamentoController {
     private final PagamentoUseCase pagamentoService;
     private final PagamentoMapper pagamentoMapper;
+    private final MercadoPagoWebhookValidator mercadoPagoWebhookValidator;
 
     public PagamentoController (
             PagamentoUseCase pagamentoService,
-            PagamentoMapper pagamentoMapper
+            PagamentoMapper pagamentoMapper,
+            MercadoPagoWebhookValidator mercadoPagoWebhookValidator
     ) {
         this.pagamentoService = pagamentoService;
         this.pagamentoMapper = pagamentoMapper;
+        this.mercadoPagoWebhookValidator = mercadoPagoWebhookValidator;
     }
 
     @GetMapping("/{id}")
@@ -75,7 +80,10 @@ public class PagamentoController {
 
     @PostMapping("/notificacoes/mercado-pago")
     @Transactional
-    public ResponseEntity<PagamentoResponseDTO> finalize(@RequestBody MercadoPagoWebhookDTO mercadoPagoWebhookDTO) {
+    public ResponseEntity<PagamentoResponseDTO> finalize(
+            HttpServletRequest request,
+            @RequestBody MercadoPagoWebhookDTO mercadoPagoWebhookDTO
+    ) {
         if (
                 mercadoPagoWebhookDTO.action() == null ||
                 mercadoPagoWebhookDTO.type() == null ||
@@ -85,6 +93,7 @@ public class PagamentoController {
             return ResponseEntity.noContent().build();
         }
 
+        this.mercadoPagoWebhookValidator.validate(request);
         try {
             Pagamento pagamento = this.pagamentoService.finalizeByMercadoPagoPaymentId(
                     mercadoPagoWebhookDTO.data().id()

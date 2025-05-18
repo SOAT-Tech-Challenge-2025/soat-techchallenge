@@ -24,6 +24,7 @@ spring:
     user-id: ${MERCADO_PAGO_USER_ID}
     pos: ${MERCADO_PAGO_POS}
     callback-url: ${MERCADO_PAGO_CALLBACK_URL}
+    webhook-token: ${MERCADO_PAGO_WEBHOOK_TOKEN}
 
   metrics:
     export:

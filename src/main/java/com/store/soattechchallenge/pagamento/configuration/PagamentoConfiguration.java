@@ -10,6 +10,7 @@ public class PagamentoConfiguration {
     private String userId;
     private String pos;
     private String callbackUrl;
+    private String webhookToken;
 
     public String getAccessToken() {
         return accessToken;
@@ -27,6 +28,8 @@ public class PagamentoConfiguration {
         return callbackUrl;
     }
 
+    public String getWebhookToken() { return webhookToken; }
+
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
@@ -41,5 +44,9 @@ public class PagamentoConfiguration {
 
     public void setCallbackUrl(String callbackUrl) {
         this.callbackUrl = callbackUrl;
+    }
+
+    public void setWebhookToken(String webhookToken) {
+        this.webhookToken = webhookToken;
     }
 }
