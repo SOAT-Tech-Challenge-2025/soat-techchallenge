@@ -3,7 +3,7 @@ package com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integr
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.store.soattechchallenge.pagamento.configuration.PagamentoConfiguration;
+import com.store.soattechchallenge.pagamento.configuration.MercadoPagoConfiguration;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.MercadoPagoClient;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.exception.MPClientException;
 import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.exception.MPNotFoundException;
@@ -28,8 +28,8 @@ public class MercadoPagoClientImpl implements MercadoPagoClient {
     private final Gson gson;
     private final HttpClient client;
 
-    public MercadoPagoClientImpl(PagamentoConfiguration pagamentoConfiguration) {
-        this.ACCESS_TOKEN = pagamentoConfiguration.getAccessToken();
+    public MercadoPagoClientImpl(MercadoPagoConfiguration mercadoPagoConfiguration) {
+        this.ACCESS_TOKEN = mercadoPagoConfiguration.getAccessToken();
         this.gson = new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();

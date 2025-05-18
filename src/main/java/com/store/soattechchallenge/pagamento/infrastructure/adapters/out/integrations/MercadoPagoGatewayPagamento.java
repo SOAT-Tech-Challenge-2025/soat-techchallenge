@@ -1,6 +1,6 @@
 package com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations;
 
-import com.store.soattechchallenge.pagamento.configuration.PagamentoConfiguration;
+import com.store.soattechchallenge.pagamento.configuration.MercadoPagoConfiguration;
 import com.store.soattechchallenge.pagamento.domain.GatewayPagamento;
 import com.store.soattechchallenge.pagamento.domain.exception.PagamentoCreationException;
 import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
@@ -23,13 +23,13 @@ public class MercadoPagoGatewayPagamento implements GatewayPagamento {
     private final MercadoPagoClient mercadoPagoClient;
 
     public MercadoPagoGatewayPagamento(
-            PagamentoConfiguration pagamentoConfiguration,
+            MercadoPagoConfiguration mercadoPagoConfiguration,
             MercadoPagoClient mercadoPagoClient
     ) {
-        this.USER_ID = pagamentoConfiguration.getUserId();
-        this.POS = pagamentoConfiguration.getPos();
-        this.CALLBACK_URL = pagamentoConfiguration.getCallbackUrl() + "?apikey=" +
-                pagamentoConfiguration.getWebhookToken();
+        this.USER_ID = mercadoPagoConfiguration.getUserId();
+        this.POS = mercadoPagoConfiguration.getPos();
+        this.CALLBACK_URL = mercadoPagoConfiguration.getCallbackUrl() + "?apikey=" +
+                mercadoPagoConfiguration.getWebhookToken();
 
         this.mercadoPagoClient = mercadoPagoClient;
     }

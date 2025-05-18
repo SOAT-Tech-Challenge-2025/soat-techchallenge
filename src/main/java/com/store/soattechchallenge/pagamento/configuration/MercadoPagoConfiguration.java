@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "spring.mercado-pago")
-public class PagamentoConfiguration {
+public class MercadoPagoConfiguration {
     private String accessToken;
     private String userId;
     private String pos;

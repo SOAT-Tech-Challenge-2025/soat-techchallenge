@@ -1,6 +1,6 @@
 package com.store.soattechchallenge.pagamento.infrastructure.adapters.in.rest.validator.impl;
 
-import com.store.soattechchallenge.pagamento.configuration.PagamentoConfiguration;
+import com.store.soattechchallenge.pagamento.configuration.MercadoPagoConfiguration;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -10,8 +10,8 @@ import org.springframework.web.server.ResponseStatusException;
 public class MercadoPagoWebhookValidatorImpl implements MercadoPagoWebhookValidator {
     private final String API_KEY;
 
-    public MercadoPagoWebhookValidatorImpl(PagamentoConfiguration pagamentoConfiguration) {
-        this.API_KEY = pagamentoConfiguration.getWebhookToken();
+    public MercadoPagoWebhookValidatorImpl(MercadoPagoConfiguration mercadoPagoConfiguration) {
+        this.API_KEY = mercadoPagoConfiguration.getWebhookToken();
     }
 
     @Override
