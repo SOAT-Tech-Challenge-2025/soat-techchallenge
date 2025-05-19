@@ -27,7 +27,7 @@ public class PagamentoRepositoryImpl implements PagamentoRepository {
     public Pagamento findById(String id) {
         Optional<JPAPagamento> optionalJPAPagamento = this.jpaRepository.findById(id);
         if (optionalJPAPagamento.isEmpty()) {
-            throw new EntityNotFoundException("Pagamento não encontrado");
+            throw new EntityNotFoundException("Payment with ID " + id + " not found");
         }
 
         return this.pagamentoMapper.toDomain(optionalJPAPagamento.get());
