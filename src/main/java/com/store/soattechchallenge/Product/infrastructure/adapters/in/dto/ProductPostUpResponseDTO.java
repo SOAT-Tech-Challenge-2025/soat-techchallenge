@@ -1,17 +1,17 @@
-package com.store.soattechchallenge.category.infrastructure.adapters.in.dto;
+package com.store.soattechchallenge.Product.infrastructure.adapters.in.dto;
 
-public class CategoryResponseDTO {
+public class ProductPostUpResponseDTO {
     private String message;
 
-    public CategoryResponseDTO() {
+    public ProductPostUpResponseDTO() {
     }
 
-    public CategoryResponseDTO(String message) {
+    public ProductPostUpResponseDTO(String message) {
         this.message = message;
     }
 
-    public static CategoryResponseDTO builder() {
-        return new CategoryResponseDTO();
+    public static ProductPostUpResponseDTO builder() {
+        return new ProductPostUpResponseDTO();
     }
 
     public String getMessage() {
@@ -27,7 +27,7 @@ public class CategoryResponseDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CategoryResponseDTO that = (CategoryResponseDTO) o;
+        ProductPostUpResponseDTO that = (ProductPostUpResponseDTO) o;
 
         return message != null ? message.equals(that.message) : that.message == null;
     }
@@ -39,7 +39,7 @@ public class CategoryResponseDTO {
 
     @Override
     public String toString() {
-        return "CategoryUpdateResponseDTO{" +
+        return "ProductUpdateResponseDTO{" +
                 "message='" + message + '\'' +
                 '}';
     }
