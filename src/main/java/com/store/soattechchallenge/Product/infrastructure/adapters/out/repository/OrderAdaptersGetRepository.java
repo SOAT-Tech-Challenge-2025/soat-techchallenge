@@ -1,9 +1,9 @@
 package com.store.soattechchallenge.Product.infrastructure.adapters.out.repository;
 
-import com.store.soattechchallenge.Product.infrastructure.adapters.out.entity.ProductEntity;
+import com.store.soattechchallenge.Product.infrastructure.adapters.out.entity.OrderEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductAdaptersGetRepository extends JpaRepository<ProductEntity,Long> {
+public interface OrderAdaptersGetRepository extends JpaRepository<OrderEntity,Long> {
 }

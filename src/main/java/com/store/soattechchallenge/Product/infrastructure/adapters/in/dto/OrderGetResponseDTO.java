@@ -1,23 +1,23 @@
 package com.store.soattechchallenge.Product.infrastructure.adapters.in.dto;
 
-import org.springframework.stereotype.Component;
-
+import java.util.UUID;
 
 import java.util.UUID;
 
-@Component
-public class ProductRequestDTO {
+public class OrderGetResponseDTO {
+    private Long orderId;
     private Double totalOrder;
     private Integer minute;
     private UUID clientId;
     private ProductResponse products;
 
     // Construtor vazio
-    public ProductRequestDTO() {
+    public OrderGetResponseDTO() {
     }
 
     // Construtor cheio
-    public ProductRequestDTO(Double totalOrder, Integer minute, UUID clientId, ProductResponse products) {
+    public OrderGetResponseDTO(Long orderId, Double totalOrder, Integer minute, UUID clientId, ProductResponse products) {
+        this.orderId = orderId;
         this.totalOrder = totalOrder;
         this.minute = minute;
         this.clientId = clientId;
@@ -25,6 +25,10 @@ public class ProductRequestDTO {
     }
 
     // Getters
+    public Long getOrderId() {
+        return orderId;
+    }
+
     public Double getTotalOrder() {
         return totalOrder;
     }
@@ -42,6 +46,10 @@ public class ProductRequestDTO {
     }
 
     // Setters
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
     public void setTotalOrder(Double totalOrder) {
         this.totalOrder = totalOrder;
     }
@@ -61,8 +69,9 @@ public class ProductRequestDTO {
     // toString
     @Override
     public String toString() {
-        return "ProductRequestDTO{" +
-                "totalOrder=" + totalOrder +
+        return "OrderGetResponseDTO{" +
+                "orderId=" + orderId +
+                ", totalOrder=" + totalOrder +
                 ", minute=" + minute +
                 ", clientId=" + clientId +
                 ", products=" + products +
@@ -72,7 +81,8 @@ public class ProductRequestDTO {
     // hashCode
     @Override
     public int hashCode() {
-        int result = totalOrder.hashCode();
+        int result = orderId.hashCode();
+        result = 31 * result + totalOrder.hashCode();
         result = 31 * result + minute.hashCode();
         result = 31 * result + clientId.hashCode();
         result = 31 * result + products.hashCode();
@@ -85,8 +95,9 @@ public class ProductRequestDTO {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
 
-        ProductRequestDTO that = (ProductRequestDTO) obj;
+        OrderGetResponseDTO that = (OrderGetResponseDTO) obj;
 
+        if (!orderId.equals(that.orderId)) return false;
         if (!totalOrder.equals(that.totalOrder)) return false;
         if (!minute.equals(that.minute)) return false;
         if (!clientId.equals(that.clientId)) return false;
