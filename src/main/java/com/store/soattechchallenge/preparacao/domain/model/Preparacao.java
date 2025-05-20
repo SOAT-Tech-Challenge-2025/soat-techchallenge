@@ -64,4 +64,16 @@ public class Preparacao {
     public void setPosicaoPreparacao(Integer posicaoPreparacao) {
         this.posicaoPreparacao = posicaoPreparacao;
     }
+
+    public void setStPreparacao(StatusPreparacao stPreparacao) {
+        this.stPreparacao = stPreparacao;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setEstimativaDePronto(LocalDateTime estimativaDePronto) {
+        this.estimativaDePronto = estimativaDePronto;
+    }
 }

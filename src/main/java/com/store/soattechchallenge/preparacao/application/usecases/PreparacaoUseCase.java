@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface PreparacaoUseCase {
     public Preparacao create(String id, Integer tempoDePreparacao);
-//    public Preparacao startNext();
-//    public Preparacao ready(String id);
-//    public Preparacao finalize(String id);
-//    public List<Preparacao> waitingList(String id);
+    public Preparacao startNext();
+    public Preparacao ready(String id);
+    public Preparacao finalize(String id);
+    public List<Preparacao> waitingList();
 }
