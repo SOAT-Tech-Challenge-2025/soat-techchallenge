@@ -64,6 +64,7 @@ public class IdentificationServiceImpl implements IdentificationUseCases {
         mapperIdentification.setNumberDocument(identificationDTO.getNumberDocument());
         mapperIdentification.setEmail(identificationDTO.getEmail());
         mapperIdentification.setCreatedAt(LocalDateTime.now());
+        mapperIdentification.setUpdatedAt(LocalDateTime.now());
         identificationRepository.createClient(mapperIdentification);
 
         return mapperIdentification;
