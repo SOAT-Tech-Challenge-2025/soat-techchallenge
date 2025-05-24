@@ -3,8 +3,6 @@ package com.store.soattechchallenge.Order.infrastructure.adapters.out.repository
 import com.store.soattechchallenge.Order.domain.model.Order;
 import com.store.soattechchallenge.Order.domain.repository.OrderRepository;
 import com.store.soattechchallenge.Order.infrastructure.adapters.in.dto.OrderGetResponseDTO;
-import com.store.soattechchallenge.Order.infrastructure.adapters.in.dto.OrderPostUpResponseDTO;
-import com.store.soattechchallenge.Order.infrastructure.adapters.out.entity.OrderEntity;
 import com.store.soattechchallenge.Order.infrastructure.adapters.out.mappers.OrderMapper;
 import com.store.soattechchallenge.Order.infrastructure.adapters.out.repository.OrderAdaptersGetRepository;
 import org.springframework.data.domain.Page;
@@ -13,10 +11,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Component
-public class OrderRepositoryImpl implements OrderRepository {
+ public class OrderRepositoryImpl implements OrderRepository {
 
     private final OrderAdaptersGetRepository repository;
     public final OrderMapper mapper;
@@ -26,52 +23,25 @@ public class OrderRepositoryImpl implements OrderRepository {
         this.mapper = mapper;
     }
 
+
     @Override
-    public Optional<OrderGetResponseDTO> findById(Long id) {
-        return mapper.modelToProductGetResponseDTO(repository.findById(id));
+    public void save(Order order) {
+        repository.save(mapper.toJPAOrderEntity(order));
     }
 
     @Override
     public Page<OrderGetResponseDTO> findAll(Pageable pageable) {
-        return mapper.modelToProductGetResponseDTO(repository.findAll(pageable));
+        return mapper.toOrderGetResponseDTO(repository.findAll(pageable));
+    }
+
+
+    @Override
+    public Optional<OrderGetResponseDTO> findOrderById(String orderId) {
+        return mapper.toOrderGetResponseDTO(repository.findById(orderId));
     }
 
     @Override
-    public void save(Order order) {
-        repository.save(mapper.productToProductEntityMap(order));
-    }
-
-    @Override
-    public OrderPostUpResponseDTO update(Order order, Long id) {
-        OrderEntity orderEntityMapper = mapper.productToProductUpdateMap(order,id);
-        AtomicReference<Boolean> updated = new AtomicReference<>(true);
-        OrderPostUpResponseDTO responseDTO = new OrderPostUpResponseDTO();
-        repository.findById(id).ifPresentOrElse(
-                productEntity -> {
-                    repository.save(orderEntityMapper);
-                },
-                () -> {
-                    updated.set(false);
-                }
-        );
-        if(updated.get()) {
-            responseDTO.setMessage("Product updated");
-            return responseDTO;
-        }
-        responseDTO.setMessage("Product not updated");
-        return responseDTO;
-    }
-
-    @Override
-    public OrderPostUpResponseDTO deleteById(Long id) {
-        Optional<OrderEntity> entity = repository.findById(id);
-        OrderPostUpResponseDTO responseDTO = new OrderPostUpResponseDTO();
-        if (entity.isPresent()) {
-            repository.deleteById(id);
-            responseDTO.setMessage("Product deleted");
-        }else {
-            responseDTO.setMessage("Product not exist");
-        }
-        return responseDTO;
+    public String orderId() {
+        return repository.getByOrderId();
     }
 }

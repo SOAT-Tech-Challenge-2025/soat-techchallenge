@@ -2,29 +2,30 @@ package com.store.soattechchallenge.Order.infrastructure.adapters.in.controller;
 
 import com.store.soattechchallenge.Order.application.service.OrderServiceImpl;
 import com.store.soattechchallenge.Order.infrastructure.adapters.in.dto.OrderGetResponseDTO;
-import com.store.soattechchallenge.Order.infrastructure.adapters.in.dto.ProductRequestDTO;
-import com.store.soattechchallenge.Order.infrastructure.adapters.in.dto.OrderPostUpResponseDTO;
+import com.store.soattechchallenge.Order.infrastructure.adapters.in.dto.OrderRequestDTO;
+import com.store.soattechchallenge.Order.infrastructure.adapters.in.dto.OrderPostResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/order")
 public class OrderController {
 
-    private final OrderServiceImpl ProductService;
+    private final OrderServiceImpl orderService;
 
 
-    public OrderController(OrderServiceImpl ProductService) {
-        this.ProductService = ProductService;
+    public OrderController(OrderServiceImpl orderService) {
+        this.orderService = orderService;
     }
 
-
     @PostMapping
-    public ResponseEntity<OrderPostUpResponseDTO> createProduct(@RequestBody ProductRequestDTO Product) {
-        return ResponseEntity.status(201).body(ProductService.saveProduct(Product));
+    public ResponseEntity<OrderPostResponseDTO> createProduct(@RequestBody OrderRequestDTO Product) {
+        return ResponseEntity.status(201).body(orderService.saveOrder(Product));
     }
 
     @GetMapping
@@ -35,21 +36,12 @@ public class OrderController {
 
         int calculatedPage = (offset / limit) + page;
         Pageable pageable = PageRequest.of(calculatedPage, limit);
-        return ResponseEntity.ok(ProductService.getAllProducts(pageable));
+        return ResponseEntity.ok(orderService.getAllOrders(pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderGetResponseDTO> getProduct(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(ProductService.getProductById(id));
+    public ResponseEntity<Optional<OrderGetResponseDTO>> getProduct(@PathVariable("id") String id) {
+        return ResponseEntity.ok(orderService.getOrdeById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<OrderPostUpResponseDTO> updateProduct(@PathVariable("id") Long id, @RequestBody ProductRequestDTO Product) {
-        return ResponseEntity.status(200).body(ProductService.updateProduct(id,Product));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<OrderPostUpResponseDTO> deleteProduct(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(ProductService.deleteProduct(id));
-    }
 }
