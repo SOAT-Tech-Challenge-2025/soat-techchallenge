@@ -1,23 +1,32 @@
-package com.store.soattechchallenge.identification.domain.model;
+package com.store.soattechchallenge.identification.infrastructure.adapters.out.model;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
 public class IdentificationDTO {
 
+    @NotBlank(message = "Nome do cliente não pode ser nulo ou vazio")
     private String nameClient;
 
+    @NotBlank(message = "Número do documento não pode ser nulo ou vazio")
     private String numberDocument;
 
+    @Email
+    @NotBlank(message = "Email não pode ser nulo ou vazio")
     private String email;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
+
     public IdentificationDTO() {
     }
 
-    public IdentificationDTO(Long id, String nameClient, String numberDocument, String email, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public IdentificationDTO(String nameClient, String numberDocument, String email, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.nameClient = nameClient;
         this.numberDocument = numberDocument;
         this.email = email;
