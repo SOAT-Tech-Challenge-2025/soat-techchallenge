@@ -23,7 +23,7 @@ CREATE TABLE tb_produto (
     id_categoria INTEGER REFERENCES tb_categoria_itens(id),
     vl_unitario_produto NUMERIC(10, 2),
     tempo_de_preparo INTEGER, -- tempo em minutos
-    dt_inclusao TIMESTAMP,
+    dt_inclusao DATE,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
