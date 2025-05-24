@@ -9,16 +9,16 @@ public class ProductRequestDTO {
 
     private String productName;
     private Long idCategory;
-    private double unitValue;
+    private double unitPrice;
     private Long preparationTime;
 
     public ProductRequestDTO() {
     }
 
-    public ProductRequestDTO(String productName, Long idCategory, double unitValue, Long preparationTime) {
+    public ProductRequestDTO(String productName, Long idCategory, double unitPrice, Long preparationTime) {
         this.productName = productName;
         this.idCategory = idCategory;
-        this.unitValue = unitValue;
+        this.unitPrice = unitPrice;
         this.preparationTime = preparationTime;
     }
 
@@ -38,12 +38,12 @@ public class ProductRequestDTO {
         this.idCategory = idCategory;
     }
 
-    public double getUnitValue() {
-        return unitValue;
+    public double getUnitPrice() {
+        return unitPrice;
     }
 
-    public void setUnitValue(double unitValue) {
-        this.unitValue = unitValue;
+    public void setuUitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
     }
 
     public Long getPreparationTime() {
@@ -59,12 +59,12 @@ public class ProductRequestDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProductRequestDTO that = (ProductRequestDTO) o;
-        return Double.compare(that.unitValue, unitValue) == 0 && productName.equals(that.productName) && idCategory.equals(that.idCategory) && preparationTime.equals(that.preparationTime);
+        return Double.compare(that.unitPrice, unitPrice) == 0 && productName.equals(that.productName) && idCategory.equals(that.idCategory) && preparationTime.equals(that.preparationTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productName, idCategory, unitValue, preparationTime);
+        return Objects.hash(productName, idCategory, unitPrice, preparationTime);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class ProductRequestDTO {
         return "ProductRequestDTO{" +
                 "productName='" + productName + '\'' +
                 ", idCategory=" + idCategory +
-                ", unitValue=" + unitValue +
+                ", unitPrice=" + unitPrice +
                 ", preparationTime=" + preparationTime +
                 '}';
     }

@@ -21,7 +21,7 @@ public class ProductEntity {
     private Long idCategory;
 
     @Column(name = "vl_unitario_produto")
-    private BigDecimal unitPrice;
+    private Double unitPrice;
 
     @Column(name = "tempo_de_preparo")
     private Integer preparationTime;
@@ -56,11 +56,11 @@ public class ProductEntity {
         this.idCategory = idCategory;
     }
 
-    public BigDecimal getUnitPrice() {
+    public Double getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(final BigDecimal unitPrice) {
+    public void setUnitPrice(final Double unitPrice) {
         this.unitPrice = unitPrice;
     }
 

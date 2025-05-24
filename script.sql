@@ -43,8 +43,7 @@ CREATE TABLE tb_carrinho_produto (
     qt_item INTEGER,
     vl_qt_item NUMERIC(10, 2),
     PRIMARY KEY (id, id_produto),
-    FOREIGN KEY (id) REFERENCES tb_carrinho_pedido(id),
-    FOREIGN KEY (id_produto) REFERENCES tb_produto(id)
+    FOREIGN KEY (id) REFERENCES tb_carrinho_pedido(id)
 );
 
 -- Tabela de Pagamentos

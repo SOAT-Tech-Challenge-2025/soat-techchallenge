@@ -6,11 +6,13 @@ import com.store.soattechchallenge.product.infrastructure.adapters.in.dto.Produc
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 public interface ProductUseCases {
 
     ProductPostUpResponseDTO saveProduct(ProductRequestDTO Product);
     Page<ProductGetResponseDTO> getAllProducts(Pageable pageable);
-    ProductGetResponseDTO getProductById(Long id);
+    Optional<ProductGetResponseDTO> getProductById(Long id);
     ProductPostUpResponseDTO updateProduct(Long id, ProductRequestDTO Product);
     ProductPostUpResponseDTO deleteProduct(Long id);
 }

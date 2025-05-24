@@ -2,7 +2,7 @@ package com.store.soattechchallenge.order.infrastructure.adapters.out.repository
 
 import com.store.soattechchallenge.order.domain.model.Order;
 import com.store.soattechchallenge.order.domain.repository.OrderRepository;
-import com.store.soattechchallenge.order.infrastructure.adapters.in.dto.OrderGetResponseDTO;
+import com.store.soattechchallenge.order.infrastructure.adapters.in.dto.OrderResponseDTO;
 import com.store.soattechchallenge.order.infrastructure.adapters.out.mappers.OrderMapper;
 import com.store.soattechchallenge.order.infrastructure.adapters.out.repository.OrderAdaptersGetRepository;
 import org.springframework.data.domain.Page;
@@ -30,13 +30,13 @@ import java.util.Optional;
     }
 
     @Override
-    public Page<OrderGetResponseDTO> findAll(Pageable pageable) {
+    public Page<OrderResponseDTO> findAll(Pageable pageable) {
         return mapper.toOrderGetResponseDTO(repository.findAll(pageable));
     }
 
 
     @Override
-    public Optional<OrderGetResponseDTO> findOrderById(String orderId) {
+    public Optional<OrderResponseDTO> findOrderById(String orderId) {
         return mapper.toOrderGetResponseDTO(repository.findById(orderId));
     }
 

@@ -6,11 +6,15 @@ import com.store.soattechchallenge.product.infrastructure.adapters.in.dto.Produc
 import com.store.soattechchallenge.product.infrastructure.adapters.in.dto.ProductRequestDTO;
 import com.store.soattechchallenge.product.infrastructure.adapters.in.dto.ProductPostUpResponseDTO;
 import com.store.soattechchallenge.product.infrastructure.adapters.out.repository.impl.ProductRepositoryImpl;
+import com.store.soattechchallenge.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
@@ -24,13 +28,19 @@ public class ProductServiceImpl implements ProductUseCases {
 
     @Override
     public ProductPostUpResponseDTO saveProduct(ProductRequestDTO product) {
-        Product ProductRequestModelModel = new Product(product.getProductName(),product.getIdCategory(),product.getIdCategory(), product.getPreparationTime());
+        Product ProductRequestModelModel = new Product(product.getProductName(),product.getIdCategory(),product.getUnitPrice(), product.getPreparationTime());
         ProductPostUpResponseDTO responseDTO = new ProductPostUpResponseDTO();
         try {
             adaptersRepository.save(ProductRequestModelModel);
-            responseDTO.setMessage("Product created successful");
+            responseDTO.setMessage("Produto salvo com sucesso");
         }catch (Exception e) {
-            throw new RuntimeException("Error saving Product: " + e.getMessage());
+            throw new CustomException(
+                    "Erro ao salvar o produto",
+                    HttpStatus.BAD_REQUEST,
+                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
         }
         return responseDTO;
     }
@@ -40,19 +50,29 @@ public class ProductServiceImpl implements ProductUseCases {
         try {
             return adaptersRepository.findAll(pageable);
         }catch (Exception e) {
-            throw new RuntimeException("Error getting all categories: " + e.getMessage());
+            throw new CustomException(
+                    "Erro ao buscar os produtos",
+                    HttpStatus.BAD_REQUEST,
+                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
         }
     }
 
     @Override
-    public ProductGetResponseDTO getProductById(Long id) {
-        Optional<ProductGetResponseDTO> productEntityOptional;
+    public Optional<ProductGetResponseDTO> getProductById(Long id) {
         try {
-            productEntityOptional = adaptersRepository.findById(id);
+            return adaptersRepository.findById(id);
         }catch (Exception e) {
-            throw new RuntimeException("Error getting Product: " + e.getMessage());
+            throw new CustomException(
+                    "Erro ao buscar o produto",
+                    HttpStatus.BAD_REQUEST,
+                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
         }
-        return productEntityOptional.orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
     @Override
@@ -62,7 +82,13 @@ public class ProductServiceImpl implements ProductUseCases {
         try {
             ProductPostUpResponseDTO = adaptersRepository.update(Product,id);
         }catch (Exception e) {
-            throw new RuntimeException("Error updating Product: " + e.getMessage());
+            throw new CustomException(
+                    "Erro ao atualizar o produto",
+                    HttpStatus.BAD_REQUEST,
+                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
         }
         return ProductPostUpResponseDTO;
     }
@@ -72,7 +98,13 @@ public class ProductServiceImpl implements ProductUseCases {
         try {
            return adaptersRepository.deleteById(id);
         }catch (Exception e) {
-            throw new RuntimeException("Error deleting Product: " + e.getMessage());
+            throw new CustomException(
+                    "Erro ao deletar o produto",
+                    HttpStatus.BAD_REQUEST,
+                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
         }
     }
 }

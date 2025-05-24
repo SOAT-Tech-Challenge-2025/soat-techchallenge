@@ -2,7 +2,9 @@ package com.store.soattechchallenge.category.infrastructure.adapters.out.reposit
 
 import com.store.soattechchallenge.category.domain.model.Category;
 import com.store.soattechchallenge.category.domain.repository.CategoryRepository;
+import com.store.soattechchallenge.category.infrastructure.adapters.in.dto.CategoryProductProjectionDTO;
 import com.store.soattechchallenge.category.infrastructure.adapters.in.dto.CategoryResponseDTO;
+import com.store.soattechchallenge.category.infrastructure.adapters.in.dto.CategoryWithProductsDTO;
 import com.store.soattechchallenge.category.infrastructure.adapters.out.entity.CategoryEntity;
 import com.store.soattechchallenge.category.infrastructure.adapters.out.mappers.CategoryMapper;
 import com.store.soattechchallenge.category.infrastructure.adapters.out.repository.CategoryAdaptersRepository;
@@ -11,6 +13,9 @@ import org.springframework.stereotype.Component;
 
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -37,12 +42,12 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public void save(Category category) {
-        repository.save(mapper.categoryToCategoryEntityMap(category));
+        repository.save(mapper.toCategoryEntityMap(category));
     }
 
     @Override
     public CategoryResponseDTO update(Category category, Long id) {
-        CategoryEntity categoryEntityMapper = mapper.categoryToCategoryUpdateMap(category,id);
+        CategoryEntity categoryEntityMapper = mapper.toCategoryUpdateMap(category,id);
         AtomicReference<Boolean> updated = new AtomicReference<>(true);
         CategoryResponseDTO responseDTO = new CategoryResponseDTO();
         repository.findById(id).ifPresentOrElse(
@@ -72,5 +77,22 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             responseDTO.setMessage("Category not exist");
         }
         return responseDTO;
+    }
+
+    @Override
+    public Optional<CategoryWithProductsDTO> findProductsByCategoryId(Long id) {
+        List<Object[]> results = repository.findCategoryWithProducts(id);
+        List<CategoryProductProjectionDTO> dtos = results.stream()
+                .map(obj -> new CategoryProductProjectionDTO(
+                        ((Number) obj[0]).longValue(),
+                        (String) obj[1],
+                        obj[2] != null ? ((Number) obj[2]).longValue() : null,
+                        (String) obj[3],
+                        obj[4] != null ? ((BigDecimal) obj[4]) : null,
+                        obj[5] != null ? ((Number) obj[5]).intValue() : null,
+                        (Date) obj[6]
+                ))
+                .toList();
+        return mapper.toProductCategoryEntity(dtos);
     }
 }

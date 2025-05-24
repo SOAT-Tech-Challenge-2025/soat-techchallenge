@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/product")
 public class ProductController {
@@ -39,7 +41,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductGetResponseDTO> getProduct(@PathVariable("id") Long id) {
+    public ResponseEntity<Optional<ProductGetResponseDTO>> getProduct(@PathVariable("id") Long id) {
         return ResponseEntity.ok(ProductService.getProductById(id));
     }
 

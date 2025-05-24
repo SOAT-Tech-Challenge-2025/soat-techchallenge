@@ -6,11 +6,13 @@ import com.store.soattechchallenge.category.infrastructure.adapters.out.entity.C
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 public interface CategoryUseCases {
 
     CategoryResponseDTO saveCategory(CategoryRequestDTO category);
     Page<CategoryEntity> getAllCategories(Pageable pageable);
-    CategoryEntity getCategoryById(Long id);
+    Optional<CategoryEntity> getCategoryById(Long id);
     CategoryResponseDTO updateCategory(Long id, CategoryRequestDTO category);
     CategoryResponseDTO deleteCategory(Long id);
 }

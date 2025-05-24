@@ -10,7 +10,7 @@ public class Product {
 
     private String productName;
     private Long idCategory;
-    private double unitValue;
+    private double unitPrice;
     private Long preparationTime;
     private Date dateInclusion;
     private Timestamp timestamp;
@@ -18,10 +18,10 @@ public class Product {
     public Product() {
     }
 
-    public Product(String productName, Long idCategory, double unitValue, Long preparationTime) {
+    public Product(String productName, Long idCategory, double unitPrice, Long preparationTime) {
         this.productName = productName;
         this.idCategory = idCategory;
-        this.unitValue = unitValue;
+        this.unitPrice = unitPrice;
         this.preparationTime = preparationTime;
         this.dateInclusion = new Date(System.currentTimeMillis());
         this.timestamp = Timestamp.valueOf(LocalDateTime.now());
@@ -43,12 +43,12 @@ public class Product {
         this.idCategory = idCategory;
     }
 
-    public double getUnitValue() {
-        return unitValue;
+    public double getUnitPrice() {
+        return unitPrice;
     }
 
-    public void setUnitValue(double unitValue) {
-        this.unitValue = unitValue;
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
     }
 
     public Long getPreparationTime() {
@@ -80,12 +80,12 @@ public class Product {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return Double.compare(product.unitValue, unitValue) == 0 && productName.equals(product.productName) && idCategory.equals(product.idCategory) && preparationTime.equals(product.preparationTime) && dateInclusion.equals(product.dateInclusion) && timestamp.equals(product.timestamp);
+        return Double.compare(product.unitPrice, unitPrice) == 0 && productName.equals(product.productName) && idCategory.equals(product.idCategory) && preparationTime.equals(product.preparationTime) && dateInclusion.equals(product.dateInclusion) && timestamp.equals(product.timestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productName, idCategory, unitValue, preparationTime, dateInclusion, timestamp);
+        return Objects.hash(productName, idCategory, unitPrice, preparationTime, dateInclusion, timestamp);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class Product {
         return "Product{" +
                 "productName='" + productName + '\'' +
                 ", idCategory=" + idCategory +
-                ", unitValue=" + unitValue +
+                ", unitPrice=" + unitPrice +
                 ", preparationTime=" + preparationTime +
                 ", dateInclusion=" + dateInclusion +
                 ", timestamp=" + timestamp +

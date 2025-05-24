@@ -43,7 +43,7 @@ public class ProductMapperImpl implements ProductMapper{
         productEntity.setId(id);
         productEntity.setProductName(product.getProductName());
         productEntity.setIdCategory(product.getIdCategory());
-        productEntity.setUnitPrice(BigDecimal.valueOf(product.getUnitValue()));
+        productEntity.setUnitPrice(product.getUnitPrice());
         productEntity.setPreparationTime(product.getPreparationTime().intValue());
         productEntity.setInclusionDate(product.getDateInclusion());
         productEntity.setTimestamp(product.getTimestamp());
@@ -54,7 +54,7 @@ public class ProductMapperImpl implements ProductMapper{
         ProductEntity productEntity = new ProductEntity();
         productEntity.setProductName(product.getProductName());
         productEntity.setIdCategory(product.getIdCategory());
-        productEntity.setUnitPrice(BigDecimal.valueOf(product.getUnitValue()));
+        productEntity.setUnitPrice(product.getUnitPrice());
         productEntity.setPreparationTime(product.getPreparationTime().intValue());
         productEntity.setInclusionDate(product.getDateInclusion());
         productEntity.setTimestamp(product.getTimestamp());

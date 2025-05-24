@@ -1,4 +1,4 @@
-package com.store.soattechchallenge.identification.infrastructure.adapters.in.advice;
+package com.store.soattechchallenge.utils.exception.advice;
 
 import com.store.soattechchallenge.utils.exception.CustomException;
 import org.springframework.http.HttpStatus;

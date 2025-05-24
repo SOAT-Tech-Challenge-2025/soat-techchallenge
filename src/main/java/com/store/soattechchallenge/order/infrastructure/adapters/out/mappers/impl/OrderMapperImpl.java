@@ -2,7 +2,7 @@ package com.store.soattechchallenge.order.infrastructure.adapters.out.mappers.im
 
 import com.store.soattechchallenge.order.domain.model.Order;
 import com.store.soattechchallenge.order.domain.model.OrderProduct;
-import com.store.soattechchallenge.order.infrastructure.adapters.in.dto.OrderGetResponseDTO;
+import com.store.soattechchallenge.order.infrastructure.adapters.in.dto.OrderResponseDTO;
 import com.store.soattechchallenge.order.infrastructure.adapters.in.dto.ProductRequest;
 import com.store.soattechchallenge.order.infrastructure.adapters.out.entity.JPAOrderEntity;
 import com.store.soattechchallenge.order.infrastructure.adapters.out.entity.JPAOrderProductEntity;
@@ -42,7 +42,7 @@ public class OrderMapperImpl implements OrderMapper {
     }
 
     @Override
-    public Page<OrderGetResponseDTO> toOrderGetResponseDTO(Page<JPAOrderEntity> jpaOrderEntityPage) {
+    public Page<OrderResponseDTO> toOrderGetResponseDTO(Page<JPAOrderEntity> jpaOrderEntityPage) {
         return jpaOrderEntityPage.map(orderEntity -> {
             List<ProductRequest> productRequests = new ArrayList<>();
             if (orderEntity.getProdutos() != null) {
@@ -54,7 +54,7 @@ public class OrderMapperImpl implements OrderMapper {
                     ));
                 }
             }
-            return new OrderGetResponseDTO(
+            return new OrderResponseDTO(
                     orderEntity.getId(),
                     orderEntity.getTotalAmountOrder(),
                     orderEntity.getMinute(),
@@ -66,8 +66,8 @@ public class OrderMapperImpl implements OrderMapper {
     }
 
     @Override
-    public Optional<OrderGetResponseDTO> toOrderGetResponseDTO(Optional<JPAOrderEntity> jpaOrderEntity) {
-        OrderGetResponseDTO orderGetResponseDTO = null;
+    public Optional<OrderResponseDTO> toOrderGetResponseDTO(Optional<JPAOrderEntity> jpaOrderEntity) {
+        OrderResponseDTO orderResponseDTO = null;
         if (jpaOrderEntity.isPresent()) {
             JPAOrderEntity orderEntity = jpaOrderEntity.get();
             List<ProductRequest> productRequests = new ArrayList<>();
@@ -80,7 +80,7 @@ public class OrderMapperImpl implements OrderMapper {
                     ));
                 }
             }
-            orderGetResponseDTO = new OrderGetResponseDTO(
+            orderResponseDTO = new OrderResponseDTO(
                     orderEntity.getId(),
                     orderEntity.getTotalAmountOrder(),
                     orderEntity.getMinute(),
@@ -88,7 +88,7 @@ public class OrderMapperImpl implements OrderMapper {
                     productRequests,
                     orderEntity.getTimestamp()
             );
-            return Optional.of(orderGetResponseDTO);
+            return Optional.of(orderResponseDTO);
         }
         return Optional.empty();
     }

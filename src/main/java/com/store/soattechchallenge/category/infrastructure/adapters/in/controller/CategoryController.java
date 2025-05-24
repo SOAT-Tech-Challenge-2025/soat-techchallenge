@@ -3,12 +3,15 @@ package com.store.soattechchallenge.category.infrastructure.adapters.in.controll
 import com.store.soattechchallenge.category.application.service.CategoryServiceImpl;
 import com.store.soattechchallenge.category.infrastructure.adapters.in.dto.CategoryRequestDTO;
 import com.store.soattechchallenge.category.infrastructure.adapters.in.dto.CategoryResponseDTO;
+import com.store.soattechchallenge.category.infrastructure.adapters.in.dto.CategoryWithProductsDTO;
 import com.store.soattechchallenge.category.infrastructure.adapters.out.entity.CategoryEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/category")
@@ -39,7 +42,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryEntity> getCategory(@PathVariable("id") Long id) {
+    public ResponseEntity<Optional<CategoryEntity>> getCategory(@PathVariable("id") Long id) {
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
@@ -51,5 +54,10 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<CategoryResponseDTO> deleteCategory(@PathVariable("id") Long id) {
         return ResponseEntity.ok(categoryService.deleteCategory(id));
+    }
+
+    @GetMapping("/{id}/products")
+    public ResponseEntity<Optional<CategoryWithProductsDTO>> getCategoryById(@PathVariable(name = "id") Long id) {
+        return ResponseEntity.ok(categoryService.getProductsByCategoryId(id));
     }
 }

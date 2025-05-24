@@ -3,7 +3,7 @@ package com.store.soattechchallenge.order.infrastructure.adapters.in.dto;
 import java.sql.Timestamp;
 import java.util.List;
 
-public class OrderGetResponseDTO {
+public class OrderResponseDTO {
     private String orderId;
     private Double totalOrder;
     private Integer minute;
@@ -12,11 +12,11 @@ public class OrderGetResponseDTO {
     private List<ProductRequest> products;
 
     // Construtor vazio
-    public OrderGetResponseDTO() {
+    public OrderResponseDTO() {
     }
 
     // Construtor cheio
-    public OrderGetResponseDTO(String orderId, Double totalOrder, Integer minute, String clientId, List<ProductRequest> products, Timestamp timestamp) {
+    public OrderResponseDTO(String orderId, Double totalOrder, Integer minute, String clientId, List<ProductRequest> products, Timestamp timestamp) {
         this.orderId = orderId;
         this.totalOrder = totalOrder;
         this.minute = minute;
@@ -104,7 +104,7 @@ public class OrderGetResponseDTO {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
 
-        OrderGetResponseDTO that = (OrderGetResponseDTO) obj;
+        OrderResponseDTO that = (OrderResponseDTO) obj;
 
         if (!orderId.equals(that.orderId)) return false;
         if (!totalOrder.equals(that.totalOrder)) return false;
