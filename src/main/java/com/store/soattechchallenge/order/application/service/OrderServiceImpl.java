@@ -2,14 +2,17 @@ package com.store.soattechchallenge.order.application.service;
 
 import com.store.soattechchallenge.order.application.usecases.OrderUseCases;
 import com.store.soattechchallenge.order.domain.model.Order;
+import com.store.soattechchallenge.order.domain.model.OrderProduct;
 import com.store.soattechchallenge.order.infrastructure.adapters.in.dto.OrderGetResponseDTO;
-import com.store.soattechchallenge.order.infrastructure.adapters.in.dto.ProductRequestDTO;
-import com.store.soattechchallenge.order.infrastructure.adapters.in.dto.OrderPostUpResponseDTO;
+import com.store.soattechchallenge.order.infrastructure.adapters.in.dto.OrderRequestDTO;
+import com.store.soattechchallenge.order.infrastructure.adapters.in.dto.OrderPostResponseDTO;
+import com.store.soattechchallenge.order.infrastructure.adapters.in.utils.OrderUtils;
 import com.store.soattechchallenge.order.infrastructure.adapters.out.repository.impl.OrderRepositoryImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -23,12 +26,17 @@ public class OrderServiceImpl implements OrderUseCases {
     }
 
     @Override
-    public OrderPostUpResponseDTO saveProduct(ProductRequestDTO product) {
-        Order orderRequestModelModel = new Order(product.getProductName(),product.getIdCategory(),product.getIdCategory(), product.getPreparationTime());
-        OrderPostUpResponseDTO responseDTO = new OrderPostUpResponseDTO();
+    public OrderPostResponseDTO saveOrder(OrderRequestDTO product) {
+        String orderId = adaptersRepository.orderId();
+        List<OrderProduct> orderProducts = OrderUtils.groupAndSumProducts(product.getProducts(), orderId);
+        double totalOrder = orderProducts.stream()
+                .mapToDouble(OrderProduct::getVlQtItem)
+                .sum();
+        Order orderRequestModelModel = new Order(orderId, totalOrder, product.getMinute(), product.getClientId(), orderProducts);
+        OrderPostResponseDTO responseDTO = new OrderPostResponseDTO();
         try {
             adaptersRepository.save(orderRequestModelModel);
-            responseDTO.setMessage("Product created successful");
+            responseDTO.setOrderId(orderId);
         }catch (Exception e) {
             throw new RuntimeException("Error saving Product: " + e.getMessage());
         }
@@ -36,7 +44,7 @@ public class OrderServiceImpl implements OrderUseCases {
     }
 
     @Override
-    public Page<OrderGetResponseDTO> getAllProducts(Pageable pageable) {
+    public Page<OrderGetResponseDTO> getAllOrders(Pageable pageable) {
         try {
             return adaptersRepository.findAll(pageable);
         }catch (Exception e) {
@@ -45,34 +53,11 @@ public class OrderServiceImpl implements OrderUseCases {
     }
 
     @Override
-    public OrderGetResponseDTO getProductById(Long id) {
-        Optional<OrderGetResponseDTO> productEntityOptional;
-        try {
-            productEntityOptional = adaptersRepository.findById(id);
-        }catch (Exception e) {
-            throw new RuntimeException("Error getting Product: " + e.getMessage());
-        }
-        return productEntityOptional.orElseThrow(() -> new RuntimeException("Product not found"));
+    public Optional<OrderGetResponseDTO> getOrdeById(String id) {
+        return adaptersRepository.findOrderById(id);
     }
 
-    @Override
-    public OrderPostUpResponseDTO updateProduct(Long id, ProductRequestDTO product) {
-        Order Order = new Order(product.getProductName(),product.getIdCategory(),product.getIdCategory(), product.getPreparationTime());
-        OrderPostUpResponseDTO OrderPostUpResponseDTO;
-        try {
-            OrderPostUpResponseDTO = adaptersRepository.update(Order,id);
-        }catch (Exception e) {
-            throw new RuntimeException("Error updating Product: " + e.getMessage());
-        }
-        return OrderPostUpResponseDTO;
-    }
 
-    @Override
-    public OrderPostUpResponseDTO deleteProduct(Long id) {
-        try {
-           return adaptersRepository.deleteById(id);
-        }catch (Exception e) {
-            throw new RuntimeException("Error deleting Product: " + e.getMessage());
-        }
-    }
+
 }
+

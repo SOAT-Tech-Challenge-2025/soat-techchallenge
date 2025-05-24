@@ -1,24 +1,24 @@
 package com.store.soattechchallenge.order.infrastructure.adapters.in.dto;
 
-public class OrderPostUpResponseDTO {
-    private Long orderId;
+public class OrderPostResponseDTO {
+    private String orderId;
 
-    public OrderPostUpResponseDTO() {
+    public OrderPostResponseDTO() {
     }
 
-    public OrderPostUpResponseDTO(Long orderId) {
+    public OrderPostResponseDTO(String orderId) {
         this.orderId = orderId;
     }
 
-    public static OrderPostUpResponseDTO builder() {
-        return new OrderPostUpResponseDTO();
+    public static OrderPostResponseDTO builder() {
+        return new OrderPostResponseDTO();
     }
 
-    public Long getMessage() {
+    public String getOrderId() {
         return orderId;
     }
 
-    public void setMessage(Long message) {
+    public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
 
@@ -27,7 +27,7 @@ public class OrderPostUpResponseDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        OrderPostUpResponseDTO that = (OrderPostUpResponseDTO) o;
+        OrderPostResponseDTO that = (OrderPostResponseDTO) o;
 
         return orderId != null ? orderId.equals(that.orderId) : that.orderId == null;
     }
@@ -40,7 +40,7 @@ public class OrderPostUpResponseDTO {
     @Override
     public String toString() {
         return "ProductUpdateResponseDTO{" +
-                "message='" + orderId + '\'' +
+                "orderId='" + orderId + '\'' +
                 '}';
     }
 }

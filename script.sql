@@ -38,11 +38,13 @@ CREATE TABLE tb_carrinho_pedido (
 
 -- Tabela de relação entre Carrinho e Produto
 CREATE TABLE tb_carrinho_produto (
-    id VARCHAR(255) PRIMARY KEY,
-    id_produto INTEGER REFERENCES tb_produto(id),
+    id VARCHAR(255),
+    id_produto INTEGER,
     qt_item INTEGER,
     vl_qt_item NUMERIC(10, 2),
-    FOREIGN KEY (id) REFERENCES tb_carrinho_pedido(id)
+    PRIMARY KEY (id, id_produto),
+    FOREIGN KEY (id) REFERENCES tb_carrinho_pedido(id),
+    FOREIGN KEY (id_produto) REFERENCES tb_produto(id)
 );
 
 -- Tabela de Pagamentos
@@ -67,3 +69,43 @@ CREATE TABLE tb_preparacao (
     dt_inclusao TIMESTAMP,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE tb_gera_pedido (
+    id VARCHAR(4) PRIMARY KEY,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE OR REPLACE FUNCTION generate_order_id() RETURNS VARCHAR AS $$
+   DECLARE
+seq INTEGER;
+       prefix CHAR;
+       new_id VARCHAR;
+BEGIN
+SELECT CAST(substring(id from '[0-9]+$') AS INTEGER)
+INTO seq
+FROM tb_gera_pedido
+ORDER BY id DESC LIMIT 1;
+
+SELECT substring(id from '[A-Z]')
+INTO prefix
+FROM tb_gera_pedido
+ORDER BY id DESC LIMIT 1;
+
+IF seq IS NULL THEN
+           seq := 1;
+           prefix := 'A';
+       ELSEIF seq < 999 THEN
+           seq := seq + 1;
+ELSE
+           seq := 1;
+           prefix := chr(ascii(prefix) + 1);
+END IF;
+
+       new_id := prefix || lpad(seq::text, 3, '0');
+
+       -- Insert the new id into the table
+INSERT INTO tb_gera_pedido(id /*, other fields*/) VALUES (new_id /*, values*/);
+
+RETURN new_id;
+END;
+   $$ LANGUAGE plpgsql;

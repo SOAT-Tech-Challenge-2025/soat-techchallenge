@@ -2,43 +2,49 @@ package com.store.soattechchallenge.order.domain.model;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.List;
 
 public class Order {
 
-    private Long id;
-    private double totalAmountOrder;
-    private Long minute;
-    private UUID clientId;
+    private String id;
+    private Double totalAmountOrder;
+    private Integer minute;
+    private String clientId;
     private Timestamp timestamp;
+    private List<OrderProduct> orderProducts;
 
-    // Construtor vazio
     public Order() {
     }
 
-    // Construtor cheio
-    public Order(Long id, double totalAmountOrder, Long minute, UUID clientId) {
+    public Order(String id, Double totalAmountOrder, Integer minute, String clientId, List<OrderProduct> orderProducts) {
         this.id = id;
         this.totalAmountOrder = totalAmountOrder;
         this.minute = minute;
         this.clientId = clientId;
         this.timestamp = Timestamp.valueOf(LocalDateTime.now());
+        this.orderProducts = orderProducts;
     }
 
-    // Getters
-    public Long getId() {
+
+    public String getId() {
         return id;
     }
+    public List<OrderProduct> getOrderProducts() {
+        return orderProducts;
+    }
+    public void setOrderProducts(List<OrderProduct> orderProducts) {
+        this.orderProducts = orderProducts;
+    }
 
-    public double getTotalAmountOrder() {
+    public Double getTotalAmountOrder() {
         return totalAmountOrder;
     }
 
-    public Long getMinute() {
+    public Integer getMinute() {
         return minute;
     }
 
-    public UUID getClientId() {
+    public String getClientId() {
         return clientId;
     }
 
@@ -46,20 +52,19 @@ public class Order {
         return timestamp;
     }
 
-    // Setters
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public void setTotalAmountOrder(double totalAmountOrder) {
+    public void setTotalAmountOrder(Double totalAmountOrder) {
         this.totalAmountOrder = totalAmountOrder;
     }
 
-    public void setMinute(Long minute) {
+    public void setMinute(Integer minute) {
         this.minute = minute;
     }
 
-    public void setClientId(UUID clientId) {
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
@@ -67,7 +72,6 @@ public class Order {
         this.timestamp = timestamp;
     }
 
-    // toString
     @Override
     public String toString() {
         return "Order{" +
@@ -79,7 +83,6 @@ public class Order {
                 '}';
     }
 
-    // hashCode
     @Override
     public int hashCode() {
         int result = id.hashCode();
@@ -87,10 +90,10 @@ public class Order {
         result = 31 * result + minute.hashCode();
         result = 31 * result + clientId.hashCode();
         result = 31 * result + timestamp.hashCode();
+        result = 31 * result + (orderProducts != null ? orderProducts.hashCode() : 0);
         return result;
     }
 
-    // equals
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -101,6 +104,8 @@ public class Order {
         if (!id.equals(order.id)) return false;
         if (Double.compare(order.totalAmountOrder, totalAmountOrder) != 0) return false;
         if (!minute.equals(order.minute)) return false;
+        if (orderProducts != null ? !orderProducts.equals(order.orderProducts) : order.orderProducts != null)
+            return false;
         if (!clientId.equals(order.clientId)) return false;
         return timestamp.equals(order.timestamp);
     }

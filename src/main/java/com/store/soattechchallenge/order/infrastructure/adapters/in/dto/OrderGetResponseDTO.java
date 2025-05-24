@@ -1,30 +1,39 @@
 package com.store.soattechchallenge.order.infrastructure.adapters.in.dto;
 
-import java.util.UUID;
+import java.sql.Timestamp;
+import java.util.List;
 
 public class OrderGetResponseDTO {
-    private Long orderId;
+    private String orderId;
     private Double totalOrder;
     private Integer minute;
-    private UUID clientId;
-    private ProductResponse products;
+    private String clientId;
+    private Timestamp timestamp;
+    private List<ProductRequest> products;
 
     // Construtor vazio
     public OrderGetResponseDTO() {
     }
 
     // Construtor cheio
-    public OrderGetResponseDTO(Long orderId, Double totalOrder, Integer minute, UUID clientId, ProductResponse products) {
+    public OrderGetResponseDTO(String orderId, Double totalOrder, Integer minute, String clientId, List<ProductRequest> products, Timestamp timestamp) {
         this.orderId = orderId;
         this.totalOrder = totalOrder;
         this.minute = minute;
         this.clientId = clientId;
         this.products = products;
+        this.timestamp = timestamp;
     }
 
     // Getters
-    public Long getOrderId() {
+    public String getOrderId() {
         return orderId;
+    }
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
     }
 
     public Double getTotalOrder() {
@@ -35,16 +44,16 @@ public class OrderGetResponseDTO {
         return minute;
     }
 
-    public UUID getClientId() {
+    public String getClientId() {
         return clientId;
     }
 
-    public ProductResponse getProducts() {
+    public List<ProductRequest> getProducts() {
         return products;
     }
 
     // Setters
-    public void setOrderId(Long orderId) {
+    public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
 
@@ -56,11 +65,11 @@ public class OrderGetResponseDTO {
         this.minute = minute;
     }
 
-    public void setClientId(UUID clientId) {
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
-    public void setProducts(ProductResponse products) {
+    public void setProducts(List<ProductRequest> products) {
         this.products = products;
     }
 
@@ -73,6 +82,7 @@ public class OrderGetResponseDTO {
                 ", minute=" + minute +
                 ", clientId=" + clientId +
                 ", products=" + products +
+                ", timestamp=" + timestamp +
                 '}';
     }
 
@@ -83,6 +93,7 @@ public class OrderGetResponseDTO {
         result = 31 * result + totalOrder.hashCode();
         result = 31 * result + minute.hashCode();
         result = 31 * result + clientId.hashCode();
+        result = 31 * result + timestamp.hashCode();
         result = 31 * result + products.hashCode();
         return result;
     }
@@ -99,6 +110,7 @@ public class OrderGetResponseDTO {
         if (!totalOrder.equals(that.totalOrder)) return false;
         if (!minute.equals(that.minute)) return false;
         if (!clientId.equals(that.clientId)) return false;
+        if (!timestamp.equals(that.timestamp)) return false;
         return products.equals(that.products);
     }
 }
