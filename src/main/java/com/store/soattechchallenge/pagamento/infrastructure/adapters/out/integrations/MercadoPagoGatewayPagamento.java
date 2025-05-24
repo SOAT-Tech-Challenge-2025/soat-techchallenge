@@ -1,0 +1,75 @@
+package com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations;
+
+import com.store.soattechchallenge.pagamento.configuration.MercadoPagoConfiguration;
+import com.store.soattechchallenge.pagamento.domain.GatewayPagamento;
+import com.store.soattechchallenge.pagamento.domain.exception.PagamentoCreationException;
+import com.store.soattechchallenge.pagamento.domain.model.Pagamento;
+import com.store.soattechchallenge.pagamento.domain.model.Produto;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.MercadoPagoClient;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.exception.MPClientException;
+import com.store.soattechchallenge.pagamento.infrastructure.adapters.out.integrations.mercado_pago.model.*;
+import org.springframework.stereotype.Component;
+
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Component
+public class MercadoPagoGatewayPagamento implements GatewayPagamento {
+    private final String USER_ID;
+    private final String POS;
+    private final String CALLBACK_URL;
+    private final MercadoPagoClient mercadoPagoClient;
+
+    public MercadoPagoGatewayPagamento(
+            MercadoPagoConfiguration mercadoPagoConfiguration,
+            MercadoPagoClient mercadoPagoClient
+    ) {
+        this.USER_ID = mercadoPagoConfiguration.getUserId();
+        this.POS = mercadoPagoConfiguration.getPos();
+        this.CALLBACK_URL = mercadoPagoConfiguration.getCallbackUrl() + "?apikey=" +
+                mercadoPagoConfiguration.getWebhookToken();
+
+        this.mercadoPagoClient = mercadoPagoClient;
+    }
+
+    @Override
+    public Pagamento create(Pagamento pagamento, List<Produto> produtos) {
+        List<MPItem> MPItems = produtos.stream()
+                .map(produto -> new MPItem(
+                        produto.getNome(),
+                        produto.getCategoria(),
+                        produto.getQuantidade(),
+                        "unit",
+                        produto.getValorPorUnidade(),
+                        produto.getValorTotal()
+                ))
+                .collect(Collectors.toList());
+
+        ZoneOffset offset = OffsetDateTime.now().getOffset();
+        OffsetDateTime offsetDateTime = pagamento.getExpiracao().atOffset(offset);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        String description = "PEDIDO #" + pagamento.getId();
+        MPCreateOrderRequest mpCreateOrderRequest = new MPCreateOrderRequest(
+                pagamento.getId(),
+                pagamento.getVlTotalPedido(),
+                description,
+                description,
+                offsetDateTime.format(formatter),
+                MPItems,
+                this.CALLBACK_URL
+        );
+
+        try {
+            MPCreateOrderResponse MPCreateOrderResponse = this.mercadoPagoClient.createDynamicQROrder(
+                    this.USER_ID, this.POS, mpCreateOrderRequest
+            );
+
+            pagamento.setCodigoQr(MPCreateOrderResponse.qrData());
+            return pagamento;
+        } catch (MPClientException error) {
+            throw new PagamentoCreationException("Error creating payment");
+        }
+    }
+}
