@@ -10,6 +10,7 @@ import com.store.soattechchallenge.preparation.infrastructure.adapters.in.dto.Pr
 import com.store.soattechchallenge.preparation.infrastructure.adapters.out.mapper.PreparationMapper;
 import com.store.soattechchallenge.preparation.infrastructure.adapters.out.repository.exception.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,7 @@ public class PreparationController {
     @PostMapping
     @Transactional
     public ResponseEntity<PreparationResponseDTO> create(
-            @RequestBody PreparationCreateRequestDTO preparationCreateRequestDTO
+            @Valid @RequestBody PreparationCreateRequestDTO preparationCreateRequestDTO
     ) {
         try {
             Preparation preparation = this.preparationUseCase.create(
