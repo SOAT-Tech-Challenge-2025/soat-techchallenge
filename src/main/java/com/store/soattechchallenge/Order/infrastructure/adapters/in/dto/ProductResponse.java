@@ -1,15 +1,15 @@
 package com.store.soattechchallenge.order.infrastructure.adapters.in.dto;
 
-public class ProductRequest {
+public class ProductResponse {
     private Long productId;
     private Integer quantity;
     private Double vlUnitProduct;
 
-    public ProductRequest() {
+    public ProductResponse() {
     }
 
 
-    public ProductRequest(Long productId,Integer quantity, Double vlUnitProduct) {
+    public ProductResponse(Long productId, Integer quantity, Double vlUnitProduct) {
         this.productId = productId;
         this.quantity = quantity;
         this.vlUnitProduct = vlUnitProduct;

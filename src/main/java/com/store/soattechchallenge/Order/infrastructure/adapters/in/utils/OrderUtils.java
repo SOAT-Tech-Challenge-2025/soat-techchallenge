@@ -2,6 +2,7 @@ package com.store.soattechchallenge.order.infrastructure.adapters.in.utils;
 
 import com.store.soattechchallenge.order.domain.model.OrderProduct;
 import com.store.soattechchallenge.order.infrastructure.adapters.in.dto.ProductRequest;
+import com.store.soattechchallenge.order.infrastructure.adapters.in.dto.ProductResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,5 +26,13 @@ public class OrderUtils {
                     return new OrderProduct(orderId, productId, quantidade, somaVlUnitProduct);
                 })
                 .collect(Collectors.toList());
+    }
+
+    public static Integer somarPreparationTime(List<ProductRequest> products) {
+        return products.stream()
+                .map(ProductRequest::getPreparationTime)
+                .filter(java.util.Objects::nonNull)
+                .mapToInt(Integer::intValue)
+                .sum();
     }
 }

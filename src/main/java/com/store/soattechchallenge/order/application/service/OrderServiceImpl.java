@@ -29,13 +29,13 @@ public class OrderServiceImpl implements OrderUseCases {
     }
 
     @Override
-    public Optional<OrderResponseDTO> saveOrder(OrderRequestDTO product) {
+    public Optional<OrderResponseDTO> saveOrder(OrderRequestDTO orderRequestDTO) {
         String orderId = adaptersRepository.orderId();
-        List<OrderProduct> orderProducts = OrderUtils.groupAndSumProducts(product.getProducts(), orderId);
+        List<OrderProduct> orderProducts = OrderUtils.groupAndSumProducts(orderRequestDTO.getProducts(), orderId);
         double totalOrder = orderProducts.stream()
                 .mapToDouble(OrderProduct::getVlQtItem)
                 .sum();
-        Order orderRequestModelModel = new Order(orderId, totalOrder, product.getMinute(), product.getClientId(), orderProducts);
+        Order orderRequestModelModel = new Order(orderId, totalOrder, OrderUtils.somarPreparationTime(orderRequestDTO.getProducts()), orderRequestDTO.getClientId(), orderProducts);
         try {
             adaptersRepository.save(orderRequestModelModel);
         }catch (Exception e) {
@@ -84,7 +84,7 @@ public class OrderServiceImpl implements OrderUseCases {
         double totalOrder = orderProducts.stream()
                 .mapToDouble(OrderProduct::getVlQtItem)
                 .sum();
-        Order orderRequestModelModel = new Order(id, totalOrder, orderRequestDTO.getMinute(), orderRequestDTO.getClientId(), orderProducts);
+        Order orderRequestModelModel = new Order(id, totalOrder, OrderUtils.somarPreparationTime(orderRequestDTO.getProducts()), orderRequestDTO.getClientId(), orderProducts);
 
         try {
             adaptersRepository.save(orderRequestModelModel);

@@ -22,7 +22,7 @@ CREATE TABLE tb_produto (
     nm_produto VARCHAR(100),
     id_categoria INTEGER REFERENCES tb_categoria_itens(id),
     vl_unitario_produto NUMERIC(10, 2),
-    tempo_de_preparo INTEGER, -- tempo em minutos
+    tempo_de_preparo_produto INTEGER, -- tempo em minutos
     dt_inclusao DATE,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -31,7 +31,7 @@ CREATE TABLE tb_produto (
 CREATE TABLE tb_carrinho_pedido (
     id VARCHAR(255) PRIMARY KEY,
     vl_total_pedido NUMERIC(10, 2),
-    minutagem INTEGER,
+    tempo_de_preparo_pedido INTEGER,
     id_cliente VARCHAR(255),
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

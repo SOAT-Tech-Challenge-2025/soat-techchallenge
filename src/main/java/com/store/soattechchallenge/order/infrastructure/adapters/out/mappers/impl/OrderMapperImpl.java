@@ -3,7 +3,7 @@ package com.store.soattechchallenge.order.infrastructure.adapters.out.mappers.im
 import com.store.soattechchallenge.order.domain.model.Order;
 import com.store.soattechchallenge.order.domain.model.OrderProduct;
 import com.store.soattechchallenge.order.infrastructure.adapters.in.dto.OrderResponseDTO;
-import com.store.soattechchallenge.order.infrastructure.adapters.in.dto.ProductRequest;
+import com.store.soattechchallenge.order.infrastructure.adapters.in.dto.ProductResponse;
 import com.store.soattechchallenge.order.infrastructure.adapters.out.entity.JPAOrderEntity;
 import com.store.soattechchallenge.order.infrastructure.adapters.out.entity.JPAOrderProductEntity;
 import com.store.soattechchallenge.order.infrastructure.adapters.out.entity.JPAOrderProductId;
@@ -44,10 +44,10 @@ public class OrderMapperImpl implements OrderMapper {
     @Override
     public Page<OrderResponseDTO> toOrderGetResponseDTO(Page<JPAOrderEntity> jpaOrderEntityPage) {
         return jpaOrderEntityPage.map(orderEntity -> {
-            List<ProductRequest> productRequests = new ArrayList<>();
+            List<ProductResponse> productResponses = new ArrayList<>();
             if (orderEntity.getProdutos() != null) {
                 for (var prod : orderEntity.getProdutos()) {
-                    productRequests.add(new ProductRequest(
+                    productResponses.add(new ProductResponse(
                             prod.getProductId(),
                             prod.getQtItem(),
                             prod.getVlQtItem()
@@ -59,7 +59,7 @@ public class OrderMapperImpl implements OrderMapper {
                     orderEntity.getTotalAmountOrder(),
                     orderEntity.getMinute(),
                     orderEntity.getClientId(),
-                    productRequests,
+                    productResponses,
                     orderEntity.getTimestamp()
             );
         });
@@ -70,10 +70,10 @@ public class OrderMapperImpl implements OrderMapper {
         OrderResponseDTO orderResponseDTO = null;
         if (jpaOrderEntity.isPresent()) {
             JPAOrderEntity orderEntity = jpaOrderEntity.get();
-            List<ProductRequest> productRequests = new ArrayList<>();
+            List<ProductResponse> productResponses = new ArrayList<>();
             if (orderEntity.getProdutos() != null) {
                 for (var prod : orderEntity.getProdutos()) {
-                    productRequests.add(new ProductRequest(
+                    productResponses.add(new ProductResponse(
                             prod.getProductId(),
                             prod.getQtItem(),
                             prod.getVlQtItem()
@@ -85,7 +85,7 @@ public class OrderMapperImpl implements OrderMapper {
                     orderEntity.getTotalAmountOrder(),
                     orderEntity.getMinute(),
                     orderEntity.getClientId(),
-                    productRequests,
+                    productResponses,
                     orderEntity.getTimestamp()
             );
             return Optional.of(orderResponseDTO);

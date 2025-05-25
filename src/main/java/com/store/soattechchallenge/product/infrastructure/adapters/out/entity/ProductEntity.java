@@ -23,7 +23,7 @@ public class ProductEntity {
     @Column(name = "vl_unitario_produto")
     private BigDecimal unitPrice;
 
-    @Column(name = "tempo_de_preparo")
+    @Column(name = "tempo_de_preparo_produto")
     private Integer preparationTime;
 
     @Column(name = "dt_inclusao")

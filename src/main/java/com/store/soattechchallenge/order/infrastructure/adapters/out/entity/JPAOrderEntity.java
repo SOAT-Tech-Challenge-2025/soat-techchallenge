@@ -13,7 +13,7 @@ public class JPAOrderEntity {
     @Column(name = "vl_total_pedido")
     private double totalAmountOrder;
 
-    @Column(name = "minutagem")
+    @Column(name = "tempo_de_preparo_pedido")
     private Integer minute;
 
     @Column(name = "id_cliente")

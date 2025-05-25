@@ -6,20 +6,20 @@ import java.util.List;
 public class OrderResponseDTO {
     private String orderId;
     private Double totalOrder;
-    private Integer minute;
+    private Integer preparationTime;
     private String clientId;
     private Timestamp timestamp;
-    private List<ProductRequest> products;
+    private List<ProductResponse> products;
 
     // Construtor vazio
     public OrderResponseDTO() {
     }
 
     // Construtor cheio
-    public OrderResponseDTO(String orderId, Double totalOrder, Integer minute, String clientId, List<ProductRequest> products, Timestamp timestamp) {
+    public OrderResponseDTO(String orderId, Double totalOrder, Integer preparationTime, String clientId, List<ProductResponse> products, Timestamp timestamp) {
         this.orderId = orderId;
         this.totalOrder = totalOrder;
-        this.minute = minute;
+        this.preparationTime = preparationTime;
         this.clientId = clientId;
         this.products = products;
         this.timestamp = timestamp;
@@ -40,15 +40,15 @@ public class OrderResponseDTO {
         return totalOrder;
     }
 
-    public Integer getMinute() {
-        return minute;
+    public Integer getPreparationTime() {
+        return preparationTime;
     }
 
     public String getClientId() {
         return clientId;
     }
 
-    public List<ProductRequest> getProducts() {
+    public List<ProductResponse> getProducts() {
         return products;
     }
 
@@ -61,15 +61,15 @@ public class OrderResponseDTO {
         this.totalOrder = totalOrder;
     }
 
-    public void setMinute(Integer minute) {
-        this.minute = minute;
+    public void setPreparationTime(Integer preparationTime) {
+        this.preparationTime = preparationTime;
     }
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
-    public void setProducts(List<ProductRequest> products) {
+    public void setProducts(List<ProductResponse> products) {
         this.products = products;
     }
 
@@ -79,7 +79,7 @@ public class OrderResponseDTO {
         return "OrderGetResponseDTO{" +
                 "orderId=" + orderId +
                 ", totalOrder=" + totalOrder +
-                ", minute=" + minute +
+                ", preparationTime=" + preparationTime +
                 ", clientId=" + clientId +
                 ", products=" + products +
                 ", timestamp=" + timestamp +
@@ -91,7 +91,7 @@ public class OrderResponseDTO {
     public int hashCode() {
         int result = orderId.hashCode();
         result = 31 * result + totalOrder.hashCode();
-        result = 31 * result + minute.hashCode();
+        result = 31 * result + preparationTime.hashCode();
         result = 31 * result + clientId.hashCode();
         result = 31 * result + timestamp.hashCode();
         result = 31 * result + products.hashCode();
@@ -108,7 +108,7 @@ public class OrderResponseDTO {
 
         if (!orderId.equals(that.orderId)) return false;
         if (!totalOrder.equals(that.totalOrder)) return false;
-        if (!minute.equals(that.minute)) return false;
+        if (!preparationTime.equals(that.preparationTime)) return false;
         if (!clientId.equals(that.clientId)) return false;
         if (!timestamp.equals(that.timestamp)) return false;
         return products.equals(that.products);

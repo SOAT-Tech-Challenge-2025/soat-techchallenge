@@ -1,9 +1,11 @@
-FROM postgres:13-alpine
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-ENV POSTGRES_USER postgres
-ENV POSTGRES_PASSWORD postgres
-ENV POSTGRES_DB soat
-
-EXPOSE 5432
-
-COPY ./script.sql /docker-entrypoint-initdb.d/script.sql
+FROM eclipse-temurin:17-jdk
+WORKDIR /app
+COPY --from=build /app/target/soat-techchallenge-1.0.0.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
