@@ -29,34 +29,32 @@ spring:
   metrics:
     export:
       prometheus:
-        enabled: true  # Habilita a exporta��o de m�tricas para Prometheus
+        enabled: true
 
     actuator:
       endpoints:
         web:
           exposure:
-            include: '*'  # Exponha todos os endpoints, incluindo /actuator/prometheus
+            include: '*'
       endpoint:
         prometheus:
-          enabled: true  # Certifica-se de que o endpoint /actuator/prometheus est� habilitado
+          enabled: true
       metrics:
         enable:
-          all: true  # Habilita todas as m�tricas
+          all: true
+
+server:
+  port: 8080
+  servlet:
+    context-path: /soat-fast-food
+
 management:
   server:
-    port: 8081  # Porta do Actuator, se for diferente da porta principal da aplica��o
+    port: 8081
   endpoints:
     web:
+      base-path: /soat-fast-food/actuator
       exposure:
         include:
-          - prometheus  # Inclui o endpoint Prometheus na exposi��o
-          - health  # Inclui o endpoint de sa�de
+          - health
           - info
-
-sonar:
-  sources: src/main
-  cucumber:
-    jacoco:
-      reportPath: target/cucumber-reports/Cucumber.json
-  java:
-    binaries: target/classes
