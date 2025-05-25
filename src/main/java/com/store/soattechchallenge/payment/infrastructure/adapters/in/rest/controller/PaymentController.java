@@ -3,14 +3,17 @@ package com.store.soattechchallenge.payment.infrastructure.adapters.in.rest.cont
 import com.store.soattechchallenge.payment.application.usecases.PaymentUseCase;
 import com.store.soattechchallenge.payment.domain.exception.*;
 import com.store.soattechchallenge.payment.domain.model.Payment;
+import com.store.soattechchallenge.payment.domain.model.Product;
 import com.store.soattechchallenge.payment.infrastructure.adapters.in.rest.dto.MercadoPagoWebhookDTO;
 import com.store.soattechchallenge.payment.infrastructure.adapters.in.rest.dto.PaymentCreateRequestDTO;
 import com.store.soattechchallenge.payment.infrastructure.adapters.in.rest.dto.PaymentResponseDTO;
 import com.store.soattechchallenge.payment.infrastructure.adapters.in.rest.validator.impl.MercadoPagoWebhookValidator;
 import com.store.soattechchallenge.payment.infrastructure.adapters.out.mappers.PaymentMapper;
+import com.store.soattechchallenge.payment.infrastructure.adapters.out.mappers.PaymentProductMapper;
 import com.store.soattechchallenge.payment.infrastructure.adapters.out.repository.exception.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,8 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/payment")
@@ -28,15 +33,18 @@ public class PaymentController {
     private final PaymentUseCase paymentService;
     private final PaymentMapper paymentMapper;
     private final MercadoPagoWebhookValidator mercadoPagoWebhookValidator;
+    private final PaymentProductMapper paymentProductMapper;
 
     public PaymentController(
             PaymentUseCase paymentService,
             PaymentMapper paymentMapper,
-            MercadoPagoWebhookValidator mercadoPagoWebhookValidator
+            MercadoPagoWebhookValidator mercadoPagoWebhookValidator,
+            PaymentProductMapper paymentProductMapper
     ) {
         this.paymentService = paymentService;
         this.paymentMapper = paymentMapper;
         this.mercadoPagoWebhookValidator = mercadoPagoWebhookValidator;
+        this.paymentProductMapper = paymentProductMapper;
     }
 
     @GetMapping("/{id}")
@@ -62,12 +70,17 @@ public class PaymentController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<PaymentResponseDTO> create(@RequestBody PaymentCreateRequestDTO paymentRequestDTO) {
+    public ResponseEntity<PaymentResponseDTO> create(@Valid @RequestBody PaymentCreateRequestDTO paymentRequestDTO) {
+        List<Product> domainProducts = paymentRequestDTO
+                .products()
+                .stream()
+                .map(this.paymentProductMapper::createDTOToDomain).collect(Collectors.toList());
+
         try {
             Payment payment = this.paymentService.create(
                     paymentRequestDTO.id(),
                     paymentRequestDTO.totalOrderValue(),
-                    paymentRequestDTO.products()
+                    domainProducts
             );
 
             return ResponseEntity.status(HttpStatus.CREATED).body(this.paymentMapper.toDTO(payment));
