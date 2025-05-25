@@ -17,11 +17,6 @@ public class IdentificationRequestDTO {
     @NotBlank(message = "Email não pode ser nulo ou vazio")
     private String email;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
-
     public IdentificationRequestDTO() {
     }
 
@@ -29,8 +24,6 @@ public class IdentificationRequestDTO {
         this.nameClient = nameClient;
         this.numberDocument = numberDocument;
         this.email = email;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
 
@@ -56,21 +49,5 @@ public class IdentificationRequestDTO {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }
