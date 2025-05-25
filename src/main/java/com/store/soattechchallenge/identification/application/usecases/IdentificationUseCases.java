@@ -1,13 +1,14 @@
 package com.store.soattechchallenge.identification.application.usecases;
 
 import com.store.soattechchallenge.identification.domain.model.Identification;
-import com.store.soattechchallenge.identification.infrastructure.adapters.out.model.IdentificationDTO;
+import com.store.soattechchallenge.identification.infrastructure.adapters.out.dto.IdentificationRequestDTO;
+import com.store.soattechchallenge.identification.infrastructure.adapters.out.model.JpaIdentification;
 
-import java.util.UUID;
+import java.util.Optional;
 
 public interface IdentificationUseCases {
 
-    public Identification createClient(IdentificationDTO identificationDTO);
+    public Identification createClient(IdentificationRequestDTO identificationRequestDTO);
 
-    public IdentificationDTO getByClient(UUID identification_id);
+    public Optional<JpaIdentification> findByDocumentOrEmail(String documentOrEmail);
 }
