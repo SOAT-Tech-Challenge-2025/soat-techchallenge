@@ -2,6 +2,7 @@ package com.store.soattechchallenge.product.infrastructure.adapters.in.dto;
 
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Component
@@ -9,13 +10,13 @@ public class ProductRequestDTO {
 
     private String productName;
     private Long idCategory;
-    private double unitPrice;
+    private BigDecimal unitPrice;
     private Long preparationTime;
 
     public ProductRequestDTO() {
     }
 
-    public ProductRequestDTO(String productName, Long idCategory, double unitPrice, Long preparationTime) {
+    public ProductRequestDTO(String productName, Long idCategory, BigDecimal unitPrice, Long preparationTime) {
         this.productName = productName;
         this.idCategory = idCategory;
         this.unitPrice = unitPrice;
@@ -38,11 +39,11 @@ public class ProductRequestDTO {
         this.idCategory = idCategory;
     }
 
-    public double getUnitPrice() {
+    public BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setuUitPrice(double unitPrice) {
+    public void setuUitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 
@@ -54,18 +55,6 @@ public class ProductRequestDTO {
         this.preparationTime = preparationTime;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProductRequestDTO that = (ProductRequestDTO) o;
-        return Double.compare(that.unitPrice, unitPrice) == 0 && productName.equals(that.productName) && idCategory.equals(that.idCategory) && preparationTime.equals(that.preparationTime);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(productName, idCategory, unitPrice, preparationTime);
-    }
 
     @Override
     public String toString() {

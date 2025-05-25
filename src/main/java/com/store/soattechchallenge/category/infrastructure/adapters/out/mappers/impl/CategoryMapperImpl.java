@@ -8,6 +8,7 @@ import com.store.soattechchallenge.category.infrastructure.adapters.out.entity.C
 import com.store.soattechchallenge.category.infrastructure.adapters.out.mappers.CategoryMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,20 +39,22 @@ public class CategoryMapperImpl implements CategoryMapper{
         if (projectionDTOList == null || projectionDTOList.isEmpty()) {
             return Optional.empty();
         }
-
         CategoryProductProjectionDTO first = projectionDTOList.get(0);
-
         CategoryWithProductsDTO dto = new CategoryWithProductsDTO();
         dto.setCategoriaId(first.getCategoriaId());
         dto.setNomeCategoria(first.getNomeCategoria());
-
         dto.setProdutos(
                 projectionDTOList.stream()
                         .filter(p -> p.getProdutoId() != null)
-                        .map(p -> new ProductDTO(p.getProdutoId(), p.getNomeProduto(),p.getVlUnitarioProduto(),p.getTempoDePreparo(),p.getDtInclusao()))
+                        .sorted(Comparator.comparing(CategoryProductProjectionDTO::getProdutoId))
+                        .map(p -> new ProductDTO(
+                                p.getProdutoId(),
+                                p.getNomeProduto(),
+                                p.getVlUnitarioProduto(),
+                                p.getTempoDePreparo(),
+                                p.getDtInclusao()))
                         .toList()
         );
-
         return Optional.of(dto);
     }
 

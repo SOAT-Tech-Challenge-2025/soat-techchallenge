@@ -5,24 +5,31 @@ import com.store.soattechchallenge.product.infrastructure.adapters.in.dto.Produc
 import com.store.soattechchallenge.product.infrastructure.adapters.out.entity.ProductEntity;
 import com.store.soattechchallenge.product.infrastructure.adapters.out.mappers.ProductMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 @Component
 public class ProductMapperImpl implements ProductMapper{
 
     public Page<ProductGetResponseDTO> modelToProductGetResponseDTO(Page<ProductEntity> products) {
-        return products.map(product -> {
-            ProductGetResponseDTO productGetResponseDTO = new ProductGetResponseDTO();
-            productGetResponseDTO.setId(product.getId());
-            productGetResponseDTO.setNameProduct(product.getProductName());
-            productGetResponseDTO.setIdCategory(product.getIdCategory());
-            productGetResponseDTO.setUnitPrice(product.getUnitPrice().doubleValue());
-            productGetResponseDTO.setPreparationTime(product.getPreparationTime().longValue());
-            return productGetResponseDTO;
-        });
+        List<ProductGetResponseDTO> sortedList = products.getContent().stream()
+                .map(product -> {
+                    ProductGetResponseDTO dto = new ProductGetResponseDTO();
+                    dto.setId(product.getId());
+                    dto.setNameProduct(product.getProductName());
+                    dto.setIdCategory(product.getIdCategory());
+                    dto.setUnitPrice(product.getUnitPrice());
+                    dto.setPreparationTime(product.getPreparationTime().longValue());
+                    return dto;
+                })
+                .sorted(Comparator.comparing(ProductGetResponseDTO::getId))
+                .toList();
+        return new PageImpl<>(sortedList, products.getPageable(), products.getTotalElements());
     }
 
     public Optional<ProductGetResponseDTO> modelToProductGetResponseDTO(Optional<ProductEntity> product) {
@@ -31,7 +38,7 @@ public class ProductMapperImpl implements ProductMapper{
             productGetResponseDTO.setId(p.getId());
             productGetResponseDTO.setNameProduct(p.getProductName());
             productGetResponseDTO.setIdCategory(p.getIdCategory());
-            productGetResponseDTO.setUnitPrice(p.getUnitPrice().doubleValue());
+            productGetResponseDTO.setUnitPrice(p.getUnitPrice());
             productGetResponseDTO.setPreparationTime(p.getPreparationTime().longValue());
             return productGetResponseDTO;
         });

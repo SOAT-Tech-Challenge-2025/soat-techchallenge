@@ -30,95 +30,34 @@ public class CategoryServiceImpl implements CategoryUseCases {
     @Override
     public CategoryResponseDTO saveCategory(CategoryRequestDTO category) {
         Category categoryRequestModelModel = new Category(category.getCategoryName());
-        CategoryResponseDTO responseDTO = new CategoryResponseDTO();
-        try {
-            adaptersRepository.save(categoryRequestModelModel);
-            return new CategoryResponseDTO("Categoria criada com sucesso");
-        }catch (Exception e) {
-            throw new CustomException(
-                    "Erro ao criar categoria: " + e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                    LocalDateTime.now(),
-                    UUID.randomUUID()
-            );
-        }
+        adaptersRepository.save(categoryRequestModelModel);
+        return new CategoryResponseDTO("Categoria criada com sucesso");
     }
 
     @Override
     public Page<CategoryEntity> getAllCategories(Pageable pageable) {
-        try {
-            return adaptersRepository.findAll(pageable);
-        }catch (Exception e) {
-            throw new CustomException(
-                    "Erro ao listar categorias: " + e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                    LocalDateTime.now(),
-                    UUID.randomUUID()
-            );
-        }
+        return adaptersRepository.findAll(pageable);
     }
 
     @Override
     public Optional<CategoryEntity> getCategoryById(Long id) {
-        try {
-            return adaptersRepository.findById(id);
-        }catch (Exception e) {
-            throw new CustomException(
-                    "Erro ao buscar categoria: " + e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                    LocalDateTime.now(),
-                    UUID.randomUUID()
-            );
-        }
+        return adaptersRepository.findById(id);
     }
 
     @Override
     public CategoryResponseDTO updateCategory(Long id, CategoryRequestDTO categoryDto) {
         Category category = new Category(categoryDto.getCategoryName());
-        try {
-            return adaptersRepository.update(category,id);
-        }catch (Exception e) {
-            throw new CustomException(
-                    "Erro ao atualizar categoria: " + e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                    LocalDateTime.now(),
-                    UUID.randomUUID()
-            );
-        }
+        return adaptersRepository.update(category,id);
     }
 
     @Override
     public CategoryResponseDTO deleteCategory(Long id) {
-        try {
-           return adaptersRepository.deoleteById(id);
-        }catch (Exception e) {
-            throw new CustomException(
-                    "Erro ao deletar categoria: " + e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                    LocalDateTime.now(),
-                    UUID.randomUUID()
-            );
-        }
+        return adaptersRepository.deoleteById(id);
+
     }
 
     public Optional<CategoryWithProductsDTO> getProductsByCategoryId(Long id) {
-        Optional<CategoryWithProductsDTO> withProductsDTO;
-        try {
-            withProductsDTO = adaptersRepository.findProductsByCategoryId(id);
-        }catch (Exception e) {
-            throw new CustomException(
-                    "Erro ao pesquisar produtos por categoria: " + e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                    LocalDateTime.now(),
-                    UUID.randomUUID()
-            );
-        }
+        Optional<CategoryWithProductsDTO> withProductsDTO = adaptersRepository.findProductsByCategoryId(id);
             if (withProductsDTO.isPresent()) {
                 return withProductsDTO;
             } else {

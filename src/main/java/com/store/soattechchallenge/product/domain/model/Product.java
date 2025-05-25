@@ -1,5 +1,6 @@
 package com.store.soattechchallenge.product.domain.model;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -10,7 +11,7 @@ public class Product {
 
     private String productName;
     private Long idCategory;
-    private double unitPrice;
+    private BigDecimal unitPrice;
     private Long preparationTime;
     private Date dateInclusion;
     private Timestamp timestamp;
@@ -18,7 +19,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(String productName, Long idCategory, double unitPrice, Long preparationTime) {
+    public Product(String productName, Long idCategory, BigDecimal unitPrice, Long preparationTime) {
         this.productName = productName;
         this.idCategory = idCategory;
         this.unitPrice = unitPrice;
@@ -43,11 +44,11 @@ public class Product {
         this.idCategory = idCategory;
     }
 
-    public double getUnitPrice() {
+    public BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(double unitPrice) {
+    public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 
@@ -75,18 +76,6 @@ public class Product {
         this.timestamp = timestamp;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return Double.compare(product.unitPrice, unitPrice) == 0 && productName.equals(product.productName) && idCategory.equals(product.idCategory) && preparationTime.equals(product.preparationTime) && dateInclusion.equals(product.dateInclusion) && timestamp.equals(product.timestamp);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(productName, idCategory, unitPrice, preparationTime, dateInclusion, timestamp);
-    }
 
     @Override
     public String toString() {

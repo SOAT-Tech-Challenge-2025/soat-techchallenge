@@ -29,82 +29,28 @@ public class ProductServiceImpl implements ProductUseCases {
     @Override
     public ProductPostUpResponseDTO saveProduct(ProductRequestDTO product) {
         Product ProductRequestModelModel = new Product(product.getProductName(),product.getIdCategory(),product.getUnitPrice(), product.getPreparationTime());
-        ProductPostUpResponseDTO responseDTO = new ProductPostUpResponseDTO();
-        try {
-            adaptersRepository.save(ProductRequestModelModel);
-            responseDTO.setMessage("Produto salvo com sucesso");
-        }catch (Exception e) {
-            throw new CustomException(
-                    "Erro ao salvar o produto",
-                    HttpStatus.BAD_REQUEST,
-                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                    LocalDateTime.now(),
-                    UUID.randomUUID()
-            );
-        }
-        return responseDTO;
+        adaptersRepository.save(ProductRequestModelModel);
+        return new ProductPostUpResponseDTO("Produto salvo com sucesso");
     }
 
     @Override
     public Page<ProductGetResponseDTO> getAllProducts(Pageable pageable) {
-        try {
-            return adaptersRepository.findAll(pageable);
-        }catch (Exception e) {
-            throw new CustomException(
-                    "Erro ao buscar os produtos",
-                    HttpStatus.BAD_REQUEST,
-                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                    LocalDateTime.now(),
-                    UUID.randomUUID()
-            );
-        }
+        return adaptersRepository.findAll(pageable);
     }
 
     @Override
     public Optional<ProductGetResponseDTO> getProductById(Long id) {
-        try {
             return adaptersRepository.findById(id);
-        }catch (Exception e) {
-            throw new CustomException(
-                    "Erro ao buscar o produto",
-                    HttpStatus.BAD_REQUEST,
-                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                    LocalDateTime.now(),
-                    UUID.randomUUID()
-            );
-        }
     }
 
     @Override
     public ProductPostUpResponseDTO updateProduct(Long id, ProductRequestDTO product) {
-        Product Product = new Product(product.getProductName(),product.getIdCategory(),product.getIdCategory(), product.getPreparationTime());
-        ProductPostUpResponseDTO ProductPostUpResponseDTO;
-        try {
-            ProductPostUpResponseDTO = adaptersRepository.update(Product,id);
-        }catch (Exception e) {
-            throw new CustomException(
-                    "Erro ao atualizar o produto",
-                    HttpStatus.BAD_REQUEST,
-                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                    LocalDateTime.now(),
-                    UUID.randomUUID()
-            );
-        }
-        return ProductPostUpResponseDTO;
+        Product Product = new Product(product.getProductName(),product.getIdCategory(),product.getUnitPrice(), product.getPreparationTime());
+        return  adaptersRepository.update(Product,id);
     }
 
     @Override
     public ProductPostUpResponseDTO deleteProduct(Long id) {
-        try {
-           return adaptersRepository.deleteById(id);
-        }catch (Exception e) {
-            throw new CustomException(
-                    "Erro ao deletar o produto",
-                    HttpStatus.BAD_REQUEST,
-                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                    LocalDateTime.now(),
-                    UUID.randomUUID()
-            );
-        }
+        return adaptersRepository.deleteById(id);
     }
 }

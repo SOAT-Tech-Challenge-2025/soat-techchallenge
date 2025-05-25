@@ -1,19 +1,19 @@
 package com.store.soattechchallenge.product.infrastructure.adapters.in.dto;
 
-import java.util.Objects;
+import java.math.BigDecimal;
 
 public class ProductGetResponseDTO {
 
     private Long id;
     private String nameProduct;
     private Long idCategory;
-    private double unitPrice;
+    private BigDecimal unitPrice;
     private Long preparationTime;
 
     public ProductGetResponseDTO() {
     }
 
-    public ProductGetResponseDTO(Long id, String nameProduct, Long idCategory, double unitPrice, Long preparationTime) {
+    public ProductGetResponseDTO(Long id, String nameProduct, Long idCategory, BigDecimal unitPrice, Long preparationTime) {
         this.id = id;
         this.nameProduct = nameProduct;
         this.idCategory = idCategory;
@@ -45,11 +45,11 @@ public class ProductGetResponseDTO {
         this.idCategory = idCategory;
     }
 
-    public double getUnitPrice() {
+    public BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(double unitPrice) {
+    public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 
@@ -59,20 +59,6 @@ public class ProductGetResponseDTO {
 
     public void setPreparationTime(Long preparationTime) {
         this.preparationTime = preparationTime;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProductGetResponseDTO that = (ProductGetResponseDTO) o;
-        return Double.compare(that.unitPrice, unitPrice) == 0 && id.equals(that.id) && nameProduct.equals(that.nameProduct) && idCategory.equals(that.idCategory) && preparationTime.equals(that.preparationTime);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, nameProduct, idCategory, unitPrice, preparationTime);
     }
 
     @Override

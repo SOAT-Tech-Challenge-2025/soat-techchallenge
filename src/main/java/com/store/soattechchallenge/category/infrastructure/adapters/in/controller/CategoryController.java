@@ -8,6 +8,7 @@ import com.store.soattechchallenge.category.infrastructure.adapters.out.entity.C
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,18 +32,18 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<CategoryEntity>> getCategories(
+    public ResponseEntity<Page<CategoryEntity>> getAllCategories(
             @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
             @RequestParam(name = "offset", required = false, defaultValue = "0") int offset,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
 
         int calculatedPage = (offset / limit) + page;
-        Pageable pageable = PageRequest.of(calculatedPage, limit);
+        Pageable pageable = PageRequest.of(calculatedPage, limit, Sort.by(Sort.Direction.ASC, "id"));
         return ResponseEntity.ok(categoryService.getAllCategories(pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<CategoryEntity>> getCategory(@PathVariable("id") Long id) {
+    public ResponseEntity<Optional<CategoryEntity>> getCategoryById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
@@ -57,7 +58,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}/products")
-    public ResponseEntity<Optional<CategoryWithProductsDTO>> getCategoryById(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<Optional<CategoryWithProductsDTO>> getProductByCategoryId(@PathVariable(name = "id") Long id) {
         return ResponseEntity.ok(categoryService.getProductsByCategoryId(id));
     }
 }
