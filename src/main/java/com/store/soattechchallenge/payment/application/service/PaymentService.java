@@ -106,10 +106,10 @@ public class PaymentService implements PaymentUseCase {
             MPPayment mpPayment = this.mercadoPagoClient.findPaymentById(paymentId);
             MPOrder mpOrder = this.mercadoPagoClient.findOrderById(mpPayment.order().id());
             String id = mpOrder.externalReference();
-            String idExterno = Long.toString(mpOrder.id());
-            if (paymentRepository.existsByExternalId(idExterno)) {
+            String externalId = Long.toString(mpOrder.id());
+            if (paymentRepository.existsByExternalId(externalId)) {
                 throw new CustomException(
-                        "Payment with external ID " + idExterno + " already exists",
+                        "Payment with external ID " + externalId + " already exists",
                         HttpStatus.BAD_REQUEST,
                         String.valueOf(HttpStatus.BAD_REQUEST.value()),
                         LocalDateTime.now(),
@@ -118,7 +118,7 @@ public class PaymentService implements PaymentUseCase {
             }
 
             Payment payment = this.paymentRepository.findById(id);
-            payment.setExternalId(idExterno);
+            payment.setExternalId(externalId);
             payment.finalize(this.paymentStatusMapper.toDomain(mpOrder.status()));
             return this.paymentRepository.save(payment);
         } catch (EntityNotFoundException error) {
@@ -149,7 +149,7 @@ public class PaymentService implements PaymentUseCase {
     }
 
     @Override
-    public BufferedImage renderCodigoQr(String id, int width, int height) {
+    public BufferedImage renderQrCode(String id, int width, int height) {
         try {
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             Payment payment = this.paymentRepository.findById(id);

@@ -54,9 +54,9 @@ public class PaymentController {
     }
 
     @GetMapping("/{id}/qr")
-    public void getCodigoQr(@PathVariable String id, HttpServletResponse response) {
+    public void getQrCode(@PathVariable String id, HttpServletResponse response) {
         try {
-            BufferedImage qrImage = this.paymentService.renderCodigoQr(id, 600, 600);
+            BufferedImage qrImage = this.paymentService.renderQrCode(id, 600, 600);
             response.setContentType(MediaType.IMAGE_PNG_VALUE);
             ImageIO.write(qrImage, "PNG", response.getOutputStream());
         } catch (IOException error) {
