@@ -73,7 +73,7 @@ public class PreparationService implements PreparationUseCase {
         Integer preparationTime = preparation.getPreparationTime() == null ? 0 : preparation.getPreparationTime();
         preparation.setPreparationPosition(null);
         preparation.setPreparationStatus(PreparationStatus.IN_PREPARATION);
-        preparation.setEstimatedReadyTime(LocalDateTime.now().plusSeconds(preparationTime));
+        preparation.setEstimatedReadyTime(LocalDateTime.now().plusMinutes(preparationTime));
         preparation.setTimestamp(LocalDateTime.now());
         preparation = this.preparationRepository.save(preparation);
         this.preparationRepository.decrementReceivedPositionsGreaterThan(oldPreparationPosition);
