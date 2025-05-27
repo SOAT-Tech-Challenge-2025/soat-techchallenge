@@ -10,5 +10,7 @@ public interface IdentificationUseCases {
 
     public Identification createClient(IdentificationRequestDTO identificationRequestDTO);
 
-    public Optional<JpaIdentification> findByDocumentOrEmail(String documentOrEmail);
+    public Optional<Identification> findByDocumentOrEmail(String documentOrEmail);
+
+    public String authenticate(String documentNumber, String email);
 }

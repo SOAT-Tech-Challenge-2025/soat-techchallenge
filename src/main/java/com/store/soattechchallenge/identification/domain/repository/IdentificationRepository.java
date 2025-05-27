@@ -9,7 +9,7 @@ public interface IdentificationRepository {
 
     Identification createClient(Identification identification);
 
-    Optional<JpaIdentification> findByDocumentOrEmail(String id_document, String id_email);
+    Optional<Identification> findByDocumentOrEmail(String id_document, String id_email);
 
     boolean existsByNumberDocument(String numberDocument);
 

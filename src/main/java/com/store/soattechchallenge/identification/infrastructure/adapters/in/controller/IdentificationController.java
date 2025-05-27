@@ -1,6 +1,7 @@
 package com.store.soattechchallenge.identification.infrastructure.adapters.in.controller;
 
 import com.store.soattechchallenge.identification.application.service.impl.IdentificationServiceImpl;
+import com.store.soattechchallenge.identification.domain.model.Identification;
 import com.store.soattechchallenge.identification.infrastructure.adapters.out.dto.IdentificationRequestDTO;
 import com.store.soattechchallenge.identification.infrastructure.adapters.out.model.JpaIdentification;
 import jakarta.validation.Valid;
@@ -26,8 +27,8 @@ public class IdentificationController {
     }
 
     @GetMapping("/identifications/{identification_id}")
-    public ResponseEntity<Optional<JpaIdentification>> getByClient(@PathVariable String identification_id) {
-        Optional<JpaIdentification> jpaIdentification = service.findByDocumentOrEmail(identification_id);
-        return new ResponseEntity<>(jpaIdentification, HttpStatus.OK);
+    public ResponseEntity<Optional<Identification>> getByClient(@PathVariable String identification_id) {
+        Optional<Identification> identification = service.findByDocumentOrEmail(identification_id);
+        return new ResponseEntity<>(identification, HttpStatus.OK);
     }
 }

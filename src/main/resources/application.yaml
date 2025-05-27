@@ -48,6 +48,10 @@ server:
   servlet:
     context-path: /soat-fast-food
 
+jwt:
+  secret: secretJwtGenerationSoatTechChallenge
+  expiration: 3600
+
 management:
   server:
     port: 8081
@@ -61,8 +65,8 @@ management:
 
 logging:
   level:
-    root: WARN
-    org.springframework: WARN
-    org.hibernate: WARN
-    com.zaxxer.hikari: INFO
+    root: ERROR
+    org.springframework: ERROR
+    org.hibernate: ERROR
+    com.zaxxer.hikari: ERROR
     com.store.soattechchallenge: INFO

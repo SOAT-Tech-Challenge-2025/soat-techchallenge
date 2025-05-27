@@ -42,10 +42,12 @@ public class IdentificationRepositoryImpl implements IdentificationRepository {
     }
 
     @Override
-    public Optional<JpaIdentification> findByDocumentOrEmail(String id_document, String id_email) {
+    public Optional<Identification> findByDocumentOrEmail(String id_document, String id_email) {
         Optional<JpaIdentification> byDocumentOrEmail = jpaIdentificationRepository.findByDocumentOrEmail(id_document, id_email);
         if (byDocumentOrEmail.isPresent()) {
-            return byDocumentOrEmail;
+            return Optional.of(new Identification(byDocumentOrEmail.get().getId(), byDocumentOrEmail.get().getNameClient(),
+                    byDocumentOrEmail.get().getEmail(), byDocumentOrEmail.get().getNumberDocument(),
+                    byDocumentOrEmail.get().getCreatedAt(), byDocumentOrEmail.get().getUpdatedAt()));
         } else {
             throw new CustomException(
                     "Cliente não encontrado",
