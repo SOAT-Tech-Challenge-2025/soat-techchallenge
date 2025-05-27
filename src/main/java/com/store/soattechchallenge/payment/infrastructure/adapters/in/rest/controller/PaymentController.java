@@ -1,7 +1,6 @@
 package com.store.soattechchallenge.payment.infrastructure.adapters.in.rest.controller;
 
 import com.store.soattechchallenge.payment.application.usecases.PaymentUseCase;
-import com.store.soattechchallenge.payment.domain.exception.*;
 import com.store.soattechchallenge.payment.domain.model.Payment;
 import com.store.soattechchallenge.payment.domain.model.Product;
 import com.store.soattechchallenge.payment.infrastructure.adapters.in.rest.dto.MercadoPagoWebhookDTO;
@@ -10,7 +9,7 @@ import com.store.soattechchallenge.payment.infrastructure.adapters.in.rest.dto.P
 import com.store.soattechchallenge.payment.infrastructure.adapters.in.rest.validator.impl.MercadoPagoWebhookValidator;
 import com.store.soattechchallenge.payment.infrastructure.adapters.out.mappers.PaymentMapper;
 import com.store.soattechchallenge.payment.infrastructure.adapters.out.mappers.PaymentProductMapper;
-import com.store.soattechchallenge.payment.infrastructure.adapters.out.repository.exception.EntityNotFoundException;
+import com.store.soattechchallenge.utils.exception.CustomException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -19,12 +18,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -49,22 +49,24 @@ public class PaymentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PaymentResponseDTO> find(@PathVariable String id) {
-        try {
-            Payment payment = this.paymentService.find(id);
-            return ResponseEntity.ok(this.paymentMapper.toDTO(payment));
-        } catch (EntityNotFoundException error) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, error.getMessage());
-        }
+        Payment payment = this.paymentService.find(id);
+        return ResponseEntity.ok(this.paymentMapper.toDTO(payment));
     }
 
     @GetMapping("/{id}/qr")
-    public void getCodigoQr(@PathVariable String id, HttpServletResponse response) {
+    public void getQrCode(@PathVariable String id, HttpServletResponse response) {
         try {
-            BufferedImage qrImage = this.paymentService.renderCodigoQr(id, 600, 600);
+            BufferedImage qrImage = this.paymentService.renderQrCode(id, 600, 600);
             response.setContentType(MediaType.IMAGE_PNG_VALUE);
             ImageIO.write(qrImage, "PNG", response.getOutputStream());
-        } catch (IOException | QRCodeGenerationException error) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, error.getMessage());
+        } catch (IOException error) {
+            throw new CustomException(
+                    error.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
         }
     }
 
@@ -76,19 +78,13 @@ public class PaymentController {
                 .stream()
                 .map(this.paymentProductMapper::createDTOToDomain).collect(Collectors.toList());
 
-        try {
-            Payment payment = this.paymentService.create(
-                    paymentRequestDTO.id(),
-                    paymentRequestDTO.totalOrderValue(),
-                    domainProducts
-            );
+        Payment payment = this.paymentService.create(
+                paymentRequestDTO.id(),
+                paymentRequestDTO.totalOrderValue(),
+                domainProducts
+        );
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(this.paymentMapper.toDTO(payment));
-        } catch (PaymentAlreadyExists error) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, error.getMessage());
-        } catch (PaymentCreationException error) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, error.getMessage());
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.paymentMapper.toDTO(payment));
     }
 
     @PostMapping("/notifications/mercado-pago")
@@ -107,18 +103,10 @@ public class PaymentController {
         }
 
         this.mercadoPagoWebhookValidator.validate(request);
-        try {
-            Payment payment = this.paymentService.finalizeByMercadoPagoPaymentId(
-                    mercadoPagoWebhookDTO.data().id()
-            );
+        Payment payment = this.paymentService.finalizeByMercadoPagoPaymentId(
+                mercadoPagoWebhookDTO.data().id()
+        );
 
-            return ResponseEntity.ok(this.paymentMapper.toDTO(payment));
-        } catch (EntityNotFoundException error) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, error.getMessage());
-        } catch (PaymentAlreadyFinalizedException error) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, error.getMessage());
-        } catch (PaymentFinalizationException error) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, error.getMessage());
-        }
+        return ResponseEntity.ok(this.paymentMapper.toDTO(payment));
     }
 }

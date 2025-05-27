@@ -69,7 +69,7 @@ public class MercadoPagoPaymentGateway implements PaymentGateway {
             payment.setQrCode(MPCreateOrderResponse.qrData());
             return payment;
         } catch (MPClientException error) {
-            throw new PaymentCreationException("Error creating payment");
+            throw new PaymentCreationException("Error creating payment: " + error.getMessage());
         }
     }
 }

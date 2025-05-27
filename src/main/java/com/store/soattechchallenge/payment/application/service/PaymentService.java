@@ -7,9 +7,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.store.soattechchallenge.payment.application.usecases.PaymentUseCase;
 import com.store.soattechchallenge.payment.domain.PaymentGateway;
-import com.store.soattechchallenge.payment.domain.exception.PaymentAlreadyExists;
-import com.store.soattechchallenge.payment.domain.exception.PaymentFinalizationException;
-import com.store.soattechchallenge.payment.domain.exception.QRCodeGenerationException;
+import com.store.soattechchallenge.payment.domain.exception.*;
 import com.store.soattechchallenge.payment.infrastructure.adapters.out.repository.exception.EntityNotFoundException;
 import com.store.soattechchallenge.payment.domain.model.Payment;
 import com.store.soattechchallenge.payment.domain.model.Product;
@@ -20,11 +18,14 @@ import com.store.soattechchallenge.payment.infrastructure.adapters.out.integrati
 import com.store.soattechchallenge.payment.infrastructure.adapters.out.integrations.mercado_pago.model.MPOrder;
 import com.store.soattechchallenge.payment.infrastructure.adapters.out.integrations.mercado_pago.model.MPPayment;
 import com.store.soattechchallenge.payment.infrastructure.adapters.out.mappers.PaymentStatusMapper;
+import com.store.soattechchallenge.utils.exception.CustomException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PaymentService implements PaymentUseCase {
@@ -47,13 +48,29 @@ public class PaymentService implements PaymentUseCase {
 
     @Override
     public Payment find(String id) {
-        return this.paymentRepository.findById(id);
+        try {
+            return this.paymentRepository.findById(id);
+        } catch (EntityNotFoundException error) {
+            throw new CustomException(
+                    "Payment not found",
+                    HttpStatus.NOT_FOUND,
+                    String.valueOf(HttpStatus.NOT_FOUND.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
+        }
     }
 
     @Override
     public Payment create(String id, Double vlTotalPedido, List<Product> products) {
         if (this.paymentRepository.existsById(id)) {
-            throw new PaymentAlreadyExists("Payment with ID " + id + "already exists");
+            throw new CustomException(
+                    "Payment with ID " + id + " already exists",
+                    HttpStatus.BAD_REQUEST,
+                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
         }
 
         LocalDateTime expiracao = LocalDateTime.now().plusMinutes(10);
@@ -69,7 +86,17 @@ public class PaymentService implements PaymentUseCase {
                 now
         );
 
-        payment = this.paymentGateway.create(payment, products);
+        try {
+            payment = this.paymentGateway.create(payment, products);
+        } catch (PaymentCreationException error) {
+            throw new CustomException(
+                    error.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
+        }
         return this.paymentRepository.save(payment);
     }
 
@@ -79,24 +106,50 @@ public class PaymentService implements PaymentUseCase {
             MPPayment mpPayment = this.mercadoPagoClient.findPaymentById(paymentId);
             MPOrder mpOrder = this.mercadoPagoClient.findOrderById(mpPayment.order().id());
             String id = mpOrder.externalReference();
-            String idExterno = Long.toString(mpOrder.id());
-            if (paymentRepository.existsByExternalId(idExterno)) {
-                throw new PaymentAlreadyExists("Payment with external ID " + idExterno + " already exists");
+            String externalId = Long.toString(mpOrder.id());
+            if (paymentRepository.existsByExternalId(externalId)) {
+                throw new CustomException(
+                        "Payment with external ID " + externalId + " already exists",
+                        HttpStatus.BAD_REQUEST,
+                        String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                        LocalDateTime.now(),
+                        UUID.randomUUID()
+                );
             }
 
             Payment payment = this.paymentRepository.findById(id);
-            payment.setExternalId(idExterno);
+            payment.setExternalId(externalId);
             payment.finalize(this.paymentStatusMapper.toDomain(mpOrder.status()));
             return this.paymentRepository.save(payment);
         } catch (EntityNotFoundException error) {
-            throw new PaymentFinalizationException("Payment not found");
+            throw new CustomException(
+                    "Payment not found",
+                    HttpStatus.NOT_FOUND,
+                    String.valueOf(HttpStatus.NOT_FOUND.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
+        } catch (PaymentAlreadyFinalizedException error) {
+            throw new CustomException(
+                    error.getMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
         } catch (MPClientException error) {
-            throw new PaymentFinalizationException("Error interacting with the payment gateway");
+            throw new CustomException(
+                    "Error interacting with the payment gateway: " + error.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
         }
     }
 
     @Override
-    public BufferedImage renderCodigoQr(String id, int width, int height) {
+    public BufferedImage renderQrCode(String id, int width, int height) {
         try {
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             Payment payment = this.paymentRepository.findById(id);
@@ -108,9 +161,21 @@ public class PaymentService implements PaymentUseCase {
             );
             return MatrixToImageWriter.toBufferedImage(bitMatrix);
         } catch (EntityNotFoundException error) {
-            throw new QRCodeGenerationException("Payment not found");
+            throw new CustomException(
+                    "Payment not found",
+                    HttpStatus.NOT_FOUND,
+                    String.valueOf(HttpStatus.NOT_FOUND.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
         } catch (WriterException e) {
-            throw new QRCodeGenerationException("Error generation QR Code: " + e.getMessage());
+            throw new CustomException(
+                    "Error generation QR Code: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
         }
     }
 }

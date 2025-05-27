@@ -10,5 +10,5 @@ public interface PaymentUseCase {
     public Payment find (String id);
     public Payment create (String id, Double vlTotalPedido, List<Product> products);
     public Payment finalizeByMercadoPagoPaymentId (String paymentId);
-    public BufferedImage renderCodigoQr(String id, int width, int height);
+    public BufferedImage renderQrCode(String id, int width, int height);
 }
