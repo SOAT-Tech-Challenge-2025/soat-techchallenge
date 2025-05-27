@@ -1,5 +1,7 @@
 package com.store.soattechchallenge.preparation.domain.model;
 
+import com.store.soattechchallenge.preparation.domain.exception.InvalidPreparationException;
+
 import java.time.LocalDateTime;
 
 public class Preparation {
@@ -75,5 +77,29 @@ public class Preparation {
 
     public void setEstimatedReadyTime(LocalDateTime estimatedReadyTime) {
         this.estimatedReadyTime = estimatedReadyTime;
+    }
+
+    public void ready() {
+        if (!this.preparationStatus.equals(PreparationStatus.IN_PREPARATION)) {
+            throw new InvalidPreparationException(
+                    "A preparation with " + this.preparationStatus + " status cannot be updated to " +
+                            PreparationStatus.READY
+            );
+        }
+
+        this.preparationStatus = PreparationStatus.READY;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public void complete() {
+        if (!this.preparationStatus.equals(PreparationStatus.READY)) {
+            throw new InvalidPreparationException(
+                    "A preparation with " + this.preparationStatus + " status cannot be updated to " +
+                            PreparationStatus.COMPLETED
+            );
+        }
+
+        this.preparationStatus = PreparationStatus.COMPLETED;
+        this.timestamp = LocalDateTime.now();
     }
 }

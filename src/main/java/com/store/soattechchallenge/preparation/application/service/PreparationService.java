@@ -1,25 +1,27 @@
 package com.store.soattechchallenge.preparation.application.service;
 
+import com.store.soattechchallenge.preparation.domain.exception.InvalidPreparationException;
+import com.store.soattechchallenge.preparation.infrastructure.adapters.out.repository.exception.EntityNotFoundException;
 import com.store.soattechchallenge.preparation.application.usecases.PreparationUseCase;
 import com.store.soattechchallenge.preparation.domain.Notifier;
-import com.store.soattechchallenge.preparation.domain.exception.NoPreparationToStartException;
-import com.store.soattechchallenge.preparation.domain.exception.PreparationAlreadyExistsException;
-import com.store.soattechchallenge.preparation.domain.exception.InvalidPreparationException;
 import com.store.soattechchallenge.preparation.domain.model.NotificationDestination;
 import com.store.soattechchallenge.preparation.domain.model.NotificationMessage;
 import com.store.soattechchallenge.preparation.domain.model.Preparation;
 import com.store.soattechchallenge.preparation.domain.model.PreparationStatus;
 import com.store.soattechchallenge.preparation.domain.repository.PreparationRepository;
+import com.store.soattechchallenge.utils.exception.CustomException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PreparationService implements PreparationUseCase {
-    private PreparationRepository preparationRepository;
-    private Notifier notifier;
+    private final PreparationRepository preparationRepository;
+    private final Notifier notifier;
 
     public PreparationService(PreparationRepository preparationRepository, Notifier notifier) {
         this.preparationRepository = preparationRepository;
@@ -29,7 +31,13 @@ public class PreparationService implements PreparationUseCase {
     @Override
     public Preparation create(String id, Integer preparationTime) {
         if (this.preparationRepository.existsById(id)) {
-            throw new PreparationAlreadyExistsException("Preparation with ID " + id + " already exists");
+            throw new CustomException(
+                    "Preparation with ID " + id + " already exists",
+                    HttpStatus.BAD_REQUEST,
+                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
         }
 
         Integer maxPosition = this.preparationRepository.findMaxPosition();
@@ -51,7 +59,13 @@ public class PreparationService implements PreparationUseCase {
     public Preparation startNext() {
         Optional<Preparation> optionalPreparation = this.preparationRepository.findReceivedWithMinPosition();
         if (optionalPreparation.isEmpty()) {
-            throw new NoPreparationToStartException("No preparation available to start");
+            throw new CustomException(
+                    "No preparation available to start",
+                    HttpStatus.BAD_REQUEST,
+                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
         }
 
         Preparation preparation = optionalPreparation.get();
@@ -68,38 +82,59 @@ public class PreparationService implements PreparationUseCase {
 
     @Override
     public Preparation ready(String id) {
-        Preparation preparation = this.preparationRepository.findById(id);
-        if (!preparation.getPreparationStatus().equals(PreparationStatus.IN_PREPARATION)) {
-            throw new InvalidPreparationException(
-                    "A preparation with " + preparation.getPreparationStatus() + " status cannot be updated to " +
-                            PreparationStatus.READY
+        try {
+            Preparation preparation = this.preparationRepository.findById(id);
+            preparation.ready();
+            preparation = this.preparationRepository.save(preparation);
+            NotificationDestination notificationDestination = new NotificationDestination("test@email.com");
+            NotificationMessage notificationMessage = new NotificationMessage(
+                    "Seu pedido está pronto",
+                    "O pedido " + preparation.getId() + " está disponível no balcão"
+            );
+            this.notifier.send(notificationDestination, notificationMessage);
+            return preparation;
+        } catch (EntityNotFoundException error) {
+            throw new CustomException(
+                    "Preparation not found",
+                    HttpStatus.NOT_FOUND,
+                    String.valueOf(HttpStatus.NOT_FOUND.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
+        } catch (InvalidPreparationException error) {
+            throw new CustomException(
+                    error.getMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
             );
         }
-
-        preparation.setPreparationStatus(PreparationStatus.READY);
-        preparation.setTimestamp(LocalDateTime.now());
-        preparation = this.preparationRepository.save(preparation);
-        NotificationDestination notificationDestination = new NotificationDestination("test@email.com");
-        NotificationMessage notificationMessage = new NotificationMessage(
-                "Seu pedido está pronto",
-                "O pedido " + preparation.getId() + " está disponível no balcão"
-        );
-        this.notifier.send(notificationDestination, notificationMessage);
-        return preparation;
     }
 
     @Override
     public Preparation finalize(String id) {
-        Preparation preparation = this.preparationRepository.findById(id);
-        if (!preparation.getPreparationStatus().equals(PreparationStatus.READY)) {
-            throw new InvalidPreparationException(
-                    "A preparation with " + preparation.getPreparationStatus() + " status cannot be updated to " +
-                            PreparationStatus.COMPLETED
+        try {
+            Preparation preparation = this.preparationRepository.findById(id);
+            preparation.complete();
+            return this.preparationRepository.save(preparation);
+        } catch (EntityNotFoundException error) {
+            throw new CustomException(
+                    "Preparation not found",
+                    HttpStatus.NOT_FOUND,
+                    String.valueOf(HttpStatus.NOT_FOUND.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
+        } catch (InvalidPreparationException error) {
+            throw new CustomException(
+                    error.getMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
             );
         }
-        preparation.setPreparationStatus(PreparationStatus.COMPLETED);
-        preparation.setTimestamp(LocalDateTime.now());
-        return this.preparationRepository.save(preparation);
     }
 
     @Override
