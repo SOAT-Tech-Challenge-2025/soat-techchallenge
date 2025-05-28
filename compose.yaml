@@ -1,10 +1,10 @@
 services:
   db:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: soat
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+    build:
+      context: .
+      dockerfile: Dockerfile-db
+    env_file:
+        - soat.env
     ports:
       - "5432:5432"
     volumes:
@@ -18,10 +18,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/soat
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+    env_file:
+        - soat.env
     ports:
       - "8080:8080"
     depends_on:

@@ -5,12 +5,10 @@ spring:
     init:
       continue-on-error: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/soat
+    url: ${SPRING_DATASOURCE_URL}
     driverClassName: org.postgresql.Driver
-    username: postgres
-    password: postgres
-    hikari:
-      connection-timeout: 200000
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     show-sql: false
     hibernate:
@@ -49,8 +47,8 @@ server:
     context-path: /soat-fast-food
 
 jwt:
-  secret: secretJwtGenerationSoatTechChallenge
-  expiration: 3600
+  secret: ${JWT_SECRET_KEY}
+  expiration: ${JWT_EXPIRATION_TIME}
 
 management:
   server:
