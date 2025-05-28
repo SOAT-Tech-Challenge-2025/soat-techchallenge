@@ -52,6 +52,7 @@ public class IdentificationServiceImpl implements IdentificationUseCases {
         Optional<Identification> user = identificationRepository.findByDocumentOrEmail(documentNumber, email);
 
         Identification identification = new Identification();
+        identification.setId(user.get().getId());
         identification.setEmail(user.get().getEmail());
         identification.setNumberDocument(user.get().getNumberDocument());
 

@@ -29,11 +29,13 @@ public class JwtTokenSecurity {
 
     public String generateToken(Identification identification) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("id_client", identification.getId());
         claims.put("email", identification.getEmail());
         claims.put("documentNumber", identification.getNumberDocument());
 
         return Jwts.builder()
                 .setClaims(claims)
+                .setSubject(String.valueOf(identification.getId()))
                 .setSubject(identification.getNumberDocument())
                 .setSubject(identification.getEmail())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
