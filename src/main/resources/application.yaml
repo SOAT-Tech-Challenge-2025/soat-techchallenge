@@ -1,0 +1,70 @@
+spring:
+  application:
+    name: "soat-techchallenge"
+  sql:
+    init:
+      continue-on-error: true
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    driverClassName: org.postgresql.Driver
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  mercado-pago:
+    access-token: ${MERCADO_PAGO_ACCESS_TOKEN}
+    user-id: ${MERCADO_PAGO_USER_ID}
+    pos: ${MERCADO_PAGO_POS}
+    callback-url: ${MERCADO_PAGO_CALLBACK_URL}
+    webhook-token: ${MERCADO_PAGO_WEBHOOK_TOKEN}
+
+#  metrics:
+#    export:
+#      prometheus:
+#        enabled: true
+
+    actuator:
+      endpoints:
+        web:
+          exposure:
+            include: '*'
+      endpoint:
+        prometheus:
+          enabled: true
+      metrics:
+        enable:
+          all: true
+
+server:
+  port: 8080
+  servlet:
+    context-path: /soat-fast-food
+
+jwt:
+  secret: ${JWT_SECRET_KEY}
+  expiration: ${JWT_EXPIRATION_TIME}
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      base-path: /soat-fast-food/actuator
+      exposure:
+        include:
+          - health
+          - info
+
+logging:
+  level:
+    root: ERROR
+    org.springframework: ERROR
+    org.hibernate: ERROR
+    com.zaxxer.hikari: ERROR
+    com.store.soattechchallenge: INFO
