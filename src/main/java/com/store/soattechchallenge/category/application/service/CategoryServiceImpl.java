@@ -29,7 +29,7 @@ public class CategoryServiceImpl implements CategoryUseCases {
 
     @Override
     public CategoryResponseDTO saveCategory(CategoryRequestDTO category) {
-        Category categoryRequestModelModel = new Category(category.getCategoryName());
+        Category categoryRequestModelModel = new Category(category.getCategoryName().toUpperCase());
         adaptersRepository.save(categoryRequestModelModel);
         return new CategoryResponseDTO("Categoria criada com sucesso");
     }

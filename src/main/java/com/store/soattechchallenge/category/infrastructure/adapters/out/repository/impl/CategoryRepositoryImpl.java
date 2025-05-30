@@ -92,6 +92,16 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public CategoryResponseDTO update(Category category, Long id) {
+        Optional<CategoryEntity> entity = repository.findById(id);
+        if (entity.isEmpty()) {
+            throw new CustomException(
+                    "Categoria não encontrada",
+                    HttpStatus.NOT_FOUND,
+                    String.valueOf(HttpStatus.NOT_FOUND.value()),
+                    LocalDateTime.now(),
+                    UUID.randomUUID()
+            );
+        }
         CategoryEntity categoryEntityMapper = mapper.toCategoryUpdateMap(category,id);
         AtomicReference<Boolean> updated = new AtomicReference<>(true);
         try {
@@ -156,7 +166,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         results = repository.findCategoryWithProducts(id);
         }catch (Exception e) {
             throw new CustomException(
-                    "Erro ao pesquisar produtos por categoria: " + e.getMessage(),
+                    "Erro ao pesquisar produtos por categoria",
                     HttpStatus.BAD_REQUEST,
                     String.valueOf(HttpStatus.BAD_REQUEST.value()),
                     LocalDateTime.now(),

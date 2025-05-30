@@ -15,7 +15,7 @@ import java.util.List;
 public interface CategoryAdaptersRepository extends JpaRepository<CategoryEntity,Long> {
     @Query(value = "SELECT c.id AS categoriaId, c.nm_categoria AS nomeCategoria, " +
             "p.id AS produtoId, p.nm_produto AS nomeProduto, " +
-            "p.vl_unitario_produto, p.tempo_de_preparo, p.dt_inclusao " +
+            "p.vl_unitario_produto, p.tempo_de_preparo_produto, p.dt_inclusao " +
             "FROM tb_categoria_itens c " +
             "LEFT JOIN tb_produto p ON p.id_categoria = c.id " +
             "WHERE c.id = :id", nativeQuery = true)

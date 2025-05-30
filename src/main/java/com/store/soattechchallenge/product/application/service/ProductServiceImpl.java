@@ -28,7 +28,7 @@ public class ProductServiceImpl implements ProductUseCases {
 
     @Override
     public ProductPostUpResponseDTO saveProduct(ProductRequestDTO product) {
-        Product ProductRequestModelModel = new Product(product.getProductName(),product.getIdCategory(),product.getUnitPrice(), product.getPreparationTime());
+        Product ProductRequestModelModel = new Product(product.getProductName().toUpperCase(),product.getIdCategory(),product.getUnitPrice(), product.getPreparationTime());
         adaptersRepository.save(ProductRequestModelModel);
         return new ProductPostUpResponseDTO("Produto salvo com sucesso");
     }

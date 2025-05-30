@@ -108,3 +108,21 @@ INSERT INTO tb_gera_pedido(id /*, other fields*/) VALUES (new_id /*, values*/);
 RETURN new_id;
 END;
    $$ LANGUAGE plpgsql;
+
+
+-- Insert initial data
+INSERT INTO public.tb_categoria_itens
+(nm_categoria, dt_inclusao, "timestamp")
+VALUES('LANCHES', '2025-05-29', '2025-05-29 21:43:35.015');
+INSERT INTO public.tb_categoria_itens
+(nm_categoria, dt_inclusao, "timestamp")
+VALUES('ACOMPANHAMENTOS', '2025-05-29', '2025-05-29 21:43:49.314');
+INSERT INTO public.tb_categoria_itens
+(nm_categoria, dt_inclusao, "timestamp")
+VALUES('BEBIDAS', '2025-05-29', '2025-05-29 21:44:00.514');
+INSERT INTO public.tb_categoria_itens
+(nm_categoria, dt_inclusao, "timestamp")
+VALUES('SOBREMESAS', '2025-05-29', '2025-05-29 21:44:10.040');
+INSERT INTO public.tb_categoria_itens
+(nm_categoria, dt_inclusao, "timestamp")
+VALUES('MOLHOS E ADICIONAIS', '2025-05-29', '2025-05-29 21:44:24.669');
