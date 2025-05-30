@@ -1,5 +1,19 @@
 # SOAT Tech Challenge Fast Food
 
+## Integrantes:
+- Karen Lais Martins Pontes de Fávere Orrico:
+   - RM361158
+   - Discord: Karen Pontes
+- Raphael Oliver:
+   - RM362129
+   - Discord: Raphael Oliver - RM362129
+- Carlos Eduardo Bastos Laet:
+   - RM361151
+   - Discord: CarlosLaet
+- Lucas Martins Barroso:
+   - RM362732
+   - Discord: Lucas
+
 ## Startar o Banco de Dados e Aplicação
 1. Comando para rodar o docker-compose para subuir o banco de dados e a aplicação. Força a reconstrução das imagens dos serviços definidos no arquivo docker-compose.yml, mesmo que já existam imagens anteriores (o recomendado para utilizar):
 
@@ -17,6 +31,90 @@ docker compose up -d
 ```bash
 docker compose up -d
 ```
+
+---
+## 📁 Identification
+
+A identificação de clientes tem como objetivo permitir o cadastro utilizando nome, CPF e e-mail, além de possibilitar a identificação de clientes já existentes por meio do CPF ou e-mail. Caso prefira, o usuário pode prosseguir com o pedido de forma anônima, sem a necessidade de se cadastrar ou se identificar.
+
+Na etapa de identificação do usuário, existe também o processo de autenticação por meio de login. Esse processo gera um token JWT (JSON Web Token), que é utilizado para garantir a autenticação nas etapas seguintes da integração com o sistema.
+
+
+### 📌 Authentication
+
+#### `POST /auth/login`
+Realiza o login/autenticação do usuário.
+
+**Request:**
+```json
+{
+  "documentNumber": "12345678900",
+  "email": "usuario@email.com"
+}
+```
+
+**Response:**
+```json
+{
+    "token": "eyJhbGciOiJIUzI1NiJ9.eyJpZF9jbGllbnQiOiJiZmE2MzhjNS04OGI5LTQ3ZTQtOTAzMC1hYjk3ZjY5ODI4ZjUiLCJkb2N1bWVudE51bWJlciI6InVzdWFyaW9AZW1haWwuY29tIiwiZW1haWwiOiI0Mzc2NDY2OTgwMiIsInN1YiI6IjQzNzY0NjY5ODAyIiwiaWF0IjoxNzQ4NjQyMjMwLCJleHAiOjE3NDg2NDU4MzB9.QkmNDmpHx6G5mjrwqIGRBPW5iN0W_a9HFR_DKTuiA9Y"
+}
+```
+---
+### 📌 Identification
+Gerencia operações relacionadas à identificação de clientes.
+
+#### `POST /identifications`
+Cria um novo cliente.
+
+**Request:**
+```json
+{
+  "numberDocument": "12345678909",
+  "email": "usuario@email.com",
+  "nameClient": "Nome do Usuário"
+}
+```
+**Response:**
+- 201
+
+**Erros:**
+```json
+{
+    "errorCode": "020",
+    "message": "Cliente já cadastrado",
+    "uuid": "5d3f218d-acfe-4cfc-b1c1-e77fd348c9ee",
+    "statusCode": 400,
+    "timestamp": "2025-05-30T22:01:23.969382961"
+}
+```
+
+#### `GET /identifications/{identification_id}`
+Busca um cliente pelo número do documento ou e-mail.
+
+**Response:**
+```json
+{
+    "id": "bfa638c5-88b9-47e4-9030-ab97f69828f5",
+    "nameClient": "Nome do Usuário",
+    "numberDocument": "usuario@email.com",
+    "email": "12345678909",
+    "createdAt": "2025-05-30T01:43:23.649965",
+    "updatedAt": "2025-05-30T01:43:23.650003"
+}
+```
+
+**Erros:**
+```json
+{
+    "errorCode": "010",
+    "message": "Cliente não encontrado",
+    "uuid": "6a86bcc6-1dc5-42b6-a72e-850297746949",
+    "statusCode": 400,
+    "timestamp": "2025-05-30T22:04:38.019863218"
+}
+```
+
+---
 
 ## 📁 Category
 
@@ -730,93 +828,46 @@ Atualiza os dados de um pedido.
 ---
 ## Integração com o Mercado Pago
 
-Este projeto integra-se ao Mercado Pago para realizar pagamentos presenciais utilizando [Código QR Dinâmico](https://www.mercadopago.com.br/developers/pt/docs/qr-code/integration-configuration/qr-dynamic/integration).
+O projeto se integra ao Mercado Pago para realização de pagamentos do tipo presencial com [Código QR Dinâmico](https://www.mercadopago.com.br/developers/pt/docs/qr-code/integration-configuration/qr-dynamic/integration).
 
-### Pré-requisitos para testes
+Para realização dos testes, é necessário:
 
-Para realizar os testes, há duas opções:
-
-#### Credenciais de teste
-Utilizar as credenciais de teste presentes no arquivo `soat.env`, realizando as compras com o usuário de teste **enviado na entrega**.
-
-#### Integração própria
-Realizar sua própria integração com o Mercado Pago, seguindo os passos a seguir:
-1. Crie uma conta **de produção** no Mercado Pago.
-2. Acesse o portal do desenvolvedor e **crie uma aplicação** nessa conta.
-3. Gere **usuários de teste** vinculados à aplicação:
-   - um usuário **vendedor**
-   - um usuário **comprador**
-4. Com a conta de vendedor, crie uma aplicação no portal do desenvolvedor.
-5. Nas **credenciais de produção** da aplicação, obtenha:
-   - `MERCADO_PAGO_ACCESS_TOKEN`: token de acesso (access token)
-   - `MERCADO_PAGO_USER_ID`: ID do usuário (user ID)
-6. Crie uma **store** via API do Mercado Pago:
-   - [POST https://api.mercadopago.com/users/{USER_ID}/stores](https://api.mercadopago.com/users/{USER_ID}/stores)
-7. Crie um **POS** (ponto de venda) vinculado à store:
-   - [POST https://api.mercadopago.com/pos](https://api.mercadopago.com/pos)
-8. O valor do campo `external_store_id` da POS deve ser usado na variável `MERCADO_PAGO_POS`.
-9. Gere um token aleatório e seguro para configurar como `MERCADO_PAGO_WEBHOOK_TOKEN`.
+1. Ter uma conta de produção no Mercado Pago
+2. Gerar uma aplicação nesta conta
+3. Gerar usuários de teste nesta aplicação
+   - um vendedor
+   - um comprador
+4. Com a conta de vendedor, acessar o portal do desenvolvedor e criar uma aplicação
+5. Nas credenciais de produção desta aplicação, obter os dados que serão usados nas variáveis de ambiente do projeto:
+   - `MERCADO_PAGO_ACCESS_TOKEN`: O access token disponível nas credenciais de produção
+   - `MERCADO_PAGO_USER_ID`: O user ID disponível nas informações gerais
+6. Criar uma `store` através da API do Mercado Pago. Verificar a documentação do endpoint POST https://api.mercadopago.com/users/{USER_ID}/stores
+7. Criar um `POS` através da API do Mercado Pago vinculada a esta `store`. Verificar a documentação do endpoint POST https://api.mercadopago.com/pos
+8. O campo `external_store_id` da `POS` deve ser usado para configurar a variável de ambiente `MERCADO_PAGO_POS`.
+9. Gere um valor aleatório e seguro para ser usado como token e configure-o como a variável de ambiente `MERCADO_PAGO_WEBHOOK_TOKEN`.
 
 ### Como testar o fluxo de pagamento?
 
-Após configurar tudo, a API precisa estar **acessível na web** para que o Mercado Pago consiga notificar a finalização do pagamento.
+Para testar todo o fluxo, após seguir todas as etapas anteriores, é necessário publicar o site na WEB, para que o Mercado Pago seja capaz de notificar que o pagamento foi finalizado. O valor da variável de ambiente `MERCADO_PAGO_CALLBACK_URL` será: `http://{ENDERECO_DO_SITE}/soat-fast-food/payment/notifications/mercado-pago`.
 
-A URL configurada em `MERCADO_PAGO_CALLBACK_URL` deve ser:
+Utilizamos o https://localhost.run/ na fase de desenvolvimento. É necessário realizar o cadastro das chaves SSH para que os domínios não troquem tão rápido a ponto de inviabilizar os testes.
+
+## Variáveis de ambiente
+
+Utilize o arquivo `.env.example` como referência para configurar as variáveis de ambiente do projeto.
 
 ```
-https://{ENDERECO_DA_API}/soat-fast-food/payment/notifications/mercado-pago
+MERCADO_PAGO_ACCESS_TOKEN=***
+MERCADO_PAGO_CALLBACK_URL=https://{ENDERECO_DO_SITE}/soat-fast-food/payment/notifications/mercado-pago
+MERCADO_PAGO_POS=ST01PS01
+MERCADO_PAGO_USER_ID=***
+MERCADO_PAGO_WEBHOOK_TOKEN=***
 ```
 
-#### Usando o localhost.run
+Abaixo, a explicação de cada uma delas:
 
-Durante o desenvolvimento, utilizamos o [localhost.run](https://localhost.run), um túnel SSH que expõe sua aplicação local para a internet.
-
-##### Passo a passo:
-
-1. [Configure uma chave SSH](https://admin.localhost.run/) para manter a mesma URL por mais tempo com o localhost.run
-
-2. **Abra um terminal** e execute:
-```bash
-ssh -R 80:localhost:8080 {ID_DA_CHAVE_SSH}@localhost.run
-```
-
-3. O terminal mostrará uma URL pública semelhante a:
-```
-https://456we13dsc23.lhr.life
-```
-
-4. Use essa URL pública para configurar, no arquivo `soat.env`:
-- Combine-a com `/soat-fast-food/payment/notifications/mercado-pago` e use esse valor para a variável `MERCADO_PAGO_ACCESS_TOKEN`. Por exemplo:
-  ```
-  https://456we13dsc23.lhr.life/soat-fast-food/payment/notifications/mercado-pago 
-  ```
-
-5. Faça o build da aplicação em **outro terminal**:
-```bash
-docker-compose build
-```
-
-6. **Inicie a aplicação**, normalmente:
-```bash
-docker-compose up -d
-```
-
-7. Crie um pagamento no endpoint POST `/soat-fast-food/payment`
-
-8. Com o ID gerado na etapa anterior, renderize o código QR no endpoint GET `/soat-fast-food/payment/{PAYMENT_ID}/qr`.
-
-9. Acesse o aplicativo do Mercado Pago com o usuário comprador de teste mencionado nos pré-requisitos dos testes.
-
-10. Utilize o endpoint GET `/soat-fast-food/payment/{PAYMENT_ID}` para verificar o status do pagamento.
-
-##### Observação importante:
-
-- Deixe o terminal do `localhost.run` aberto enquanto estiver testando. Fechar ele derruba o túnel.
-
-### Explicação das variáveis de ambiente
-
-- `MERCADO_PAGO_ACCESS_TOKEN`: token de autenticação da API do Mercado Pago
-- `MERCADO_PAGO_CALLBACK_URL`: URL que receberá notificações de pagamento (webhook)
-- `MERCADO_PAGO_POS`: valor de `external_store_id` do POS criado via API
-- `MERCADO_PAGO_USER_ID`: ID do usuário vinculado à aplicação
-- `MERCADO_PAGO_WEBHOOK_TOKEN`: token usado como parâmetro de query para validar as notificações de pagamento recebidas
+- `MERCADO_PAGO_ACCESS_TOKEN`: O token da integração com o Mercado Pago
+- `MERCADO_PAGO_CALLBACK_URL`: A URL para a qual será enviado um POST quando o pagamento for concluído
+- `MERCADO_PAGO_POS`: O `external_store_id` do ponto de venda criado previamente através da API do Mercado Pago para a realização dos pagamentos
+- `MERCADO_PAGO_USER_ID`: O ID do usuário da integração cm o Mercado Pago
+- `MERCADO_PAGO_WEBHOOK_TOKEN`: O token a ser utilizado como query parameter para validação da requisição de finalização de pagamento.
