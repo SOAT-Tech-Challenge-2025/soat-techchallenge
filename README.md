@@ -1031,7 +1031,7 @@ Cria um novo pedido de preparação após o pagamento ser realizado com sucesso.
 ```
 
 #### `POST /preparation/start-next`
-Obtém o próximo pedido de preparação acordo com a ordem de realização dos pedidos e o atualiza com o status "Em preparação".
+Obtém o próximo pedido de preparação de acordo com a ordem de realização dos pedidos e o atualiza com o status "Em preparação".
 
 **Response:**
 ```json
