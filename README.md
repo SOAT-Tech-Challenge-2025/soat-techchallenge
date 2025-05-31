@@ -1085,11 +1085,11 @@ Atualiza um pedido de preparação com o status "Pronto", indicando que o pedido
 **Exemplo de erro:**
 ```json
 {
-	"errorCode": "400",
-	"message": "No preparation available to start",
-	"uuid": "37763c1b-3f53-4df3-b076-5deee34bca90",
-	"statusCode": 400,
-	"timestamp": "2025-05-31T00:44:39.176260968"
+	"errorCode": "404",
+	"message": "Preparation not found",
+	"uuid": "87a1527e-5f4e-4bf8-96b4-6f149e7016c6",
+	"statusCode": 404,
+	"timestamp": "2025-05-31T01:07:58.943625153"
 }
 ```
 
