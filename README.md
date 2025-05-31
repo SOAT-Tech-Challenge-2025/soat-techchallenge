@@ -993,6 +993,7 @@ Recebe a notificação de pagamento do Mercado Pago
 # 🍔 Preparation
 
 Responsável pelo gerenciamento da **preparação** dos produtos pela **cozinha** do estabelecimento.
+
 ---
 
 ### 📌 Endpoints
