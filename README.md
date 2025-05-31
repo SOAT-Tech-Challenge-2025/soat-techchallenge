@@ -999,7 +999,7 @@ Responsável pelo gerenciamento da **preparação** dos produtos pela **cozinha*
 ### 📌 Endpoints
 
 #### `POST /preparation`
-Cria um novo pedido de preparação. É criado após o pagamento ser realizado com sucesso.
+Cria um novo pedido de preparação após o pagamento ser realizado com sucesso.
 
 **Response:**
 ```json
