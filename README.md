@@ -826,48 +826,490 @@ Atualiza os dados de um pedido.
 
 > ⚠️ **Nota:** Os pedidos devem ser atualizados ou removidos apenas antes de seu status ser alterado para "PREPARING" ou "COMPLETED".
 ---
+
+---
+# 💳 Payment
+
+Responsável pelo gerenciamento dos **pagamentos realizados** no sistema.
+
+---
+
+---
+
+> ⚠️ **Nota:** Consulte a seção específica sobre a integração com o Mercado Pago para saber como testar o fluxo de pagamento.
+---
+
+### 📌 Endpoints
+
+#### `POST /payment`
+Cria um novo pedido.
+
+**Request:**
+```json
+{
+	"id": "A001",
+	"totalOrderValue": 30.00,
+	"products": [
+		{
+			"name": "X-Tudo",
+			"category": "Lanche",
+			"unitPrice": 30.00,
+			"quantity": 1
+		}
+	]
+}
+```
+
+**Response:**
+```json
+{
+	"id": "A001",
+	"externalId": "empty-A001",
+	"paymentStatus": "OPENED",
+	"totalOrderValue": 30,
+	"qrCode": "00020101021243650016COM.MERCADOLIBRE020130636afdd3bfb-1eba-4c01-8687-8c60f329bbba5204000053039865802BR5909Test Test6009SAO PAULO62070503***6304C8C8",
+	"expiration": "2025-05-31T00:33:10.0498834",
+	"createdAt": "2025-05-31T00:23:10.049909849",
+	"timestamp": "2025-05-31T00:23:10.049909849"
+}
+```
+**Status:**
+
+- 201 Created
+- 400 Bad Request
+- 422 Unprocessable Entity
+
+**Exemplo de erro:**
+```json
+{
+	"errorCode": "400",
+	"message": "Payment with ID A001 already exists",
+	"uuid": "a86eda31-e5fd-4987-874b-4c448b5570c9",
+	"statusCode": 400,
+	"timestamp": "2025-05-31T00:26:08.950176601"
+}
+```
+
+#### `GET /payment/{id}`
+Obtém os detalhes de um pagamento.
+
+**Response:**
+```json
+{
+	"id": "A001",
+	"externalId": "134324248",
+	"paymentStatus": "CLOSED",
+	"totalOrderValue": 30,
+	"qrCode": "00020101021243650016COM.MERCADOLIBRE020130636afdd3bfb-1eba-4c01-8687-8c60f329bbba5204000053039865802BR5909Test Test6009SAO PAULO62070503***6304C8C8",
+	"expiration": "2025-05-31T00:33:10.0498834",
+	"createdAt": "2025-05-31T00:23:10.049909849",
+	"timestamp": "2025-05-31T00:23:10.049909849"
+}
+```
+**Status:**
+
+- 200 OK
+- 404 Not Found
+
+**Exemplo de erro:**
+```json
+{
+	"errorCode": "404",
+	"message": "Payment not found",
+	"uuid": "7caa6b52-9af3-4ade-a833-2ca5068827e8",
+	"statusCode": 404,
+	"timestamp": "2025-05-31T00:32:23.977305012"
+}
+```
+
+#### `GET /payment/{id}/qr`
+Obtém o código QR do pagamento.
+
+**Response:**
+O código QR renderizado
+
+**Status:**
+
+- 200 OK
+- 404 Not Found
+
+**Exemplo de erro:**
+```json
+{
+	"errorCode": "404",
+	"message": "Payment not found",
+	"uuid": "7caa6b52-9af3-4ade-a833-2ca5068827e8",
+	"statusCode": 404,
+	"timestamp": "2025-05-31T00:32:23.977305012"
+}
+```
+
+#### `POST /payment/notifications/mercado-pago`
+Recebe a notificação de pagamento do Mercado Pago
+
+**Request:**
+```json
+{
+	"action": "payment.created",
+	"type": "payment",
+	"data": {
+		"id": "31023442055"
+	}
+}
+```
+
+**Response:**
+```json
+{
+	"id": "A001",
+	"externalId": "134324248",
+	"paymentStatus": "CLOSED",
+	"totalOrderValue": 30,
+	"qrCode": "00020101021243650016COM.MERCADOLIBRE020130636afdd3bfb-1eba-4c01-8687-8c60f329bbba5204000053039865802BR5909Test Test6009SAO PAULO62070503***6304C8C8",
+	"expiration": "2025-05-31T00:33:10.0498834",
+	"createdAt": "2025-05-31T00:23:10.049909849",
+	"timestamp": "2025-05-31T00:23:10.049909849"
+}
+```
+**Status:**
+
+- 200 OK
+- 401 Unauthorized
+- 400 Bad Request
+- 404 Not Found
+
+**Exemplo de erro:**
+```json
+{
+	"errorCode": "400",
+	"message": "Payment with external ID 134324248 already exists",
+	"uuid": "a86eda31-e5fd-4987-874b-4c448b5570c9",
+	"statusCode": 400,
+	"timestamp": "2025-05-31T00:26:08.950176601"
+}
+```
+
+---
+# 🍔 Preparation
+
+Responsável pelo gerenciamento da **preparação** dos produtos pela **cozinha** do estabelecimento.
+---
+
+### 📌 Endpoints
+
+#### `POST /preparation`
+Cria um novo pedido de preparação. É criado após o pagamento ser realizado com sucesso.
+
+**Response:**
+```json
+{
+	"id": "A001",
+	"preparationPosition": 1,
+	"preparationTime": 10,
+	"estimatedReadyTime": null,
+	"preparationStatus": "RECEIVED",
+	"createdAt": "2025-05-31T00:40:17.844447957",
+	"timestamp": "2025-05-31T00:40:17.844447957"
+}
+```
+**Status:**
+
+- 201 Created
+- 400 Bad Request
+- 422 Unprocessable Entity
+
+**Exemplo de erro:**
+```json
+{
+	"errorCode": "400",
+	"message": "Preparation with ID A001 already exists",
+	"uuid": "8138f8fd-259e-41e6-892c-674bc8e73cd3",
+	"statusCode": 400,
+	"timestamp": "2025-05-31T00:40:38.778791123"
+}
+```
+
+#### `POST /preparation/start-next`
+Obtém o próximo pedido de preparação acordo com a ordem de realização dos pedidos e o atualiza com o status "Em preparação".
+
+**Response:**
+```json
+{
+	"id": "A001",
+	"preparationPosition": null,
+	"preparationTime": 10,
+	"estimatedReadyTime": "2025-05-31T00:54:20.729109788",
+	"preparationStatus": "IN_PREPARATION",
+	"createdAt": "2025-05-31T00:40:17.844448",
+	"timestamp": "2025-05-31T00:44:20.729130718"
+}
+```
+**Status:**
+
+- 200 OK
+- 400 Bad Request
+
+**Exemplo de erro:**
+```json
+{
+	"errorCode": "400",
+	"message": "No preparation available to start",
+	"uuid": "37763c1b-3f53-4df3-b076-5deee34bca90",
+	"statusCode": 400,
+	"timestamp": "2025-05-31T00:44:39.176260968"
+}
+```
+
+#### `POST /preparation/{preparation_id}/ready`
+Atualiza um pedido de preparação com o status "Pronto", indicando que o pedido está pronto para ser entregue ao cliente.
+
+**Response:**
+```json
+{
+	"id": "A001",
+	"preparationPosition": null,
+	"preparationTime": 10,
+	"estimatedReadyTime": "2025-05-31T00:54:20.72911",
+	"preparationStatus": "READY",
+	"createdAt": "2025-05-31T00:40:17.844448",
+	"timestamp": "2025-05-31T00:45:49.02704791"
+}
+```
+**Status:**
+
+- 200 OK
+- 400 Bad Request
+- 404 Not Found
+
+**Exemplo de erro:**
+```json
+{
+	"errorCode": "400",
+	"message": "No preparation available to start",
+	"uuid": "37763c1b-3f53-4df3-b076-5deee34bca90",
+	"statusCode": 400,
+	"timestamp": "2025-05-31T00:44:39.176260968"
+}
+```
+
+#### `POST /preparation/{preparation_id}/finalize`
+Atualiza um pedido de preparação com o status "Finalizado", indicando que o pedido foi entregue ao cliente.
+
+**Response:**
+```json
+{
+	"id": "A001",
+	"preparationPosition": null,
+	"preparationTime": 10,
+	"estimatedReadyTime": "2025-05-31T00:54:20.72911",
+	"preparationStatus": "COMPLETED",
+	"createdAt": "2025-05-31T00:40:17.844448",
+	"timestamp": "2025-05-31T00:47:19.106673387"
+}
+```
+**Status:**
+
+- 200 OK
+- 400 Bad Request
+- 404 Not Found
+
+**Exemplo de erro:**
+```json
+{
+	"errorCode": "400",
+	"message": "A preparation with COMPLETED status cannot be updated to COMPLETED",
+	"uuid": "f43d72c6-6101-43c2-8811-9ca5d451cfc1",
+	"statusCode": 400,
+	"timestamp": "2025-05-31T00:48:20.448803064"
+}
+```
+
+#### `POST /preparation/waiting-list`
+Obtém a lista de pedidos de preparação ordenados da seguinte forma:
+
+1. Pedidos prontos para retirada
+2. Pedidos em preparação subordenados com base na estimativa de pronto
+3. Pedidos recebidos ordenados por ordem de chegada
+
+**Response:**
+```json
+[
+	{
+		"id": "A004",
+		"preparationPosition": null,
+		"preparationTime": 3,
+		"estimatedReadyTime": "2025-05-31T00:53:30.101797",
+		"preparationStatus": "READY",
+		"createdAt": "2025-05-31T00:49:32.62829",
+		"timestamp": "2025-05-31T00:50:48.241601"
+	},
+	{
+		"id": "A002",
+		"preparationPosition": null,
+		"preparationTime": 5,
+		"estimatedReadyTime": "2025-05-31T00:55:29.71201",
+		"preparationStatus": "IN_PREPARATION",
+		"createdAt": "2025-05-31T00:49:18.283901",
+		"timestamp": "2025-05-31T00:50:29.712026"
+	},
+	{
+		"id": "A005",
+		"preparationPosition": null,
+		"preparationTime": 6,
+		"estimatedReadyTime": "2025-05-31T00:56:30.70522",
+		"preparationStatus": "IN_PREPARATION",
+		"createdAt": "2025-05-31T00:49:38.246773",
+		"timestamp": "2025-05-31T00:50:30.705237"
+	},
+	{
+		"id": "A006",
+		"preparationPosition": null,
+		"preparationTime": 10,
+		"estimatedReadyTime": "2025-05-31T01:00:31.298067",
+		"preparationStatus": "IN_PREPARATION",
+		"createdAt": "2025-05-31T00:49:43.814773",
+		"timestamp": "2025-05-31T00:50:31.298083"
+	},
+	{
+		"id": "A007",
+		"preparationPosition": 1,
+		"preparationTime": 2,
+		"estimatedReadyTime": null,
+		"preparationStatus": "RECEIVED",
+		"createdAt": "2025-05-31T00:49:54.869954",
+		"timestamp": "2025-05-31T00:49:54.869954"
+	},
+	{
+		"id": "A008",
+		"preparationPosition": 2,
+		"preparationTime": 8,
+		"estimatedReadyTime": null,
+		"preparationStatus": "RECEIVED",
+		"createdAt": "2025-05-31T00:50:03.727758",
+		"timestamp": "2025-05-31T00:50:03.727758"
+	},
+	{
+		"id": "A009",
+		"preparationPosition": 3,
+		"preparationTime": 3,
+		"estimatedReadyTime": null,
+		"preparationStatus": "RECEIVED",
+		"createdAt": "2025-05-31T00:50:08.975707",
+		"timestamp": "2025-05-31T00:50:08.975707"
+	},
+	{
+		"id": "A010",
+		"preparationPosition": 4,
+		"preparationTime": 5,
+		"estimatedReadyTime": null,
+		"preparationStatus": "RECEIVED",
+		"createdAt": "2025-05-31T00:50:16.123321",
+		"timestamp": "2025-05-31T00:50:16.123321"
+	},
+	{
+		"id": "A011",
+		"preparationPosition": 5,
+		"preparationTime": 2,
+		"estimatedReadyTime": null,
+		"preparationStatus": "RECEIVED",
+		"createdAt": "2025-05-31T00:50:21.327085",
+		"timestamp": "2025-05-31T00:50:21.327085"
+	}
+]
+```
+**Status:**
+
+- 200 OK
+
 ## Integração com o Mercado Pago
 
-O projeto se integra ao Mercado Pago para realização de pagamentos do tipo presencial com [Código QR Dinâmico](https://www.mercadopago.com.br/developers/pt/docs/qr-code/integration-configuration/qr-dynamic/integration).
+Este projeto integra-se ao Mercado Pago para realizar pagamentos presenciais utilizando [Código QR Dinâmico](https://www.mercadopago.com.br/developers/pt/docs/qr-code/integration-configuration/qr-dynamic/integration).
 
-Para realização dos testes, é necessário:
+### Pré-requisitos para testes
 
-1. Ter uma conta de produção no Mercado Pago
-2. Gerar uma aplicação nesta conta
-3. Gerar usuários de teste nesta aplicação
-   - um vendedor
-   - um comprador
-4. Com a conta de vendedor, acessar o portal do desenvolvedor e criar uma aplicação
-5. Nas credenciais de produção desta aplicação, obter os dados que serão usados nas variáveis de ambiente do projeto:
-   - `MERCADO_PAGO_ACCESS_TOKEN`: O access token disponível nas credenciais de produção
-   - `MERCADO_PAGO_USER_ID`: O user ID disponível nas informações gerais
-6. Criar uma `store` através da API do Mercado Pago. Verificar a documentação do endpoint POST https://api.mercadopago.com/users/{USER_ID}/stores
-7. Criar um `POS` através da API do Mercado Pago vinculada a esta `store`. Verificar a documentação do endpoint POST https://api.mercadopago.com/pos
-8. O campo `external_store_id` da `POS` deve ser usado para configurar a variável de ambiente `MERCADO_PAGO_POS`.
-9. Gere um valor aleatório e seguro para ser usado como token e configure-o como a variável de ambiente `MERCADO_PAGO_WEBHOOK_TOKEN`.
+Para realizar os testes, há duas opções:
+
+#### Credenciais de teste
+Utilizar as credenciais de teste presentes no arquivo `soat.env`, realizando as compras com o usuário de teste **enviado na entrega**.
+
+#### Integração própria
+Realizar sua própria integração com o Mercado Pago, seguindo os passos a seguir:
+1. Crie uma conta **de produção** no Mercado Pago.
+2. Acesse o portal do desenvolvedor e **crie uma aplicação** nessa conta.
+3. Gere **usuários de teste** vinculados à aplicação:
+   - um usuário **vendedor**
+   - um usuário **comprador**
+4. Com a conta de vendedor, crie uma aplicação no portal do desenvolvedor.
+5. Nas **credenciais de produção** da aplicação, obtenha:
+   - `MERCADO_PAGO_ACCESS_TOKEN`: token de acesso (access token)
+   - `MERCADO_PAGO_USER_ID`: ID do usuário (user ID)
+6. Crie uma **store** via API do Mercado Pago:
+   - [POST https://api.mercadopago.com/users/{USER_ID}/stores](https://api.mercadopago.com/users/{USER_ID}/stores)
+7. Crie um **POS** (ponto de venda) vinculado à store:
+   - [POST https://api.mercadopago.com/pos](https://api.mercadopago.com/pos)
+8. O valor do campo `external_store_id` da POS deve ser usado na variável `MERCADO_PAGO_POS`.
+9. Gere um token aleatório e seguro para configurar como `MERCADO_PAGO_WEBHOOK_TOKEN`.
 
 ### Como testar o fluxo de pagamento?
 
-Para testar todo o fluxo, após seguir todas as etapas anteriores, é necessário publicar o site na WEB, para que o Mercado Pago seja capaz de notificar que o pagamento foi finalizado. O valor da variável de ambiente `MERCADO_PAGO_CALLBACK_URL` será: `http://{ENDERECO_DO_SITE}/soat-fast-food/payment/notifications/mercado-pago`.
+Após configurar tudo, a API precisa estar **acessível na web** para que o Mercado Pago consiga notificar a finalização do pagamento.
 
-Utilizamos o https://localhost.run/ na fase de desenvolvimento. É necessário realizar o cadastro das chaves SSH para que os domínios não troquem tão rápido a ponto de inviabilizar os testes.
-
-## Variáveis de ambiente
-
-Utilize o arquivo `.env.example` como referência para configurar as variáveis de ambiente do projeto.
+A URL configurada em `MERCADO_PAGO_CALLBACK_URL` deve ser:
 
 ```
-MERCADO_PAGO_ACCESS_TOKEN=***
-MERCADO_PAGO_CALLBACK_URL=https://{ENDERECO_DO_SITE}/soat-fast-food/payment/notifications/mercado-pago
-MERCADO_PAGO_POS=ST01PS01
-MERCADO_PAGO_USER_ID=***
-MERCADO_PAGO_WEBHOOK_TOKEN=***
+https://{ENDERECO_DA_API}/soat-fast-food/payment/notifications/mercado-pago
 ```
 
-Abaixo, a explicação de cada uma delas:
+#### Usando o localhost.run
 
-- `MERCADO_PAGO_ACCESS_TOKEN`: O token da integração com o Mercado Pago
-- `MERCADO_PAGO_CALLBACK_URL`: A URL para a qual será enviado um POST quando o pagamento for concluído
-- `MERCADO_PAGO_POS`: O `external_store_id` do ponto de venda criado previamente através da API do Mercado Pago para a realização dos pagamentos
-- `MERCADO_PAGO_USER_ID`: O ID do usuário da integração cm o Mercado Pago
-- `MERCADO_PAGO_WEBHOOK_TOKEN`: O token a ser utilizado como query parameter para validação da requisição de finalização de pagamento.
+Durante o desenvolvimento, utilizamos o [localhost.run](https://localhost.run), um túnel SSH que expõe sua aplicação local para a internet.
+
+##### Passo a passo:
+
+1. [Configure uma chave SSH](https://admin.localhost.run/) para manter a mesma URL por mais tempo com o localhost.run
+
+2. **Abra um terminal** e execute:
+```bash
+ssh -R 80:localhost:8080 {ID_DA_CHAVE_SSH}@localhost.run
+```
+
+3. O terminal mostrará uma URL pública semelhante a:
+```
+https://456we13dsc23.lhr.life
+```
+
+4. Use essa URL pública para configurar, no arquivo `soat.env`:
+- Combine-a com `/soat-fast-food/payment/notifications/mercado-pago` e use esse valor para a variável `MERCADO_PAGO_ACCESS_TOKEN`. Por exemplo:
+  ```
+  https://456we13dsc23.lhr.life/soat-fast-food/payment/notifications/mercado-pago 
+  ```
+
+5. Faça o build da aplicação em **outro terminal**:
+```bash
+docker-compose build
+```
+
+6. **Inicie a aplicação**, normalmente:
+```bash
+docker-compose up -d
+```
+
+7. Crie um pagamento no endpoint POST `/soat-fast-food/payment`
+
+8. Com o ID gerado na etapa anterior, renderize o código QR no endpoint GET `/soat-fast-food/payment/{PAYMENT_ID}/qr`.
+
+9. Acesse o aplicativo do Mercado Pago com o usuário comprador de teste mencionado nos pré-requisitos dos testes.
+
+10. Utilize o endpoint GET `/soat-fast-food/payment/{PAYMENT_ID}` para verificar o status do pagamento.
+
+##### Observação importante:
+
+- Deixe o terminal do `localhost.run` aberto enquanto estiver testando. Fechar ele derruba o túnel.
+
+### Explicação das variáveis de ambiente
+
+- `MERCADO_PAGO_ACCESS_TOKEN`: token de autenticação da API do Mercado Pago
+- `MERCADO_PAGO_CALLBACK_URL`: URL que receberá notificações de pagamento (webhook)
+- `MERCADO_PAGO_POS`: valor de `external_store_id` do POS criado via API
+- `MERCADO_PAGO_USER_ID`: ID do usuário vinculado à aplicação
+- `MERCADO_PAGO_WEBHOOK_TOKEN`: token usado como parâmetro de query para validar as notificações de pagamento recebidas
