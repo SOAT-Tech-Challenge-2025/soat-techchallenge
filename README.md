@@ -15,7 +15,7 @@
    - Discord: Lucas
 
 ## Startar o Banco de Dados e Aplicação
-1. Comando para rodar o docker-compose para subuir o banco de dados e a aplicação. Força a reconstrução das imagens dos serviços definidos no arquivo docker-compose.yml, mesmo que já existam imagens anteriores (o recomendado para utilizar):
+1. Comando para rodar o docker-compose para subir o banco de dados e a aplicação. Força a reconstrução das imagens dos serviços definidos no arquivo docker-compose.yml, mesmo que já existam imagens anteriores (o recomendado para utilizar):
 
 ```bash
 docker compose up --build
@@ -29,7 +29,7 @@ docker compose up -d
 3. Para parar e remover todos os containers, redes e volumes criados pelo Docker Compose:
 
 ```bash
-docker compose up -d
+docker compose down
 ```
 
 ---
