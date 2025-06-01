@@ -1,0 +1,968 @@
+openapi: 3.0.3
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080/soat-fast-food
+    description: Generated server url
+paths:
+  /product/{id}:
+    get:
+      tags:
+        - product-controller
+      operationId: getProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProductGetResponseDTO'
+    put:
+      tags:
+        - product-controller
+      operationId: updateProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProductPostUpResponseDTO'
+    delete:
+      tags:
+        - product-controller
+      operationId: deleteProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProductPostUpResponseDTO'
+  /order/{id}:
+    get:
+      tags:
+        - order-controller
+      operationId: getProduct_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/OrderResponseDTO'
+    put:
+      tags:
+        - order-controller
+      operationId: updateProduct_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/OrderResponseDTO'
+  /category/{id}:
+    get:
+      tags:
+        - category-controller
+      operationId: getCategoryById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CategoryEntity'
+    put:
+      tags:
+        - category-controller
+      operationId: updateCategory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CategoryResponseDTO'
+    delete:
+      tags:
+        - category-controller
+      operationId: deleteCategory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CategoryResponseDTO'
+  /product:
+    get:
+      tags:
+        - product-controller
+      operationId: getCategories
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageProductGetResponseDTO'
+    post:
+      tags:
+        - product-controller
+      operationId: createProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProductPostUpResponseDTO'
+  /preparation:
+    post:
+      tags:
+        - preparation-controller
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreparationCreateRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PreparationResponseDTO'
+  /preparation/{id}/ready:
+    post:
+      tags:
+        - preparation-controller
+      operationId: ready
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PreparationResponseDTO'
+  /preparation/{id}/finalize:
+    post:
+      tags:
+        - preparation-controller
+      operationId: finalize
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PreparationResponseDTO'
+  /preparation/start-next:
+    post:
+      tags:
+        - preparation-controller
+      operationId: startNext
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PreparationResponseDTO'
+  /payment:
+    post:
+      tags:
+        - payment-controller
+      operationId: create_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentCreateRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PaymentResponseDTO'
+  /payment/notifications/mercado-pago:
+    post:
+      tags:
+        - payment-controller
+      operationId: finalize_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MercadoPagoWebhookDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PaymentResponseDTO'
+  /order:
+    get:
+      tags:
+        - order-controller
+      operationId: getCategories_1
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageOrderResponseDTO'
+    post:
+      tags:
+        - order-controller
+      operationId: createProduct_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/OrderResponseDTO'
+  /identifications:
+    post:
+      tags:
+        - identification-controller
+      operationId: createClient
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdentificationRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+  /category:
+    get:
+      tags:
+        - category-controller
+      operationId: getAllCategories
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageCategoryEntity'
+    post:
+      tags:
+        - category-controller
+      operationId: createCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CategoryResponseDTO'
+  /auth/login:
+    post:
+      tags:
+        - authentication-controller
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /preparation/waiting-list:
+    get:
+      tags:
+        - preparation-controller
+      operationId: waitingList
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PreparationResponseDTO'
+  /payment/{id}:
+    get:
+      tags:
+        - payment-controller
+      operationId: find
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PaymentResponseDTO'
+  /payment/{id}/qr:
+    get:
+      tags:
+        - payment-controller
+      operationId: getQrCode
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /identifications/{identification_id}:
+    get:
+      tags:
+        - identification-controller
+      operationId: getByClient
+      parameters:
+        - name: identification_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Identification'
+  /category/{id}/products:
+    get:
+      tags:
+        - category-controller
+      operationId: getProductByCategoryId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CategoryWithProductsDTO'
+components:
+  schemas:
+    ProductRequestDTO:
+      type: object
+      properties:
+        productName:
+          type: string
+        idCategory:
+          type: integer
+          format: int64
+        unitPrice:
+          type: number
+        preparationTime:
+          type: integer
+          format: int64
+        uUitPrice:
+          type: number
+          writeOnly: true
+    ProductPostUpResponseDTO:
+      type: object
+      properties:
+        message:
+          type: string
+    OrderRequestDTO:
+      type: object
+      properties:
+        clientId:
+          type: string
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductRequest'
+    ProductRequest:
+      type: object
+      properties:
+        productId:
+          type: integer
+          format: int64
+        vlUnitProduct:
+          type: number
+          format: double
+        preparationTime:
+          type: integer
+          format: int32
+    OrderResponseDTO:
+      type: object
+      properties:
+        orderId:
+          type: string
+        totalOrder:
+          type: number
+          format: double
+        preparationTime:
+          type: integer
+          format: int32
+        clientId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductResponse'
+    ProductResponse:
+      type: object
+      properties:
+        productId:
+          type: integer
+          format: int64
+        quantity:
+          type: integer
+          format: int32
+        vlUnitProduct:
+          type: number
+          format: double
+    CategoryRequestDTO:
+      type: object
+      properties:
+        categoryName:
+          type: string
+    CategoryResponseDTO:
+      type: object
+      properties:
+        message:
+          type: string
+    PreparationCreateRequestDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        preparationTime:
+          type: integer
+          format: int32
+      required:
+        - id
+        - preparationTime
+    PreparationResponseDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        preparationPosition:
+          type: integer
+          format: int32
+        preparationTime:
+          type: integer
+          format: int32
+        estimatedReadyTime:
+          type: string
+          format: date-time
+        preparationStatus:
+          type: string
+          enum:
+            - RECEIVED
+            - IN_PREPARATION
+            - READY
+            - COMPLETED
+        createdAt:
+          type: string
+          format: date-time
+        timestamp:
+          type: string
+          format: date-time
+    PaymentCreateRequestDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        totalOrderValue:
+          type: number
+          format: double
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentProductCreateRequestDTO'
+          minItems: 1
+      required:
+        - id
+        - products
+        - totalOrderValue
+    PaymentProductCreateRequestDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        category:
+          type: string
+        unitPrice:
+          type: number
+          format: double
+        quantity:
+          type: integer
+          format: int32
+      required:
+        - category
+        - name
+        - quantity
+        - unitPrice
+    PaymentResponseDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        externalId:
+          type: string
+        paymentStatus:
+          type: string
+          enum:
+            - OPENED
+            - CLOSED
+            - EXPIRED
+        totalOrderValue:
+          type: number
+          format: double
+        qrCode:
+          type: string
+        expiration:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        timestamp:
+          type: string
+          format: date-time
+    MercadoPagoWebhookDTO:
+      type: object
+      properties:
+        action:
+          type: string
+        data:
+          $ref: '#/components/schemas/MercadoPagoWebhookDataDTO'
+        type:
+          type: string
+    MercadoPagoWebhookDataDTO:
+      type: object
+      properties:
+        id:
+          type: string
+    IdentificationRequestDTO:
+      type: object
+      properties:
+        nameClient:
+          type: string
+          minLength: 1
+        numberDocument:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          minLength: 1
+      required:
+        - email
+        - nameClient
+        - numberDocument
+    LoginRequestDTO:
+      type: object
+      properties:
+        documentNumber:
+          type: string
+        email:
+          type: string
+    PageProductGetResponseDTO:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductGetResponseDTO'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/SortObject'
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    PageableObject:
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int64
+        sort:
+          $ref: '#/components/schemas/SortObject'
+        paged:
+          type: boolean
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        unpaged:
+          type: boolean
+    ProductGetResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nameProduct:
+          type: string
+        idCategory:
+          type: integer
+          format: int64
+        unitPrice:
+          type: number
+        preparationTime:
+          type: integer
+          format: int64
+    SortObject:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
+    PageOrderResponseDTO:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderResponseDTO'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/SortObject'
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    Identification:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nameClient:
+          type: string
+        numberDocument:
+          type: string
+        email:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CategoryEntity:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        categoryName:
+          type: string
+        dateInclusion:
+          type: string
+          format: date-time
+        timestamp:
+          type: string
+          format: date-time
+    PageCategoryEntity:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryEntity'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/SortObject'
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    CategoryWithProductsDTO:
+      type: object
+      properties:
+        categoriaId:
+          type: integer
+          format: int64
+        nomeCategoria:
+          type: string
+        produtos:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductDTO'
+    ProductDTO:
+      type: object
+      properties:
+        productId:
+          type: integer
+          format: int64
+        nameProduct:
+          type: string
+        unitPrice:
+          type: number
+        preparationTime:
+          type: integer
+          format: int32
+        dtInclusion:
+          type: string
+          format: date-time

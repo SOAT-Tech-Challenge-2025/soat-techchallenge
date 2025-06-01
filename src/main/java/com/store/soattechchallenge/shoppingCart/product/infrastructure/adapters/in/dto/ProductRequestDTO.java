@@ -43,7 +43,7 @@ public class ProductRequestDTO {
         return unitPrice;
     }
 
-    public void setuUitPrice(BigDecimal unitPrice) {
+    public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 
