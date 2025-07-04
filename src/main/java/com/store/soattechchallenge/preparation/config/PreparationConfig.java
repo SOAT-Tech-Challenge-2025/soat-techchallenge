@@ -1,9 +1,9 @@
 package com.store.soattechchallenge.preparation.config;
 
-import com.store.soattechchallenge.preparation.application.gateways.PreparationGateway;
+import com.store.soattechchallenge.preparation.application.gateways.PreparationRepositoryGateway;
 import com.store.soattechchallenge.preparation.application.usecases.*;
 import com.store.soattechchallenge.preparation.controller.PreparationController;
-import com.store.soattechchallenge.preparation.infrastructure.gateways.PreparationJpaGateway;
+import com.store.soattechchallenge.preparation.infrastructure.gateways.PreparationRepositoryJpaGateway;
 import com.store.soattechchallenge.preparation.infrastructure.jpa.PreparationJpaRepository;
 import com.store.soattechchallenge.preparation.infrastructure.mappers.PreparationMapper;
 import org.springframework.context.annotation.Bean;
@@ -17,39 +17,39 @@ public class PreparationConfig {
     }
 
     @Bean
-    PreparationGateway preparationGateway(
+    PreparationRepositoryGateway preparationRepositoryGateway(
             PreparationJpaRepository preparationJpaRepository,
             PreparationMapper preparationMapper
     ) {
-        return new PreparationJpaGateway(
+        return new PreparationRepositoryJpaGateway(
                 preparationJpaRepository,
                 preparationMapper
         );
     }
 
     @Bean
-    CreatePreparationUseCase createPreparationUseCase(PreparationGateway preparationGateway) {
-        return new CreatePreparationUseCase(preparationGateway);
+    CreatePreparationUseCase createPreparationUseCase(PreparationRepositoryGateway preparationRepositoryGateway) {
+        return new CreatePreparationUseCase(preparationRepositoryGateway);
     }
 
     @Bean
-    StartNextPreparationUseCase startNextPreparationUseCase(PreparationGateway preparationGateway) {
-        return new StartNextPreparationUseCase(preparationGateway);
+    StartNextPreparationUseCase startNextPreparationUseCase(PreparationRepositoryGateway preparationRepositoryGateway) {
+        return new StartNextPreparationUseCase(preparationRepositoryGateway);
     }
 
     @Bean
-    MarkPreparationAsReadyUseCase markPreparationAsReadyUseCase(PreparationGateway preparationGateway) {
-        return new MarkPreparationAsReadyUseCase(preparationGateway);
+    MarkPreparationAsReadyUseCase markPreparationAsReadyUseCase(PreparationRepositoryGateway preparationRepositoryGateway) {
+        return new MarkPreparationAsReadyUseCase(preparationRepositoryGateway);
     }
 
     @Bean
-    MarkPreparationAsCompletedUseCase markPreparationAsCompletedUseCase(PreparationGateway preparationGateway) {
-        return new MarkPreparationAsCompletedUseCase(preparationGateway);
+    MarkPreparationAsCompletedUseCase markPreparationAsCompletedUseCase(PreparationRepositoryGateway preparationRepositoryGateway) {
+        return new MarkPreparationAsCompletedUseCase(preparationRepositoryGateway);
     }
 
     @Bean
-    GetWaitingListUseCase getWaitingListUseCase(PreparationGateway preparationGateway) {
-        return new GetWaitingListUseCase(preparationGateway);
+    GetWaitingListUseCase getWaitingListUseCase(PreparationRepositoryGateway preparationRepositoryGateway) {
+        return new GetWaitingListUseCase(preparationRepositoryGateway);
     }
 
     @Bean

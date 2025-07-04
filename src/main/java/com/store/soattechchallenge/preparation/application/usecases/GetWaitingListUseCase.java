@@ -1,21 +1,21 @@
 package com.store.soattechchallenge.preparation.application.usecases;
 
-import com.store.soattechchallenge.preparation.application.gateways.PreparationGateway;
+import com.store.soattechchallenge.preparation.application.gateways.PreparationRepositoryGateway;
 import com.store.soattechchallenge.preparation.domain.entites.Preparation;
 
 import java.util.List;
 
 public class GetWaitingListUseCase {
-    private final PreparationGateway preparationGateway;
+    private final PreparationRepositoryGateway preparationRepositoryGateway;
 
-    public GetWaitingListUseCase(PreparationGateway preparationGateway) {
-        this.preparationGateway = preparationGateway;
+    public GetWaitingListUseCase(PreparationRepositoryGateway preparationRepositoryGateway) {
+        this.preparationRepositoryGateway = preparationRepositoryGateway;
     }
 
     public List<Preparation> execute() {
-        List<Preparation> preparations = this.preparationGateway.getReadyWaitingList();
-        preparations.addAll(this.preparationGateway.getInPreparationWaitingList());
-        preparations.addAll(this.preparationGateway.getReceivedWaitingList());
+        List<Preparation> preparations = this.preparationRepositoryGateway.getReadyWaitingList();
+        preparations.addAll(this.preparationRepositoryGateway.getInPreparationWaitingList());
+        preparations.addAll(this.preparationRepositoryGateway.getReceivedWaitingList());
         return preparations;
     }
 }

@@ -2,7 +2,7 @@ package com.store.soattechchallenge.preparation.infrastructure.gateways;
 
 import com.store.soattechchallenge.preparation.domain.entites.Preparation;
 import com.store.soattechchallenge.preparation.domain.PreparationStatus;
-import com.store.soattechchallenge.preparation.application.gateways.PreparationGateway;
+import com.store.soattechchallenge.preparation.application.gateways.PreparationRepositoryGateway;
 import com.store.soattechchallenge.preparation.application.gateways.exceptions.EntityNotFoundException;
 import com.store.soattechchallenge.preparation.infrastructure.jpa.JpaPreparation;
 import com.store.soattechchallenge.preparation.infrastructure.jpa.PreparationJpaRepository;
@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class PreparationJpaGateway implements PreparationGateway {
+public class PreparationRepositoryJpaGateway implements PreparationRepositoryGateway {
     PreparationJpaRepository preparationJpaRepository;
     PreparationMapper preparationMapper;
 
-    public PreparationJpaGateway(
+    public PreparationRepositoryJpaGateway(
             PreparationJpaRepository preparationJpaRepository,
             PreparationMapper preparationMapper
     ) {

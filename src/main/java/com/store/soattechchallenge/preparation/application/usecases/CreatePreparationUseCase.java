@@ -1,6 +1,6 @@
 package com.store.soattechchallenge.preparation.application.usecases;
 
-import com.store.soattechchallenge.preparation.application.gateways.PreparationGateway;
+import com.store.soattechchallenge.preparation.application.gateways.PreparationRepositoryGateway;
 import com.store.soattechchallenge.preparation.application.usecases.commands.CreatePreparationCommand;
 import com.store.soattechchallenge.preparation.domain.PreparationStatus;
 import com.store.soattechchallenge.preparation.domain.entites.Preparation;
@@ -11,14 +11,14 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class CreatePreparationUseCase {
-    private final PreparationGateway preparationGateway;
+    private final PreparationRepositoryGateway preparationRepositoryGateway;
 
-    public CreatePreparationUseCase(PreparationGateway preparationGateway) {
-        this.preparationGateway = preparationGateway;
+    public CreatePreparationUseCase(PreparationRepositoryGateway preparationRepositoryGateway) {
+        this.preparationRepositoryGateway = preparationRepositoryGateway;
     }
 
     public Preparation execute(CreatePreparationCommand command) {
-        if (this.preparationGateway.existsById(command.id())) {
+        if (this.preparationRepositoryGateway.existsById(command.id())) {
             throw new CustomException(
                     "Preparation with ID " + command.id() + " already exists",
                     HttpStatus.BAD_REQUEST,
@@ -28,7 +28,7 @@ public class CreatePreparationUseCase {
             );
         }
 
-        Integer maxPosition = this.preparationGateway.findMaxPosition();
+        Integer maxPosition = this.preparationRepositoryGateway.findMaxPosition();
         LocalDateTime now = LocalDateTime.now();
         Preparation preparation = new Preparation(
                 command.id(),
@@ -40,6 +40,6 @@ public class CreatePreparationUseCase {
                 now
         );
 
-        return this.preparationGateway.save(preparation);
+        return this.preparationRepositoryGateway.save(preparation);
     }
 }

@@ -1,6 +1,6 @@
 package com.store.soattechchallenge.preparation.application.usecases;
 
-import com.store.soattechchallenge.preparation.application.gateways.PreparationGateway;
+import com.store.soattechchallenge.preparation.application.gateways.PreparationRepositoryGateway;
 import com.store.soattechchallenge.preparation.domain.PreparationStatus;
 import com.store.soattechchallenge.preparation.domain.entites.Preparation;
 import com.store.soattechchallenge.utils.exception.CustomException;
@@ -11,14 +11,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class StartNextPreparationUseCase {
-    private final PreparationGateway preparationGateway;
+    private final PreparationRepositoryGateway preparationRepositoryGateway;
 
-    public StartNextPreparationUseCase(PreparationGateway preparationGateway) {
-        this.preparationGateway = preparationGateway;
+    public StartNextPreparationUseCase(PreparationRepositoryGateway preparationRepositoryGateway) {
+        this.preparationRepositoryGateway = preparationRepositoryGateway;
     }
 
     public Preparation execute() {
-        Optional<Preparation> optionalPreparation = this.preparationGateway.findReceivedWithMinPosition();
+        Optional<Preparation> optionalPreparation = this.preparationRepositoryGateway.findReceivedWithMinPosition();
         if (optionalPreparation.isEmpty()) {
             throw new CustomException(
                     "No preparation available to start",
@@ -36,8 +36,8 @@ public class StartNextPreparationUseCase {
         preparation.setPreparationStatus(PreparationStatus.IN_PREPARATION);
         preparation.setEstimatedReadyTime(LocalDateTime.now().plusMinutes(preparationTime));
         preparation.setTimestamp(LocalDateTime.now());
-        preparation = this.preparationGateway.save(preparation);
-        this.preparationGateway.decrementReceivedPositionsGreaterThan(oldPreparationPosition);
+        preparation = this.preparationRepositoryGateway.save(preparation);
+        this.preparationRepositoryGateway.decrementReceivedPositionsGreaterThan(oldPreparationPosition);
         return preparation;
     }
 }

@@ -5,7 +5,7 @@ import com.store.soattechchallenge.preparation.domain.entites.Preparation;
 import java.util.List;
 import java.util.Optional;
 
-public interface PreparationGateway {
+public interface PreparationRepositoryGateway {
     public Preparation save(Preparation preparation);
     public Preparation findById(String id);
     public Boolean existsById(String id);

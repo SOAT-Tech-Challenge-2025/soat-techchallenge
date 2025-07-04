@@ -1,6 +1,6 @@
 package com.store.soattechchallenge.preparation.application.usecases;
 
-import com.store.soattechchallenge.preparation.application.gateways.PreparationGateway;
+import com.store.soattechchallenge.preparation.application.gateways.PreparationRepositoryGateway;
 import com.store.soattechchallenge.preparation.application.usecases.commands.MarkPreparationAsReadyCommand;
 import com.store.soattechchallenge.preparation.domain.entites.Preparation;
 import com.store.soattechchallenge.preparation.application.gateways.exceptions.EntityNotFoundException;
@@ -11,17 +11,17 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class MarkPreparationAsReadyUseCase {
-    private final PreparationGateway preparationGateway;
+    private final PreparationRepositoryGateway preparationRepositoryGateway;
 
-    public MarkPreparationAsReadyUseCase(PreparationGateway preparationGateway) {
-        this.preparationGateway = preparationGateway;
+    public MarkPreparationAsReadyUseCase(PreparationRepositoryGateway preparationRepositoryGateway) {
+        this.preparationRepositoryGateway = preparationRepositoryGateway;
     }
 
     public Preparation execute(MarkPreparationAsReadyCommand command) {
         try {
-            Preparation preparation = this.preparationGateway.findById(command.id());
+            Preparation preparation = this.preparationRepositoryGateway.findById(command.id());
             preparation.ready();
-            preparation = this.preparationGateway.save(preparation);
+            preparation = this.preparationRepositoryGateway.save(preparation);
             return preparation;
         } catch (EntityNotFoundException error) {
             throw new CustomException(
