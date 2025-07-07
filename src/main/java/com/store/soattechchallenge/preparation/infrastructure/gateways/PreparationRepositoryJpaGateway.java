@@ -13,8 +13,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PreparationRepositoryJpaGateway implements PreparationRepositoryGateway {
-    PreparationJpaRepository preparationJpaRepository;
-    PreparationMapper preparationMapper;
+    private final PreparationJpaRepository preparationJpaRepository;
+    private final PreparationMapper preparationMapper;
 
     public PreparationRepositoryJpaGateway(
             PreparationJpaRepository preparationJpaRepository,
@@ -63,7 +63,7 @@ public class PreparationRepositoryJpaGateway implements PreparationRepositoryGat
         Optional<JpaPreparation>optionalJpaPreparation = this.preparationJpaRepository
                 .findFirstByPreparationStatusOrderByPreparationPositionAsc(PreparationStatus.RECEIVED.toString());
 
-        return optionalJpaPreparation.map(jpaPreparation -> this.preparationMapper.fromJpaToDomain(jpaPreparation));
+        return optionalJpaPreparation.map(this.preparationMapper::fromJpaToDomain);
 
     }
 
