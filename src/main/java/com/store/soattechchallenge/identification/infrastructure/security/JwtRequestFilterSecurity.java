@@ -1,7 +1,7 @@
-package com.store.soattechchallenge.identification.infrastructure.adapters.out.security;
+package com.store.soattechchallenge.identification.infrastructure.security;
 
-import com.store.soattechchallenge.identification.domain.model.Identification;
-import com.store.soattechchallenge.identification.domain.repository.IdentificationRepository;
+import com.store.soattechchallenge.identification.domain.entities.Identification;
+import com.store.soattechchallenge.identification.application.gateways.IdentificationRepositoryGateway;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,11 +20,11 @@ public class JwtRequestFilterSecurity extends OncePerRequestFilter {
 
     private final JwtTokenSecurity jwtTokenSecurity;
 
-    private final IdentificationRepository identificationRepository;
+    private final IdentificationRepositoryGateway identificationRepositoryGateway;
 
-    public JwtRequestFilterSecurity(JwtTokenSecurity jwtTokenSecurity, IdentificationRepository identificationRepository) {
+    public JwtRequestFilterSecurity(JwtTokenSecurity jwtTokenSecurity, IdentificationRepositoryGateway identificationRepositoryGateway) {
         this.jwtTokenSecurity = jwtTokenSecurity;
-        this.identificationRepository = identificationRepository;
+        this.identificationRepositoryGateway = identificationRepositoryGateway;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class JwtRequestFilterSecurity extends OncePerRequestFilter {
         }
 
         if (cpfOrEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            Optional<Identification> user = this.identificationRepository.findByDocumentOrEmail(cpfOrEmail, cpfOrEmail);
+            Optional<Identification> user = this.identificationRepositoryGateway.findByDocumentOrEmail(cpfOrEmail, cpfOrEmail);
 
             if (user.isPresent() && jwtTokenSecurity.validateToken(jwtToken, user)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
