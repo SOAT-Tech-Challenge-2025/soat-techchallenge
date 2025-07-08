@@ -1,4 +1,4 @@
-package com.store.soattechchallenge.preparation.config;
+package com.store.soattechchallenge.preparation.infrastructure.configuration;
 
 import com.store.soattechchallenge.preparation.application.gateways.PreparationRepositoryGateway;
 import com.store.soattechchallenge.preparation.application.usecases.*;
