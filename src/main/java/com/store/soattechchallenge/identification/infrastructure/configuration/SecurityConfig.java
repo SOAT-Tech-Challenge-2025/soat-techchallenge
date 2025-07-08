@@ -1,6 +1,6 @@
 package com.store.soattechchallenge.identification.infrastructure.configuration;
 
-import com.store.soattechchallenge.identification.infrastructure.adapters.out.security.JwtRequestFilterSecurity;
+import com.store.soattechchallenge.identification.infrastructure.security.JwtRequestFilterSecurity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

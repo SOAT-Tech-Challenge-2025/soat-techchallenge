@@ -1,4 +1,4 @@
-package com.store.soattechchallenge.identification.domain.model;
+package com.store.soattechchallenge.identification.domain.entities;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

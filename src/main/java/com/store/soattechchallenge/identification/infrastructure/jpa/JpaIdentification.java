@@ -1,6 +1,6 @@
-package com.store.soattechchallenge.identification.infrastructure.adapters.out.model;
+package com.store.soattechchallenge.identification.infrastructure.jpa;
 
-import com.store.soattechchallenge.identification.domain.model.Identification;
+import com.store.soattechchallenge.identification.domain.entities.Identification;
 import jakarta.persistence.*;
 import lombok.*;
 

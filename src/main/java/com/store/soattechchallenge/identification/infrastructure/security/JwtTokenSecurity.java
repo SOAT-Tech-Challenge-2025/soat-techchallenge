@@ -1,6 +1,6 @@
-package com.store.soattechchallenge.identification.infrastructure.adapters.out.security;
+package com.store.soattechchallenge.identification.infrastructure.security;
 
-import com.store.soattechchallenge.identification.domain.model.Identification;
+import com.store.soattechchallenge.identification.domain.entities.Identification;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

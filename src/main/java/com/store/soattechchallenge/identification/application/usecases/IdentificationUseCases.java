@@ -1,8 +1,7 @@
 package com.store.soattechchallenge.identification.application.usecases;
 
-import com.store.soattechchallenge.identification.domain.model.Identification;
-import com.store.soattechchallenge.identification.infrastructure.adapters.out.dto.IdentificationRequestDTO;
-import com.store.soattechchallenge.identification.infrastructure.adapters.out.model.JpaIdentification;
+import com.store.soattechchallenge.identification.domain.entities.Identification;
+import com.store.soattechchallenge.identification.infrastructure.api.dto.IdentificationRequestDTO;
 
 import java.util.Optional;
 

@@ -1,24 +1,24 @@
-package com.store.soattechchallenge.identification.infrastructure.adapters.out.repository.impl;
+package com.store.soattechchallenge.identification.infrastructure.gateways;
 
-import com.store.soattechchallenge.identification.domain.model.Identification;
-import com.store.soattechchallenge.identification.domain.repository.IdentificationRepository;
-import com.store.soattechchallenge.identification.infrastructure.adapters.out.model.JpaIdentification;
-import com.store.soattechchallenge.identification.infrastructure.adapters.out.repository.JpaIdentificationRepository;
+import com.store.soattechchallenge.identification.application.gateways.IdentificationRepositoryGateway;
+import com.store.soattechchallenge.identification.domain.entities.Identification;
+import com.store.soattechchallenge.identification.infrastructure.jpa.JpaIdentification;
+import com.store.soattechchallenge.identification.infrastructure.jpa.JpaIdentificationRepository;
 import com.store.soattechchallenge.utils.DocumentValidator;
 import com.store.soattechchallenge.utils.exception.CustomException;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-@Repository
-public class IdentificationRepositoryImpl implements IdentificationRepository {
+public class IdentificationRepositoryJpaGateway implements IdentificationRepositoryGateway {
 
-    private final JpaIdentificationRepository jpaIdentificationRepository;
+    JpaIdentificationRepository jpaIdentificationRepository;
 
-    public IdentificationRepositoryImpl(JpaIdentificationRepository jpaIdentificationRepository) {
+    public IdentificationRepositoryJpaGateway(
+            JpaIdentificationRepository jpaIdentificationRepository
+    ) {
         this.jpaIdentificationRepository = jpaIdentificationRepository;
     }
 

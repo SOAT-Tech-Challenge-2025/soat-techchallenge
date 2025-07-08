@@ -1,4 +1,4 @@
-package com.store.soattechchallenge.identification.infrastructure.adapters.out.dto;
+package com.store.soattechchallenge.identification.infrastructure.api.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
