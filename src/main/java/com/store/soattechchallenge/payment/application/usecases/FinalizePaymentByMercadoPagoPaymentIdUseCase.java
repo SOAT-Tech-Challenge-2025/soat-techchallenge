@@ -1,9 +1,11 @@
 package com.store.soattechchallenge.payment.application.usecases;
 
+import com.store.soattechchallenge.payment.application.gateways.EventPublisher;
 import com.store.soattechchallenge.payment.domain.entities.Payment;
 import com.store.soattechchallenge.payment.application.gateways.PaymentRepositoryGateway;
 import com.store.soattechchallenge.payment.application.usecases.commands.FinalizePaymentByMercadoPagoPaymentIdCommand;
 import com.store.soattechchallenge.payment.application.gateways.exceptions.EntityNotFoundException;
+import com.store.soattechchallenge.payment.domain.events.PaymentClosedEvent;
 import com.store.soattechchallenge.payment.infrastructure.integrations.mercado_pago.MercadoPagoClient;
 import com.store.soattechchallenge.payment.infrastructure.integrations.mercado_pago.exception.MPClientException;
 import com.store.soattechchallenge.payment.infrastructure.integrations.mercado_pago.model.MPOrder;
@@ -19,15 +21,18 @@ public class FinalizePaymentByMercadoPagoPaymentIdUseCase {
     private final PaymentRepositoryGateway paymentRepositoryGateway;
     private final MercadoPagoClient mercadoPagoClient;
     private final PaymentStatusMapper paymentStatusMapper;
+    private final EventPublisher eventPublisher;
 
     public FinalizePaymentByMercadoPagoPaymentIdUseCase(
             PaymentRepositoryGateway paymentRepositoryGateway,
             MercadoPagoClient mercadoPagoClient,
-            PaymentStatusMapper paymentStatusMapper
+            PaymentStatusMapper paymentStatusMapper,
+            EventPublisher eventPublisher
     ) {
         this.paymentRepositoryGateway = paymentRepositoryGateway;
         this.mercadoPagoClient = mercadoPagoClient;
         this.paymentStatusMapper = paymentStatusMapper;
+        this.eventPublisher = eventPublisher;
     }
 
     public Payment execute(FinalizePaymentByMercadoPagoPaymentIdCommand command) {
@@ -49,7 +54,10 @@ public class FinalizePaymentByMercadoPagoPaymentIdUseCase {
             Payment payment = this.paymentRepositoryGateway.findById(id);
             payment.setExternalId(externalId);
             payment.finalize(this.paymentStatusMapper.fromMPToDomain(mpOrder.status()));
-            return this.paymentRepositoryGateway.save(payment);
+            payment = this.paymentRepositoryGateway.save(payment);
+            PaymentClosedEvent paymentClosedEvent = new PaymentClosedEvent(payment.getId());
+            this.eventPublisher.publish(paymentClosedEvent);
+            return payment;
         } catch (EntityNotFoundException error) {
             throw new CustomException(
                     "Payment not found",

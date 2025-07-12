@@ -34,10 +34,9 @@ import java.util.Optional;
         return mapper.toOrderGetResponseDTO(repository.findAll(pageable));
     }
 
-
     @Override
     public Optional<OrderResponseDTO> findOrderById(String orderId) {
-        return mapper.toOrderGetResponseDTO(repository.findById(orderId));
+        return mapper.toOrderGetResponseDTO(repository.findByIdWithProdutos(orderId));
     }
 
     @Override

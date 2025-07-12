@@ -24,6 +24,31 @@ spring:
     callback-url: ${MERCADO_PAGO_CALLBACK_URL}
     webhook-token: ${MERCADO_PAGO_WEBHOOK_TOKEN}
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+  cloud:
+    stream:
+      defaultBinder: rabbit
+
+      bindings:
+        paymentProducer-out-0:
+          destination: payment-destination
+
+        consumePaymentClosedEvent-in-0:
+          destination: payment-destination
+          group: payment-destination-group
+
+      rabbit:
+        bindings:
+          consumePaymentClosedEvent-in-0:
+            consumer:
+              autoBindDlq: true
+              republishToDlq: true
+
 #  metrics:
 #    export:
 #      prometheus:

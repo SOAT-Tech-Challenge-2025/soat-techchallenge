@@ -1,6 +1,7 @@
 package com.store.soattechchallenge.payment.infrastructure.configuration;
 
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.store.soattechchallenge.payment.application.gateways.EventPublisher;
 import com.store.soattechchallenge.payment.application.gateways.PaymentGateway;
 import com.store.soattechchallenge.payment.application.gateways.PaymentRepositoryGateway;
 import com.store.soattechchallenge.payment.application.usecases.CreatePaymentUseCase;
@@ -10,6 +11,7 @@ import com.store.soattechchallenge.payment.application.usecases.RenderQrCodeUseC
 import com.store.soattechchallenge.payment.controller.PaymentController;
 import com.store.soattechchallenge.payment.infrastructure.api.validator.MercadoPagoWebhookValidator;
 import com.store.soattechchallenge.payment.infrastructure.gateways.MercadoPagoPaymentGateway;
+import com.store.soattechchallenge.payment.infrastructure.gateways.StreamEventPublisher;
 import com.store.soattechchallenge.payment.infrastructure.gateways.PaymentRepositoryJpaGateway;
 import com.store.soattechchallenge.payment.infrastructure.integrations.mercado_pago.MercadoPagoClient;
 import com.store.soattechchallenge.payment.infrastructure.integrations.mercado_pago.impl.MercadoPagoClientImpl;
@@ -17,6 +19,7 @@ import com.store.soattechchallenge.payment.infrastructure.jpa.PaymentJpaReposito
 import com.store.soattechchallenge.payment.infrastructure.mappers.PaymentMapper;
 import com.store.soattechchallenge.payment.infrastructure.mappers.PaymentProductMapper;
 import com.store.soattechchallenge.payment.infrastructure.mappers.PaymentStatusMapper;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -40,6 +43,11 @@ public class PaymentConfig {
     @Bean
     QRCodeWriter qrCodeWriter () {
         return new QRCodeWriter();
+    }
+
+    @Bean
+    EventPublisher eventPublisher (StreamBridge streamBridge) {
+        return new StreamEventPublisher(streamBridge);
     }
 
     @Bean
@@ -100,12 +108,14 @@ public class PaymentConfig {
     FinalizePaymentByMercadoPagoPaymentIdUseCase finalizePaymentByMercadoPagoPaymentIdUseCase (
             PaymentRepositoryGateway paymentRepositoryGateway,
             MercadoPagoClient mercadoPagoClient,
-            PaymentStatusMapper paymentStatusMapper
+            PaymentStatusMapper paymentStatusMapper,
+            EventPublisher eventPublisher
     ) {
         return new FinalizePaymentByMercadoPagoPaymentIdUseCase(
                 paymentRepositoryGateway,
                 mercadoPagoClient,
-                paymentStatusMapper
+                paymentStatusMapper,
+                eventPublisher
         );
     }
 

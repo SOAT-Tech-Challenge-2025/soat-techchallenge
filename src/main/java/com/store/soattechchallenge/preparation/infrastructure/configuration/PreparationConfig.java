@@ -1,13 +1,17 @@
 package com.store.soattechchallenge.preparation.infrastructure.configuration;
 
+import com.store.soattechchallenge.preparation.domain.events.PaymentClosedEvent;
 import com.store.soattechchallenge.preparation.application.gateways.PreparationRepositoryGateway;
 import com.store.soattechchallenge.preparation.application.usecases.*;
 import com.store.soattechchallenge.preparation.controller.PreparationController;
 import com.store.soattechchallenge.preparation.infrastructure.gateways.PreparationRepositoryJpaGateway;
 import com.store.soattechchallenge.preparation.infrastructure.jpa.PreparationJpaRepository;
 import com.store.soattechchallenge.preparation.infrastructure.mappers.PreparationMapper;
+import com.store.soattechchallenge.shoppingCart.order.application.usecases.FindOrdersUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.function.Consumer;
 
 @Configuration
 public class PreparationConfig {
@@ -53,19 +57,34 @@ public class PreparationConfig {
     }
 
     @Bean
+    HandlePaymentClosedEventUseCase handlePaymentClosedEventUseCase(
+            CreatePreparationUseCase createPreparationUseCase,
+            FindOrdersUseCase findOrdersUseCase
+    ) {
+        return new HandlePaymentClosedEventUseCase(createPreparationUseCase, findOrdersUseCase);
+    }
+
+    @Bean
     PreparationController preparationController(
             CreatePreparationUseCase createUseCase,
             StartNextPreparationUseCase startNextUseCase,
             MarkPreparationAsReadyUseCase markAsReadyUseCase,
             MarkPreparationAsCompletedUseCase markAsCompletedUseCase,
-            GetWaitingListUseCase getWaitingListUseCase
+            GetWaitingListUseCase getWaitingListUseCase,
+            HandlePaymentClosedEventUseCase handlePaymentClosedEventUseCase
     ) {
         return new PreparationController(
                 createUseCase,
                 startNextUseCase,
                 markAsReadyUseCase,
                 markAsCompletedUseCase,
-                getWaitingListUseCase
+                getWaitingListUseCase,
+                handlePaymentClosedEventUseCase
         );
+    }
+
+    @Bean
+    public Consumer<PaymentClosedEvent> consumePaymentClosedEvent(PreparationController preparationController) {
+        return preparationController::handlePaymentClosedEvent;
     }
 }
