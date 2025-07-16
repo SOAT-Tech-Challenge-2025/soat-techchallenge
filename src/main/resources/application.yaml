@@ -31,20 +31,35 @@ spring:
     password: guest
 
   cloud:
+    function:
+      definition: consumeOrderCreatedEvent;consumePaymentClosedEvent
+
     stream:
       defaultBinder: rabbit
 
       bindings:
         paymentProducer-out-0:
-          destination: payment-destination
+          destination: payment
+
+        orderProducer-out-0:
+          destination: order
 
         consumePaymentClosedEvent-in-0:
-          destination: payment-destination
-          group: payment-destination-group
+          destination: payment
+          group: payment-group
+
+        consumeOrderCreatedEvent-in-0:
+          destination: order
+          group: order-group
 
       rabbit:
         bindings:
           consumePaymentClosedEvent-in-0:
+            consumer:
+              autoBindDlq: true
+              republishToDlq: true
+
+          consumeOrderCreatedEvent-in-0:
             consumer:
               autoBindDlq: true
               republishToDlq: true
@@ -93,3 +108,5 @@ logging:
     org.hibernate: ERROR
     com.zaxxer.hikari: ERROR
     com.store.soattechchallenge: INFO
+    org.springframework.cloud.stream: DEBUG
+    org.springframework.amqp.rabbit: DEBUG

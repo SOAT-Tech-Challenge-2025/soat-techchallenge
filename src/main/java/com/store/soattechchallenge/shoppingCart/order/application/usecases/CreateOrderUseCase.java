@@ -1,8 +1,10 @@
 package com.store.soattechchallenge.shoppingCart.order.application.usecases;
 
+import com.store.soattechchallenge.shoppingCart.order.application.gateways.EventPublisher;
 import com.store.soattechchallenge.shoppingCart.order.application.usecases.command.OrderRequestCommand;
 import com.store.soattechchallenge.shoppingCart.order.domain.entities.Order;
 import com.store.soattechchallenge.shoppingCart.order.domain.entities.OrderProduct;
+import com.store.soattechchallenge.shoppingCart.order.domain.events.OrderCreatedEvent;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.dto.OrderResponseDTO;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.utils.OrderUtils;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.gateways.OrderRepositoryGatewaysImpl;
@@ -18,9 +20,11 @@ import java.util.UUID;
 @Component
 public class CreateOrderUseCase {
     public final OrderRepositoryGatewaysImpl adaptersRepository;
+    public final EventPublisher eventPublisher;
 
-    public CreateOrderUseCase(OrderRepositoryGatewaysImpl adaptersRepository) {
+    public CreateOrderUseCase(OrderRepositoryGatewaysImpl adaptersRepository, EventPublisher eventPublisher) {
         this.adaptersRepository = adaptersRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     public Optional<OrderResponseDTO> saveOrder(OrderRequestCommand command) {
@@ -41,6 +45,14 @@ public class CreateOrderUseCase {
                     UUID.randomUUID()
             );
         }
-        return adaptersRepository.findOrderById(orderId);
+        Optional<OrderResponseDTO> orderResponseDTOOptional = adaptersRepository.findOrderById(orderId);
+        System.out.println("orderResponseDTOOptional.isPresent()");
+        System.out.println(orderResponseDTOOptional.isPresent());
+        if (orderResponseDTOOptional.isPresent()) {
+            OrderCreatedEvent event = new OrderCreatedEvent(orderResponseDTOOptional.get().getOrderId());
+            this.eventPublisher.publish(event);
+        }
+
+        return orderResponseDTOOptional;
     }
 }

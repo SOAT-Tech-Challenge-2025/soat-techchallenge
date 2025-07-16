@@ -4,11 +4,9 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.store.soattechchallenge.payment.application.gateways.EventPublisher;
 import com.store.soattechchallenge.payment.application.gateways.PaymentGateway;
 import com.store.soattechchallenge.payment.application.gateways.PaymentRepositoryGateway;
-import com.store.soattechchallenge.payment.application.usecases.CreatePaymentUseCase;
-import com.store.soattechchallenge.payment.application.usecases.FinalizePaymentByMercadoPagoPaymentIdUseCase;
-import com.store.soattechchallenge.payment.application.usecases.FindPaymentByIdUseCase;
-import com.store.soattechchallenge.payment.application.usecases.RenderQrCodeUseCase;
+import com.store.soattechchallenge.payment.application.usecases.*;
 import com.store.soattechchallenge.payment.controller.PaymentController;
+import com.store.soattechchallenge.payment.domain.events.OrderCreatedEvent;
 import com.store.soattechchallenge.payment.infrastructure.api.validator.MercadoPagoWebhookValidator;
 import com.store.soattechchallenge.payment.infrastructure.gateways.MercadoPagoPaymentGateway;
 import com.store.soattechchallenge.payment.infrastructure.gateways.StreamEventPublisher;
@@ -19,9 +17,12 @@ import com.store.soattechchallenge.payment.infrastructure.jpa.PaymentJpaReposito
 import com.store.soattechchallenge.payment.infrastructure.mappers.PaymentMapper;
 import com.store.soattechchallenge.payment.infrastructure.mappers.PaymentProductMapper;
 import com.store.soattechchallenge.payment.infrastructure.mappers.PaymentStatusMapper;
+import com.store.soattechchallenge.shoppingCart.order.application.usecases.FindOrdersUseCase;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.function.Consumer;
 
 @Configuration
 public class PaymentConfig {
@@ -46,7 +47,7 @@ public class PaymentConfig {
     }
 
     @Bean
-    EventPublisher eventPublisher (StreamBridge streamBridge) {
+    EventPublisher paymentEventsPublisher(StreamBridge streamBridge) {
         return new StreamEventPublisher(streamBridge);
     }
 
@@ -120,17 +121,32 @@ public class PaymentConfig {
     }
 
     @Bean
+    HandleOrderCreatedUseCase handleOrderCreatedUseCase(
+            CreatePaymentUseCase createPaymentUseCase,
+            FindOrdersUseCase findOrdersUseCase
+    ) {
+        return new HandleOrderCreatedUseCase(createPaymentUseCase, findOrdersUseCase);
+    }
+
+    @Bean
     PaymentController paymentController (
             FindPaymentByIdUseCase findPaymentByIdUseCase,
             RenderQrCodeUseCase renderQrCodeUseCase,
             CreatePaymentUseCase createPaymentUseCase,
-            FinalizePaymentByMercadoPagoPaymentIdUseCase finalizePaymentByMercadoPagoPaymentIdUseCase
+            FinalizePaymentByMercadoPagoPaymentIdUseCase finalizePaymentByMercadoPagoPaymentIdUseCase,
+            HandleOrderCreatedUseCase handleOrderCreatedUseCase
     ) {
         return new PaymentController(
                 findPaymentByIdUseCase,
                 renderQrCodeUseCase,
                 createPaymentUseCase,
-                finalizePaymentByMercadoPagoPaymentIdUseCase
+                finalizePaymentByMercadoPagoPaymentIdUseCase,
+                handleOrderCreatedUseCase
         );
+    }
+
+    @Bean
+    public Consumer<OrderCreatedEvent> consumeOrderCreatedEvent(PaymentController paymentController) {
+        return paymentController::handleOrderCreatedEvent;
     }
 }
