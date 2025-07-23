@@ -1,5 +1,6 @@
 package com.store.soattechchallenge.preparation.controller;
 
+import com.store.soattechchallenge.preparation.domain.events.PaymentClosedEvent;
 import com.store.soattechchallenge.preparation.gateways.PreparationRepositoryGateway;
 import com.store.soattechchallenge.preparation.infrastructure.api.dto.ItemsResponseDTO;
 import com.store.soattechchallenge.preparation.infrastructure.api.dto.PreparationResponseDTO;
@@ -17,6 +18,7 @@ import com.store.soattechchallenge.preparation.usecases.commands.CreatePreparati
 import com.store.soattechchallenge.preparation.usecases.commands.MarkPreparationAsCompletedCommand;
 import com.store.soattechchallenge.preparation.usecases.commands.MarkPreparationAsReadyCommand;
 import com.store.soattechchallenge.preparation.domain.entites.Preparation;
+import com.store.soattechchallenge.shoppingCart.order.application.usecases.FindOrdersUseCase;
 
 import java.util.List;
 
@@ -71,4 +73,10 @@ public class PreparationController {
         List<Preparation> preparations = useCase.execute();
         return presenter.present(preparations);
     }
+
+//    public void handlePaymentClosedEvent(PaymentClosedEvent event) {
+//        CreatePreparationUseCase useCase = new CreatePreparationUseCase(this.preparationRepositoryGateway);
+//        FindOrdersUseCase findOrdersUseCase = new FindOrdersUseCase();
+//        CreatePreparationCommand command = new CreatePreparationCommand(event.getPaymentId(), 10);
+//    }
 }

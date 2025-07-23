@@ -1,6 +1,8 @@
 package com.store.soattechchallenge.payment.usecases;
 
 import com.store.soattechchallenge.payment.domain.entities.Payment;
+import com.store.soattechchallenge.payment.domain.events.PaymentClosedEvent;
+import com.store.soattechchallenge.payment.gateways.EventPublisherGateway;
 import com.store.soattechchallenge.payment.gateways.PaymentRepositoryGateway;
 import com.store.soattechchallenge.payment.usecases.commands.FinalizePaymentByMercadoPagoPaymentIdCommand;
 import com.store.soattechchallenge.payment.gateways.exceptions.EntityNotFoundException;
@@ -17,15 +19,18 @@ import java.util.UUID;
 
 public class FinalizePaymentByMercadoPagoPaymentIdUseCase {
     private final PaymentRepositoryGateway paymentRepositoryGateway;
+    private final EventPublisherGateway eventPublisherGateway;
     private final MercadoPagoClient mercadoPagoClient;
     private final PaymentStatusMapper paymentStatusMapper;
 
     public FinalizePaymentByMercadoPagoPaymentIdUseCase(
             PaymentRepositoryGateway paymentRepositoryGateway,
+            EventPublisherGateway eventPublisherGateway,
             MercadoPagoClient mercadoPagoClient,
             PaymentStatusMapper paymentStatusMapper
     ) {
         this.paymentRepositoryGateway = paymentRepositoryGateway;
+        this.eventPublisherGateway = eventPublisherGateway;
         this.mercadoPagoClient = mercadoPagoClient;
         this.paymentStatusMapper = paymentStatusMapper;
     }
@@ -49,7 +54,10 @@ public class FinalizePaymentByMercadoPagoPaymentIdUseCase {
             Payment payment = this.paymentRepositoryGateway.findById(id);
             payment.setExternalId(externalId);
             payment.finalize(this.paymentStatusMapper.fromMPToDomain(mpOrder.status()));
-            return this.paymentRepositoryGateway.save(payment);
+            payment = this.paymentRepositoryGateway.save(payment);
+            PaymentClosedEvent paymentClosedEvent = new PaymentClosedEvent(payment.getId());
+            this.eventPublisherGateway.publish(paymentClosedEvent);
+            return payment;
         } catch (EntityNotFoundException error) {
             throw new CustomException(
                     "Payment not found",

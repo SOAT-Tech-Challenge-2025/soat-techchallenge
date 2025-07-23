@@ -20,6 +20,7 @@ import com.store.soattechchallenge.utils.exception.CustomException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,8 @@ public class PaymentAPIController {
             MercadoPagoClient mercadoPagoClient,
             PaymentProductMapper paymentProductMapper,
             PaymentStatusMapper paymentStatusMapper,
-            MercadoPagoWebhookValidator mercadoPagoWebhookValidator
+            MercadoPagoWebhookValidator mercadoPagoWebhookValidator,
+            StreamBridge streamBridge
     ) {
         this.paymentProductMapper = paymentProductMapper;
         this.mercadoPagoWebhookValidator = mercadoPagoWebhookValidator;
@@ -58,7 +60,8 @@ public class PaymentAPIController {
                 qrCodeWriter,
                 mercadoPagoIntegrationConfig,
                 mercadoPagoClient,
-                paymentStatusMapper
+                paymentStatusMapper,
+                streamBridge
         );
     }
 

@@ -1,8 +1,10 @@
 package com.store.soattechchallenge.payment.controller;
 
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.store.soattechchallenge.payment.gateways.EventPublisherGateway;
 import com.store.soattechchallenge.payment.gateways.PaymentGateway;
 import com.store.soattechchallenge.payment.gateways.PaymentRepositoryGateway;
+import com.store.soattechchallenge.payment.infrastructure.gateways.StreamEventPublisherGateway;
 import com.store.soattechchallenge.payment.usecases.CreatePaymentUseCase;
 import com.store.soattechchallenge.payment.usecases.FinalizePaymentByMercadoPagoPaymentIdUseCase;
 import com.store.soattechchallenge.payment.usecases.FindPaymentByIdUseCase;
@@ -22,6 +24,7 @@ import com.store.soattechchallenge.payment.infrastructure.mappers.PaymentMapper;
 import com.store.soattechchallenge.payment.infrastructure.mappers.PaymentStatusMapper;
 import com.store.soattechchallenge.payment.presenters.PaymentHttpPresenter;
 import com.store.soattechchallenge.payment.presenters.QrCodePresenter;
+import org.springframework.cloud.stream.function.StreamBridge;
 
 import java.awt.image.BufferedImage;
 
@@ -32,6 +35,7 @@ public class PaymentController {
     private final MercadoPagoClient mercadoPagoClient;
     private final PaymentGateway paymentGateway;
     private final PaymentStatusMapper paymentStatusMapper;
+    private final EventPublisherGateway eventPublisherGateway;
 
     public PaymentController(
             PaymentJpaRepository paymentJpaRepository,
@@ -39,12 +43,14 @@ public class PaymentController {
             QRCodeWriter qrCodeWriter,
             MercadoPagoIntegrationConfig mercadoPagoIntegrationConfig,
             MercadoPagoClient mercadoPagoClient,
-            PaymentStatusMapper paymentStatusMapper
+            PaymentStatusMapper paymentStatusMapper,
+            StreamBridge streamBridge
     ) {
         this.paymentMapper = paymentMapper;
         this.qrCodeWriter = qrCodeWriter;
         this.mercadoPagoClient = mercadoPagoClient;
         this.paymentStatusMapper = paymentStatusMapper;
+        this.eventPublisherGateway = new StreamEventPublisherGateway(streamBridge);
         this.paymentGateway = new MercadoPagoPaymentGateway(
                 mercadoPagoIntegrationConfig,
                 this.mercadoPagoClient
@@ -78,7 +84,10 @@ public class PaymentController {
 
     public PaymentResponseDTO finalizePaymentByMercadoPago(FinalizePaymentByMercadoPagoPaymentIdCommand command) {
         FinalizePaymentByMercadoPagoPaymentIdUseCase useCase = new FinalizePaymentByMercadoPagoPaymentIdUseCase(
-                this.paymentRepositoryGateway, this.mercadoPagoClient, this.paymentStatusMapper
+                this.paymentRepositoryGateway,
+                this.eventPublisherGateway,
+                this.mercadoPagoClient,
+                this.paymentStatusMapper
         );
 
         PaymentHttpPresenter presenter = new PaymentHttpPresenter(this.paymentMapper);
