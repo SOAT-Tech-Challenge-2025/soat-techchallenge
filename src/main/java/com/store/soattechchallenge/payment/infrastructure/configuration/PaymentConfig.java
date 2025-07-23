@@ -6,7 +6,6 @@ import com.store.soattechchallenge.payment.infrastructure.integrations.mercado_p
 import com.store.soattechchallenge.payment.infrastructure.integrations.mercado_pago.impl.MercadoPagoClientImpl;
 import com.store.soattechchallenge.payment.infrastructure.mappers.PaymentMapper;
 import com.store.soattechchallenge.payment.infrastructure.mappers.PaymentProductMapper;
-import com.store.soattechchallenge.payment.infrastructure.mappers.PaymentStatusMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,11 +14,6 @@ public class PaymentConfig {
     @Bean
     PaymentMapper paymentMapper () {
         return new PaymentMapper();
-    }
-
-    @Bean
-    PaymentStatusMapper paymentStatusMapper () {
-        return new PaymentStatusMapper();
     }
 
     @Bean

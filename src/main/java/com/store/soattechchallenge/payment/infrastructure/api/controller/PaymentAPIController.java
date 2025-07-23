@@ -15,7 +15,6 @@ import com.store.soattechchallenge.payment.infrastructure.integrations.mercado_p
 import com.store.soattechchallenge.payment.infrastructure.jpa.PaymentJpaRepository;
 import com.store.soattechchallenge.payment.infrastructure.mappers.PaymentMapper;
 import com.store.soattechchallenge.payment.infrastructure.mappers.PaymentProductMapper;
-import com.store.soattechchallenge.payment.infrastructure.mappers.PaymentStatusMapper;
 import com.store.soattechchallenge.utils.exception.CustomException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -47,7 +46,6 @@ public class PaymentAPIController {
             MercadoPagoIntegrationConfig mercadoPagoIntegrationConfig,
             MercadoPagoClient mercadoPagoClient,
             PaymentProductMapper paymentProductMapper,
-            PaymentStatusMapper paymentStatusMapper,
             MercadoPagoWebhookValidator mercadoPagoWebhookValidator
     ) {
         this.paymentProductMapper = paymentProductMapper;
@@ -57,8 +55,7 @@ public class PaymentAPIController {
                 paymentMapper,
                 qrCodeWriter,
                 mercadoPagoIntegrationConfig,
-                mercadoPagoClient,
-                paymentStatusMapper
+                mercadoPagoClient
         );
     }
 
