@@ -15,6 +15,21 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  broker:
+    image: rabbitmq:management-alpine
+    container_name: soat-broker
+    hostname: soat-broker
+    restart: always
+    expose:
+      - 5672
+      - 15672
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    depends_on:
+      - db
+
   app:
     build:
       context: .

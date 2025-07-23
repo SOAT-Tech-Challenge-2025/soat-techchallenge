@@ -1,12 +1,8 @@
 package com.store.soattechchallenge.payment.controller;
 
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.store.soattechchallenge.payment.gateways.MercadoPagoClientGateway;
-import com.store.soattechchallenge.payment.gateways.PaymentGateway;
-import com.store.soattechchallenge.payment.gateways.PaymentRepositoryGateway;
-import com.store.soattechchallenge.payment.gateways.QrCodeWriterGateway;
-import com.store.soattechchallenge.payment.infrastructure.gateways.MercadoPagoAPIClientGateway;
-import com.store.soattechchallenge.payment.infrastructure.gateways.QrCodeWriterZxingGateway;
+import com.store.soattechchallenge.payment.gateways.*;
+import com.store.soattechchallenge.payment.infrastructure.gateways.*;
 import com.store.soattechchallenge.payment.usecases.CreatePaymentUseCase;
 import com.store.soattechchallenge.payment.usecases.FinalizePaymentByMercadoPagoPaymentIdUseCase;
 import com.store.soattechchallenge.payment.usecases.FindPaymentByIdUseCase;
@@ -18,13 +14,12 @@ import com.store.soattechchallenge.payment.usecases.commands.RenderQrCodeCommand
 import com.store.soattechchallenge.payment.domain.entities.Payment;
 import com.store.soattechchallenge.payment.infrastructure.api.dto.PaymentResponseDTO;
 import com.store.soattechchallenge.payment.infrastructure.configuration.MercadoPagoIntegrationConfig;
-import com.store.soattechchallenge.payment.infrastructure.gateways.MercadoPagoPaymentGateway;
-import com.store.soattechchallenge.payment.infrastructure.gateways.PaymentRepositoryJpaGateway;
 import com.store.soattechchallenge.payment.infrastructure.integrations.mercado_pago.MercadoPagoClient;
 import com.store.soattechchallenge.payment.infrastructure.jpa.PaymentJpaRepository;
 import com.store.soattechchallenge.payment.infrastructure.mappers.PaymentMapper;
 import com.store.soattechchallenge.payment.presenters.PaymentHttpPresenter;
 import com.store.soattechchallenge.payment.presenters.QrCodePresenter;
+import org.springframework.cloud.stream.function.StreamBridge;
 
 import java.awt.image.BufferedImage;
 
@@ -34,19 +29,22 @@ public class PaymentController {
     private final PaymentRepositoryGateway paymentRepositoryGateway;
     private final MercadoPagoClientGateway mercadoPagoClientGateway;
     private final PaymentGateway paymentGateway;
+    private final EventPublisherGateway eventPublisherGateway;
 
     public PaymentController(
             PaymentJpaRepository paymentJpaRepository,
             PaymentMapper paymentMapper,
             QRCodeWriter qrCodeWriter,
             MercadoPagoIntegrationConfig mercadoPagoIntegrationConfig,
-            MercadoPagoClient mercadoPagoClient
+            MercadoPagoClient mercadoPagoClient,
+            StreamBridge streamBridge
     ) {
         this.paymentMapper = paymentMapper;
         this.paymentGateway = new MercadoPagoPaymentGateway(mercadoPagoIntegrationConfig, mercadoPagoClient);
         this.paymentRepositoryGateway = new PaymentRepositoryJpaGateway(paymentJpaRepository, this.paymentMapper);
         this.qrCodeWriterGateway = new QrCodeWriterZxingGateway(qrCodeWriter);
         this.mercadoPagoClientGateway = new MercadoPagoAPIClientGateway(mercadoPagoClient);
+        this.eventPublisherGateway = new StreamEventPublisherGateway(streamBridge);
     }
 
     public PaymentResponseDTO findById(FindPaymentByIdCommand command) {
@@ -72,7 +70,7 @@ public class PaymentController {
 
     public PaymentResponseDTO finalizePaymentByMercadoPago(FinalizePaymentByMercadoPagoPaymentIdCommand command) {
         FinalizePaymentByMercadoPagoPaymentIdUseCase useCase = new FinalizePaymentByMercadoPagoPaymentIdUseCase(
-                this.paymentRepositoryGateway, this.mercadoPagoClientGateway
+                this.paymentRepositoryGateway, this.mercadoPagoClientGateway, this.eventPublisherGateway
         );
 
         PaymentHttpPresenter presenter = new PaymentHttpPresenter(this.paymentMapper);

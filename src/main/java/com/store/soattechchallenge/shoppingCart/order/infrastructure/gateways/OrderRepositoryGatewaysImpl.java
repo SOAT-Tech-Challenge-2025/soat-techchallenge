@@ -38,7 +38,7 @@ public class OrderRepositoryGatewaysImpl implements OrderRepositoryGateways {
 
     @Override
     public Optional<Order> findOrderById(String orderId) {
-        Optional<JPAOrderEntity> jpaOrderEntity = repository.findById(orderId);
+        Optional<JPAOrderEntity> jpaOrderEntity = repository.findByIdWithProdutos(orderId);
         return this.mapper.entityToOrder(jpaOrderEntity);
     }
 
