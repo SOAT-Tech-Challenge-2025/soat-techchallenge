@@ -1,4 +1,4 @@
-package com.store.soattechchallenge.preparation.application.gateways;
+package com.store.soattechchallenge.preparation.gateways;
 
 import com.store.soattechchallenge.preparation.domain.entites.Preparation;
 

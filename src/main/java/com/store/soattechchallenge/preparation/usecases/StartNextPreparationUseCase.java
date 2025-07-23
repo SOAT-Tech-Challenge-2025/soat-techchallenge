@@ -1,6 +1,6 @@
-package com.store.soattechchallenge.preparation.application.usecases;
+package com.store.soattechchallenge.preparation.usecases;
 
-import com.store.soattechchallenge.preparation.application.gateways.PreparationRepositoryGateway;
+import com.store.soattechchallenge.preparation.gateways.PreparationRepositoryGateway;
 import com.store.soattechchallenge.preparation.domain.PreparationStatus;
 import com.store.soattechchallenge.preparation.domain.entites.Preparation;
 import com.store.soattechchallenge.utils.exception.CustomException;

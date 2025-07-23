@@ -1,6 +1,6 @@
 package com.store.soattechchallenge.preparation.infrastructure.gateways;
 
-import com.store.soattechchallenge.preparation.application.gateways.exceptions.EntityNotFoundException;
+import com.store.soattechchallenge.preparation.gateways.exceptions.EntityNotFoundException;
 import com.store.soattechchallenge.preparation.domain.PreparationStatus;
 import com.store.soattechchallenge.preparation.domain.entites.Preparation;
 import com.store.soattechchallenge.preparation.infrastructure.jpa.JpaPreparation;

@@ -1,27 +1,28 @@
-package com.store.soattechchallenge.preparation.application.usecases;
+package com.store.soattechchallenge.preparation.usecases;
 
-import com.store.soattechchallenge.preparation.application.gateways.PreparationRepositoryGateway;
-import com.store.soattechchallenge.preparation.application.usecases.commands.MarkPreparationAsCompletedCommand;
+import com.store.soattechchallenge.preparation.gateways.PreparationRepositoryGateway;
+import com.store.soattechchallenge.preparation.usecases.commands.MarkPreparationAsReadyCommand;
 import com.store.soattechchallenge.preparation.domain.entites.Preparation;
-import com.store.soattechchallenge.preparation.application.gateways.exceptions.EntityNotFoundException;
+import com.store.soattechchallenge.preparation.gateways.exceptions.EntityNotFoundException;
 import com.store.soattechchallenge.utils.exception.CustomException;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class MarkPreparationAsCompletedUseCase {
+public class MarkPreparationAsReadyUseCase {
     private final PreparationRepositoryGateway preparationRepositoryGateway;
 
-    public MarkPreparationAsCompletedUseCase(PreparationRepositoryGateway preparationRepositoryGateway) {
+    public MarkPreparationAsReadyUseCase(PreparationRepositoryGateway preparationRepositoryGateway) {
         this.preparationRepositoryGateway = preparationRepositoryGateway;
     }
 
-    public Preparation execute(MarkPreparationAsCompletedCommand command) {
+    public Preparation execute(MarkPreparationAsReadyCommand command) {
         try {
             Preparation preparation = this.preparationRepositoryGateway.findById(command.id());
-            preparation.complete();
-            return this.preparationRepositoryGateway.save(preparation);
+            preparation.ready();
+            preparation = this.preparationRepositoryGateway.save(preparation);
+            return preparation;
         } catch (EntityNotFoundException error) {
             throw new CustomException(
                     "Preparation not found",

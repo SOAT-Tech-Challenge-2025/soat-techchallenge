@@ -1,4 +1,4 @@
-package com.store.soattechchallenge.preparation.application.gateways.exceptions;
+package com.store.soattechchallenge.preparation.gateways.exceptions;
 
 public class EntityNotFoundException extends RuntimeException {
     public EntityNotFoundException(String message) {

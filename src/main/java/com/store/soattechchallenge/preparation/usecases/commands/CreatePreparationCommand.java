@@ -1,4 +1,4 @@
-package com.store.soattechchallenge.preparation.application.usecases.commands;
+package com.store.soattechchallenge.preparation.usecases.commands;
 
 public record CreatePreparationCommand(String id, Integer preparationTime) {
 }

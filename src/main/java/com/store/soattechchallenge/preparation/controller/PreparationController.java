@@ -1,55 +1,74 @@
 package com.store.soattechchallenge.preparation.controller;
 
-import com.store.soattechchallenge.preparation.application.usecases.CreatePreparationUseCase;
-import com.store.soattechchallenge.preparation.application.usecases.MarkPreparationAsReadyUseCase;
-import com.store.soattechchallenge.preparation.application.usecases.MarkPreparationAsCompletedUseCase;
-import com.store.soattechchallenge.preparation.application.usecases.StartNextPreparationUseCase;
-import com.store.soattechchallenge.preparation.application.usecases.GetWaitingListUseCase;
-import com.store.soattechchallenge.preparation.application.usecases.commands.CreatePreparationCommand;
-import com.store.soattechchallenge.preparation.application.usecases.commands.MarkPreparationAsCompletedCommand;
-import com.store.soattechchallenge.preparation.application.usecases.commands.MarkPreparationAsReadyCommand;
+import com.store.soattechchallenge.preparation.gateways.PreparationRepositoryGateway;
+import com.store.soattechchallenge.preparation.infrastructure.api.dto.ItemsResponseDTO;
+import com.store.soattechchallenge.preparation.infrastructure.api.dto.PreparationResponseDTO;
+import com.store.soattechchallenge.preparation.infrastructure.gateways.PreparationRepositoryJpaGateway;
+import com.store.soattechchallenge.preparation.infrastructure.jpa.PreparationJpaRepository;
+import com.store.soattechchallenge.preparation.infrastructure.mappers.PreparationMapper;
+import com.store.soattechchallenge.preparation.presenters.PreparationHttpPresenter;
+import com.store.soattechchallenge.preparation.presenters.WaitingListHttpPresenter;
+import com.store.soattechchallenge.preparation.usecases.CreatePreparationUseCase;
+import com.store.soattechchallenge.preparation.usecases.MarkPreparationAsReadyUseCase;
+import com.store.soattechchallenge.preparation.usecases.MarkPreparationAsCompletedUseCase;
+import com.store.soattechchallenge.preparation.usecases.StartNextPreparationUseCase;
+import com.store.soattechchallenge.preparation.usecases.GetWaitingListUseCase;
+import com.store.soattechchallenge.preparation.usecases.commands.CreatePreparationCommand;
+import com.store.soattechchallenge.preparation.usecases.commands.MarkPreparationAsCompletedCommand;
+import com.store.soattechchallenge.preparation.usecases.commands.MarkPreparationAsReadyCommand;
 import com.store.soattechchallenge.preparation.domain.entites.Preparation;
 
 import java.util.List;
 
 public class PreparationController {
-    private final CreatePreparationUseCase createUseCase;
-    private final StartNextPreparationUseCase startNextUseCase;
-    private final MarkPreparationAsReadyUseCase markAsReadyUseCase;
-    private final MarkPreparationAsCompletedUseCase markAsCompletedUseCase;
-    private final GetWaitingListUseCase getWaitingListUseCase;
+    private final PreparationRepositoryGateway preparationRepositoryGateway;
+    private final PreparationMapper preparationMapper;
 
     public PreparationController(
-            CreatePreparationUseCase createUseCase,
-            StartNextPreparationUseCase startNextUseCase,
-            MarkPreparationAsReadyUseCase markAsReadyUseCase,
-            MarkPreparationAsCompletedUseCase markAsCompletedUseCase,
-            GetWaitingListUseCase getWaitingListUseCase
+            PreparationJpaRepository preparationJpaRepository,
+            PreparationMapper preparationMapper
     ) {
-        this.createUseCase = createUseCase;
-        this.startNextUseCase = startNextUseCase;
-        this.markAsReadyUseCase = markAsReadyUseCase;
-        this.markAsCompletedUseCase = markAsCompletedUseCase;
-        this.getWaitingListUseCase = getWaitingListUseCase;
+        this.preparationMapper = preparationMapper;
+        this.preparationRepositoryGateway = new PreparationRepositoryJpaGateway(
+                preparationJpaRepository, this.preparationMapper
+        );
     }
 
-    public Preparation create(CreatePreparationCommand command) {
-        return this.createUseCase.execute(command);
+    public PreparationResponseDTO create(CreatePreparationCommand command) {
+        CreatePreparationUseCase useCase = new CreatePreparationUseCase(this.preparationRepositoryGateway);
+        PreparationHttpPresenter presenter = new PreparationHttpPresenter(this.preparationMapper);
+        Preparation preparation = useCase.execute(command);
+        return presenter.present(preparation);
     }
 
-    public Preparation startNext() {
-        return this.startNextUseCase.execute();
+    public PreparationResponseDTO startNext() {
+        StartNextPreparationUseCase useCase = new StartNextPreparationUseCase(this.preparationRepositoryGateway);
+        PreparationHttpPresenter presenter = new PreparationHttpPresenter(this.preparationMapper);
+        Preparation preparation = useCase.execute();
+        return presenter.present(preparation);
     }
 
-    public Preparation markAsReady(MarkPreparationAsReadyCommand command) {
-        return this.markAsReadyUseCase.execute(command);
+    public PreparationResponseDTO markAsReady(MarkPreparationAsReadyCommand command) {
+        MarkPreparationAsReadyUseCase useCase = new MarkPreparationAsReadyUseCase(this.preparationRepositoryGateway);
+        PreparationHttpPresenter presenter = new PreparationHttpPresenter(this.preparationMapper);
+        Preparation preparation = useCase.execute(command);
+        return presenter.present(preparation);
     }
 
-    public Preparation markAsCompleted(MarkPreparationAsCompletedCommand command) {
-        return this.markAsCompletedUseCase.execute(command);
+    public PreparationResponseDTO markAsCompleted(MarkPreparationAsCompletedCommand command) {
+        MarkPreparationAsCompletedUseCase useCase = new MarkPreparationAsCompletedUseCase(
+                this.preparationRepositoryGateway
+        );
+
+        PreparationHttpPresenter presenter = new PreparationHttpPresenter(this.preparationMapper);
+        Preparation preparation = useCase.execute(command);
+        return presenter.present(preparation);
     }
 
-    public List<Preparation> getWaitingList() {
-        return this.getWaitingListUseCase.execute();
+    public ItemsResponseDTO<PreparationResponseDTO> getWaitingList() {
+        GetWaitingListUseCase useCase = new GetWaitingListUseCase(this.preparationRepositoryGateway);
+        WaitingListHttpPresenter presenter = new WaitingListHttpPresenter(this.preparationMapper);
+        List<Preparation> preparations = useCase.execute();
+        return presenter.present(preparations);
     }
 }
