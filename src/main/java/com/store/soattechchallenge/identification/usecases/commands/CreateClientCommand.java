@@ -1,4 +1,4 @@
-package com.store.soattechchallenge.identification.application.usecases.commands;
+package com.store.soattechchallenge.identification.usecases.commands;
 
 public record CreateClientCommand(String nameClient, String numberDocument, String email) {
 }

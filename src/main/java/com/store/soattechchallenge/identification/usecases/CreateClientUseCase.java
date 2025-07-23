@@ -1,7 +1,7 @@
-package com.store.soattechchallenge.identification.application.usecases;
+package com.store.soattechchallenge.identification.usecases;
 
-import com.store.soattechchallenge.identification.application.gateways.IdentificationRepositoryGateway;
-import com.store.soattechchallenge.identification.application.usecases.commands.CreateClientCommand;
+import com.store.soattechchallenge.identification.gateways.IdentificationRepositoryGateway;
+import com.store.soattechchallenge.identification.usecases.commands.CreateClientCommand;
 import com.store.soattechchallenge.identification.domain.entities.Identification;
 
 import java.time.LocalDateTime;

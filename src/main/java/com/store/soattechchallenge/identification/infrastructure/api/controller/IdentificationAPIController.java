@@ -1,6 +1,6 @@
 package com.store.soattechchallenge.identification.infrastructure.api.controller;
 
-import com.store.soattechchallenge.identification.application.usecases.commands.CreateClientCommand;
+import com.store.soattechchallenge.identification.usecases.commands.CreateClientCommand;
 import com.store.soattechchallenge.identification.controller.IdentificationController;
 import com.store.soattechchallenge.identification.domain.entities.Identification;
 import com.store.soattechchallenge.identification.infrastructure.api.dto.IdentificationRequestDTO;

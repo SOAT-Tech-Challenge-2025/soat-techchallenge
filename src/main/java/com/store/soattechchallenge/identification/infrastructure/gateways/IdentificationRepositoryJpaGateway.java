@@ -1,6 +1,6 @@
 package com.store.soattechchallenge.identification.infrastructure.gateways;
 
-import com.store.soattechchallenge.identification.application.gateways.IdentificationRepositoryGateway;
+import com.store.soattechchallenge.identification.gateways.IdentificationRepositoryGateway;
 import com.store.soattechchallenge.identification.domain.entities.Identification;
 import com.store.soattechchallenge.identification.infrastructure.jpa.JpaIdentification;
 import com.store.soattechchallenge.identification.infrastructure.jpa.JpaIdentificationRepository;

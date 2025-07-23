@@ -1,4 +1,4 @@
-package com.store.soattechchallenge.identification.application.usecases;
+package com.store.soattechchallenge.identification.usecases;
 
 import com.store.soattechchallenge.identification.domain.entities.Identification;
 import com.store.soattechchallenge.identification.infrastructure.api.dto.IdentificationRequestDTO;

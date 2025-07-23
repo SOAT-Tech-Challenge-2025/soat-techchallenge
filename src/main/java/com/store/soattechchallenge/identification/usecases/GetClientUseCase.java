@@ -1,6 +1,6 @@
-package com.store.soattechchallenge.identification.application.usecases;
+package com.store.soattechchallenge.identification.usecases;
 
-import com.store.soattechchallenge.identification.application.gateways.IdentificationRepositoryGateway;
+import com.store.soattechchallenge.identification.gateways.IdentificationRepositoryGateway;
 import com.store.soattechchallenge.identification.domain.entities.Identification;
 import com.store.soattechchallenge.identification.infrastructure.security.JwtTokenSecurity;
 

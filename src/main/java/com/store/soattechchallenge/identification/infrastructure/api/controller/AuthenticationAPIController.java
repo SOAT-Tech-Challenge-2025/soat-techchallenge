@@ -1,6 +1,6 @@
 package com.store.soattechchallenge.identification.infrastructure.api.controller;
 
-import com.store.soattechchallenge.identification.application.usecases.GetClientUseCase;
+import com.store.soattechchallenge.identification.usecases.GetClientUseCase;
 import com.store.soattechchallenge.identification.infrastructure.api.dto.LoginRequestDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

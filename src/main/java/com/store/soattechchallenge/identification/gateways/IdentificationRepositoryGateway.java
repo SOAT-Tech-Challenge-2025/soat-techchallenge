@@ -1,4 +1,4 @@
-package com.store.soattechchallenge.identification.application.gateways;
+package com.store.soattechchallenge.identification.gateways;
 
 import com.store.soattechchallenge.identification.domain.entities.Identification;
 

@@ -1,8 +1,8 @@
 package com.store.soattechchallenge.identification.controller;
 
-import com.store.soattechchallenge.identification.application.usecases.CreateClientUseCase;
-import com.store.soattechchallenge.identification.application.usecases.GetClientUseCase;
-import com.store.soattechchallenge.identification.application.usecases.commands.CreateClientCommand;
+import com.store.soattechchallenge.identification.usecases.CreateClientUseCase;
+import com.store.soattechchallenge.identification.usecases.GetClientUseCase;
+import com.store.soattechchallenge.identification.usecases.commands.CreateClientCommand;
 import com.store.soattechchallenge.identification.domain.entities.Identification;
 
 import java.util.Optional;
