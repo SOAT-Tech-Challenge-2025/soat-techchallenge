@@ -1,9 +1,10 @@
 package com.store.soattechchallenge.shoppingCart.product.infrastructure.configuration;
 
-import com.store.soattechchallenge.shoppingCart.product.application.usecases.CreateProductUseCase;
-import com.store.soattechchallenge.shoppingCart.product.application.usecases.DeleteProductUseCase;
-import com.store.soattechchallenge.shoppingCart.product.application.usecases.FindProductUseCase;
-import com.store.soattechchallenge.shoppingCart.product.application.usecases.UpdateProductUseCase;
+
+import com.store.soattechchallenge.shoppingCart.product.usecases.CreateProductUseCase;
+import com.store.soattechchallenge.shoppingCart.product.usecases.DeleteProductUseCase;
+import com.store.soattechchallenge.shoppingCart.product.usecases.FindProductUseCase;
+import com.store.soattechchallenge.shoppingCart.product.usecases.UpdateProductUseCase;
 import com.store.soattechchallenge.shoppingCart.product.controller.ProductMainController;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.gateways.ProductRepositoryGatewayGateways;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.jpa.ProductAdaptersGetRepository;
@@ -14,8 +15,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ProductConfig {
     @Bean
-    ProductMainController productMainController(FindProductUseCase findProductUseCase, CreateProductUseCase createProductUseCase, UpdateProductUseCase updateProductUseCase, DeleteProductUseCase deleteProductUseCase) {
-        return new ProductMainController(findProductUseCase, createProductUseCase, updateProductUseCase, deleteProductUseCase);
+    ProductMainController productMainController(ProductRepositoryGatewayGateways adaptersRepository, ProductMapper productMapper) {
+        return new ProductMainController(adaptersRepository,productMapper);
     }
     @Bean
     FindProductUseCase findProductUseCase(ProductRepositoryGatewayGateways adaptersRepository) {

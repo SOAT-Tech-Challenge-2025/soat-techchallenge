@@ -1,8 +1,9 @@
 package com.store.soattechchallenge.shoppingCart.order.infrastructure.gateways;
 
 import com.store.soattechchallenge.shoppingCart.order.domain.entities.Order;
-import com.store.soattechchallenge.shoppingCart.order.application.gateways.OrderRepositoryGateways;
+import com.store.soattechchallenge.shoppingCart.order.gateways.OrderRepositoryGateways;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.dto.OrderResponseDTO;
+import com.store.soattechchallenge.shoppingCart.order.infrastructure.jpa.JPAOrderEntity;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.mappers.OrderMapper;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.jpa.OrderAdaptersGetRepository;
 import org.springframework.data.domain.Page;
@@ -30,14 +31,14 @@ import java.util.Optional;
     }
 
     @Override
-    public Page<OrderResponseDTO> findAll(Pageable pageable) {
-        return mapper.toOrderGetResponseDTO(repository.findAll(pageable));
+    public Page<JPAOrderEntity> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
 
     @Override
-    public Optional<OrderResponseDTO> findOrderById(String orderId) {
-        return mapper.toOrderGetResponseDTO(repository.findById(orderId));
+    public Optional<JPAOrderEntity> findOrderById(String orderId) {
+        return repository.findById(orderId);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.store.soattechchallenge.shoppingCart.order.infrastructure.api.controller;
 
-import com.store.soattechchallenge.shoppingCart.order.application.usecases.command.OrderRequestCommand;
+import com.store.soattechchallenge.shoppingCart.order.usecases.command.OrderRequestCommand;
 import com.store.soattechchallenge.shoppingCart.order.controller.OrderMainController;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.dto.OrderResponseDTO;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.dto.OrderRequestDTO;

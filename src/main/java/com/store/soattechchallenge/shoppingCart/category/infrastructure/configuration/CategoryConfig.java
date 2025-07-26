@@ -1,11 +1,11 @@
 package com.store.soattechchallenge.shoppingCart.category.infrastructure.configuration;
 
-import com.store.soattechchallenge.shoppingCart.category.application.usecases.*;
 import com.store.soattechchallenge.shoppingCart.category.controller.CategoryAppController;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.gateways.CategoryGatewayGateway;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.jpa.CategoryAdaptersRepository;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.mappers.CategoryMapper;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.mappers.impl.CategoryMapperImpl;
+import com.store.soattechchallenge.shoppingCart.category.usecases.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,20 +24,8 @@ public class CategoryConfig {
     }
 
     @Bean
-    CategoryAppController categoryAppController(
-            CreateCategoryUseCase createCategoryUseCase,
-            FindCategoryUseCase findCategoryUseCase,
-            UpdateCategoryUseCase updateCategoryUseCase,
-            DeleteCategoryUseCase deleteCategoryUseCase,
-            FindProductsByCategoryUseCase findProductsByCategoryUseCase
-    ) {
-        return new CategoryAppController(
-                createCategoryUseCase,
-                findCategoryUseCase,
-                updateCategoryUseCase,
-                deleteCategoryUseCase,
-                findProductsByCategoryUseCase
-        );
+    CategoryAppController categoryAppController(CategoryGatewayGateway adaptersRepository, CategoryMapper categoryMapper) {
+        return new CategoryAppController(adaptersRepository, categoryMapper);
     }
 
     @Bean

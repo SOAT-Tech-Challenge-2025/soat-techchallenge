@@ -1,7 +1,7 @@
 package com.store.soattechchallenge.shoppingCart.product.infrastructure.gateways;
 
 import com.store.soattechchallenge.shoppingCart.product.domain.entities.Product;
-import com.store.soattechchallenge.shoppingCart.product.application.gateways.ProductRepositoryGateway;
+import com.store.soattechchallenge.shoppingCart.product.gateways.ProductRepositoryGateway;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.api.dto.ProductGetResponseDTO;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.api.dto.ProductPostUpResponseDTO;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.jpa.JpaProduct;
@@ -30,7 +30,7 @@ public class ProductRepositoryGatewayGateways implements ProductRepositoryGatewa
     }
 
     @Override
-    public Optional<ProductGetResponseDTO> findById(Long id) {
+    public Optional<JpaProduct> findById(Long id) {
         Optional<JpaProduct> productEntity = repository.findById(id);
         if (productEntity.isEmpty()) {
             throw new CustomException(
@@ -41,11 +41,11 @@ public class ProductRepositoryGatewayGateways implements ProductRepositoryGatewa
                     UUID.randomUUID()
             );
         }
-        return mapper.modelToProductGetResponseDTO(productEntity);
+        return productEntity;
     }
 
     @Override
-    public Page<ProductGetResponseDTO> findAll(Pageable pageable) {
+    public Page<JpaProduct> findAll(Pageable pageable) {
         Page<JpaProduct> productGetResponseDTOPage = repository.findAll(pageable);
         if (productGetResponseDTOPage.isEmpty()) {
             throw new CustomException(
@@ -56,7 +56,7 @@ public class ProductRepositoryGatewayGateways implements ProductRepositoryGatewa
                     UUID.randomUUID()
             );
         }
-        return mapper.modelToProductGetResponseDTO(productGetResponseDTOPage);
+        return productGetResponseDTOPage;
     }
 
     @Override
@@ -85,7 +85,7 @@ public class ProductRepositoryGatewayGateways implements ProductRepositoryGatewa
     }
 
     @Override
-    public ProductPostUpResponseDTO update(Product product, Long id) {
+    public Boolean update(Product product, Long id) {
         JpaProduct jpaProductMapper = mapper.productToProductUpdateMap(product,id);
         AtomicReference<Boolean> updated = new AtomicReference<>(true);
         try {
@@ -107,14 +107,14 @@ public class ProductRepositoryGatewayGateways implements ProductRepositoryGatewa
             );
         }
         if(updated.get()) {
-            return new ProductPostUpResponseDTO("Produto atualizado com sucesso");
+            return Boolean.TRUE;
         }
-        return new ProductPostUpResponseDTO("Product not updated");
+        return Boolean.FALSE;
 
     }
 
     @Override
-    public ProductPostUpResponseDTO deleteById(Long id) {
+    public Boolean deleteById(Long id) {
         Optional<JpaProduct> entity = repository.findById(id);
         if (entity.isPresent()) {
             try {
@@ -127,9 +127,9 @@ public class ProductRepositoryGatewayGateways implements ProductRepositoryGatewa
                         LocalDateTime.now(),
                         UUID.randomUUID()
                 );}
-            return new ProductPostUpResponseDTO("Produto deletado com sucesso");
+            return Boolean.TRUE;
         }else {
-            return new ProductPostUpResponseDTO("Produto não existe");
+            return Boolean.FALSE;
         }
     }
 }

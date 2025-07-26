@@ -1,10 +1,11 @@
 package com.store.soattechchallenge.shoppingCart.category.infrastructure.api.controller;
 
 
-import com.store.soattechchallenge.shoppingCart.category.application.usecases.commands.CategoryCommand;
+import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryDTO;
+import com.store.soattechchallenge.shoppingCart.category.usecases.commands.CategoryCommand;
 import com.store.soattechchallenge.shoppingCart.category.controller.CategoryAppController;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryRequestDTO;
-import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryResponseDTO;
+import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryMessagerResponseDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryWithProductsDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.jpa.JpaCategory;
 import org.springframework.data.domain.Page;
@@ -28,13 +29,13 @@ public class CategoryController {
 
 
     @PostMapping
-    public ResponseEntity<CategoryResponseDTO> createCategory(@RequestBody CategoryRequestDTO category) {
+    public ResponseEntity<CategoryMessagerResponseDTO> createCategory(@RequestBody CategoryRequestDTO category) {
         CategoryCommand command = new CategoryCommand(category.getCategoryName());
         return ResponseEntity.status(201).body(categoryAppController.createCategory(command));
     }
 
     @GetMapping
-    public ResponseEntity<Page<JpaCategory>> getAllCategories(
+    public ResponseEntity<Page<CategoryDTO>> getAllCategories(
             @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
             @RequestParam(name = "offset", required = false, defaultValue = "0") int offset,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
@@ -45,18 +46,18 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<JpaCategory>> getCategoryById(@PathVariable("id") Long id) {
+    public ResponseEntity<Optional<CategoryDTO>> getCategoryById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(categoryAppController.getCategoryById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryResponseDTO> updateCategory(@PathVariable("id") Long id, @RequestBody CategoryRequestDTO category) {
+    public ResponseEntity<CategoryMessagerResponseDTO> updateCategory(@PathVariable("id") Long id, @RequestBody CategoryRequestDTO category) {
         CategoryCommand command = new CategoryCommand(category.getCategoryName());
         return ResponseEntity.status(200).body(categoryAppController.updateCategory(id,command));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<CategoryResponseDTO> deleteCategory(@PathVariable("id") Long id) {
+    public ResponseEntity<CategoryMessagerResponseDTO> deleteCategory(@PathVariable("id") Long id) {
         return ResponseEntity.ok(categoryAppController.deleteCategory(id));
     }
 

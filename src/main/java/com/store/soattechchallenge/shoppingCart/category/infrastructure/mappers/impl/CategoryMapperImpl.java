@@ -1,11 +1,13 @@
 package com.store.soattechchallenge.shoppingCart.category.infrastructure.mappers.impl;
 
 import com.store.soattechchallenge.shoppingCart.category.domain.entities.Category;
+import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryProductProjectionDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryWithProductsDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.ProductDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.jpa.JpaCategory;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.mappers.CategoryMapper;
+import org.springframework.data.domain.Page;
 
 import java.util.Comparator;
 import java.util.List;
@@ -33,6 +35,23 @@ public class CategoryMapperImpl implements CategoryMapper{
         return jpaCategory;
     }
 
+    @Override
+    public Page<CategoryDTO> toCategoryDTO(Page<JpaCategory> jpaCategory) {
+        return jpaCategory.map(this::toCategoryDTO);
+    }
+
+    @Override
+    public CategoryDTO toCategoryDTO(JpaCategory jpaCategory) {
+        if (jpaCategory == null) {
+            return null;
+        }
+        return new CategoryDTO(
+                jpaCategory.getId(),
+                jpaCategory.getCategoryName(),
+                jpaCategory.getDateInclusion(),
+                jpaCategory.getTimestamp()
+        );
+    }
     @Override
     public Optional<CategoryWithProductsDTO> toProductCategoryEntity(List<CategoryProductProjectionDTO> projectionDTOList) {
         if (projectionDTOList == null || projectionDTOList.isEmpty()) {

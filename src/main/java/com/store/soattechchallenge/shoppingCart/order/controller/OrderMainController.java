@@ -1,9 +1,13 @@
 package com.store.soattechchallenge.shoppingCart.order.controller;
 
-import com.store.soattechchallenge.shoppingCart.order.application.usecases.CreateOrderUseCase;
-import com.store.soattechchallenge.shoppingCart.order.application.usecases.FindOrdersUseCase;
-import com.store.soattechchallenge.shoppingCart.order.application.usecases.UpdateOrderUseCase;
-import com.store.soattechchallenge.shoppingCart.order.application.usecases.command.OrderRequestCommand;
+import com.store.soattechchallenge.shoppingCart.order.infrastructure.gateways.OrderRepositoryGatewaysImpl;
+import com.store.soattechchallenge.shoppingCart.order.infrastructure.jpa.JPAOrderEntity;
+import com.store.soattechchallenge.shoppingCart.order.infrastructure.mappers.OrderMapper;
+import com.store.soattechchallenge.shoppingCart.order.presenters.OrderHttpPresenter;
+import com.store.soattechchallenge.shoppingCart.order.usecases.CreateOrderUseCase;
+import com.store.soattechchallenge.shoppingCart.order.usecases.FindOrdersUseCase;
+import com.store.soattechchallenge.shoppingCart.order.usecases.UpdateOrderUseCase;
+import com.store.soattechchallenge.shoppingCart.order.usecases.command.OrderRequestCommand;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.dto.OrderRequestDTO;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.dto.OrderResponseDTO;
 import com.store.soattechchallenge.utils.exception.CustomException;
@@ -19,30 +23,41 @@ import java.util.UUID;
 
 public class OrderMainController {
 
-    public final CreateOrderUseCase createOrderUseCase;
-    public final FindOrdersUseCase findOrdersUseCase;
-    public final UpdateOrderUseCase updateOrderUseCase;
+    public final OrderRepositoryGatewaysImpl adaptersRepository;
+    public final OrderMapper orderMapper;
 
-    public OrderMainController(CreateOrderUseCase createOrderUseCase, FindOrdersUseCase findOrdersUseCase, UpdateOrderUseCase updateOrderUseCase) {
-        this.createOrderUseCase = createOrderUseCase;
-        this.findOrdersUseCase = findOrdersUseCase;
-        this.updateOrderUseCase = updateOrderUseCase;
+
+    public OrderMainController(OrderRepositoryGatewaysImpl adaptersRepository, OrderMapper orderMapper) {
+        this.adaptersRepository = adaptersRepository;
+        this.orderMapper = orderMapper;
     }
 
     public Optional<OrderResponseDTO> createProduct(OrderRequestCommand command) {
-        return createOrderUseCase.saveOrder(command);
+        CreateOrderUseCase createOrderUseCase = new CreateOrderUseCase(this.adaptersRepository);
+        OrderHttpPresenter orderHttpPresenter = new OrderHttpPresenter(this.orderMapper);
+        Optional<JPAOrderEntity>jpaOrderEntity = createOrderUseCase.saveOrder(command);
+        return orderHttpPresenter.execute(jpaOrderEntity);
     }
 
     public Page<OrderResponseDTO> getAllOrders(Pageable pageable) {
-        return findOrdersUseCase.getAllOrders(pageable);
+        FindOrdersUseCase findOrdersUseCase = new FindOrdersUseCase(this.adaptersRepository);
+        OrderHttpPresenter orderHttpPresenter = new OrderHttpPresenter(this.orderMapper);
+        Page<JPAOrderEntity> jpaOrderEntity =  findOrdersUseCase.getAllOrders(pageable);
+        return orderHttpPresenter.execute(jpaOrderEntity);
     }
 
     public Optional<OrderResponseDTO> getOrdeById(String id) {
-        return findOrdersUseCase.getOrdeById(id);
+        FindOrdersUseCase findOrdersUseCase = new FindOrdersUseCase(this.adaptersRepository);
+        OrderHttpPresenter orderHttpPresenter = new OrderHttpPresenter(this.orderMapper);
+        Optional<JPAOrderEntity> jpaOrderEntity =  findOrdersUseCase.getOrdeById(id);
+        return orderHttpPresenter.execute(jpaOrderEntity);
     }
 
     public Optional<OrderResponseDTO> updateOrder(String id, OrderRequestDTO orderRequestDTO){
-        OrderResponseDTO orderResponseDTO = getOrdeById(id).orElseThrow(() -> new CustomException(
+        UpdateOrderUseCase updateOrderUseCase = new UpdateOrderUseCase(this.adaptersRepository);
+        OrderHttpPresenter orderHttpPresenter = new OrderHttpPresenter(this.orderMapper);
+
+         getOrdeById(id).orElseThrow(() -> new CustomException(
                 "Pedido não encontrado",
                 HttpStatus.NOT_FOUND,
                 String.valueOf(HttpStatus.NOT_FOUND.value()),
@@ -50,6 +65,7 @@ public class OrderMainController {
                 UUID.randomUUID()
         ));
 
-       return updateOrderUseCase.updateOrder(id, orderRequestDTO);
+        Optional<JPAOrderEntity> jpaOrderEntity =  updateOrderUseCase.updateOrder(id, orderRequestDTO);
+        return orderHttpPresenter.execute(jpaOrderEntity);
     }
 }

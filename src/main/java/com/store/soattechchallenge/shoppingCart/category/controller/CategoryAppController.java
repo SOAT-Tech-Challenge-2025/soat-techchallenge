@@ -1,52 +1,71 @@
 package com.store.soattechchallenge.shoppingCart.category.controller;
 
-import com.store.soattechchallenge.shoppingCart.category.application.usecases.*;
-import com.store.soattechchallenge.shoppingCart.category.application.usecases.commands.CategoryCommand;
-import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryResponseDTO;
+import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryDTO;
+import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryProductProjectionDTO;
+import com.store.soattechchallenge.shoppingCart.category.infrastructure.gateways.CategoryGatewayGateway;
+import com.store.soattechchallenge.shoppingCart.category.infrastructure.mappers.CategoryMapper;
+import com.store.soattechchallenge.shoppingCart.category.presenters.CategoryHttpPresenter;
+import com.store.soattechchallenge.shoppingCart.category.usecases.*;
+import com.store.soattechchallenge.shoppingCart.category.usecases.commands.CategoryCommand;
+import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryMessagerResponseDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryWithProductsDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.jpa.JpaCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public class CategoryAppController {
-    private final CreateCategoryUseCase createCategoryUseCase;
-    private final FindCategoryUseCase findCategoryUseCase;
-    private  final UpdateCategoryUseCase updateCategoryUseCase;
-    private  final DeleteCategoryUseCase deleteCategoryUseCase;
-    private final FindProductsByCategoryUseCase findProductsByCategoryUseCase;
+    private final CategoryGatewayGateway adaptersRepository;
+    private final CategoryMapper categoryMapper;
 
-    public CategoryAppController(CreateCategoryUseCase createCategoryUseCase, FindCategoryUseCase findCategoryUseCase, UpdateCategoryUseCase updateCategoryUseCase, DeleteCategoryUseCase deleteCategoryUseCase, FindProductsByCategoryUseCase findProductsByCategoryUseCase) {
-        this.createCategoryUseCase = createCategoryUseCase;
-        this.findCategoryUseCase = findCategoryUseCase;
-        this.updateCategoryUseCase = updateCategoryUseCase;
-        this.deleteCategoryUseCase = deleteCategoryUseCase;
-        this.findProductsByCategoryUseCase = findProductsByCategoryUseCase;
+    public CategoryAppController(CategoryGatewayGateway adaptersRepository, CategoryMapper categoryMapper) {
+        this.adaptersRepository = adaptersRepository;
+        this.categoryMapper = categoryMapper;
     }
 
-    public CategoryResponseDTO createCategory(CategoryCommand command) {
-        return createCategoryUseCase.saveCategory(command);
+    public CategoryMessagerResponseDTO createCategory(CategoryCommand command) {
+        CreateCategoryUseCase createCategoryUseCase = new CreateCategoryUseCase(this.adaptersRepository);
+        CategoryHttpPresenter categoryHttpPresenter = new CategoryHttpPresenter(this.categoryMapper);
+        createCategoryUseCase.saveCategory(command);
+        return categoryHttpPresenter.creater();
+
     }
 
-    public Page<JpaCategory> getAllCategories(Pageable pageable) {
-        return findCategoryUseCase.getAllCategories(pageable);
+    public Page<CategoryDTO> getAllCategories(Pageable pageable) {
+        FindCategoryUseCase findCategoryUseCase = new FindCategoryUseCase(this.adaptersRepository);
+        CategoryHttpPresenter categoryHttpPresenter = new CategoryHttpPresenter(this.categoryMapper);
+        Page<JpaCategory> jpaCategories = findCategoryUseCase.getAllCategories(pageable);
+        return categoryHttpPresenter.findAllCategories(jpaCategories);
     }
 
-    public Optional<JpaCategory> getCategoryById(Long id) {
-        return findCategoryUseCase.getCategoryById(id);
+    public Optional<CategoryDTO> getCategoryById(Long id) {
+        FindCategoryUseCase findCategoryUseCase = new FindCategoryUseCase(this.adaptersRepository);
+        CategoryHttpPresenter categoryHttpPresenter = new CategoryHttpPresenter(this.categoryMapper);
+        Optional<JpaCategory> jpaCategory = findCategoryUseCase.getCategoryById(id);
+        return categoryHttpPresenter.findCategoryById(jpaCategory);
     }
 
-    public CategoryResponseDTO updateCategory(Long id, CategoryCommand command) {
-        return updateCategoryUseCase.updateCategory(id, command);
+    public CategoryMessagerResponseDTO updateCategory(Long id, CategoryCommand command) {
+        UpdateCategoryUseCase updateCategoryUseCase = new UpdateCategoryUseCase(this.adaptersRepository);
+        CategoryHttpPresenter categoryHttpPresenter = new CategoryHttpPresenter(this.categoryMapper);
+        Boolean update =  updateCategoryUseCase.updateCategory(id, command);
+        return categoryHttpPresenter.updateCategory(update);
     }
 
-    public CategoryResponseDTO deleteCategory(Long id) {
-        return deleteCategoryUseCase.deleteCategory(id);
+    public CategoryMessagerResponseDTO deleteCategory(Long id) {
+        DeleteCategoryUseCase deleteCategoryUseCase = new DeleteCategoryUseCase(this.adaptersRepository);
+        CategoryHttpPresenter categoryHttpPresenter = new CategoryHttpPresenter(this.categoryMapper);
+        Boolean deleted = deleteCategoryUseCase.deleteCategory(id);
+        return categoryHttpPresenter.deleteCategory(deleted);
     }
 
     public Optional<CategoryWithProductsDTO> getProductsByCategoryId(Long id) {
-        return findProductsByCategoryUseCase.getProductsByCategoryId(id);
+        FindProductsByCategoryUseCase findProductsByCategoryUseCase = new FindProductsByCategoryUseCase(this.adaptersRepository);
+        CategoryHttpPresenter categoryHttpPresenter = new CategoryHttpPresenter(this.categoryMapper);
+        List<CategoryProductProjectionDTO> dtoList = findProductsByCategoryUseCase.getProductsByCategoryId(id);
+        return categoryHttpPresenter.findCategoryWithProducts(dtoList);
 
     }
 }

@@ -1,10 +1,8 @@
 package com.store.soattechchallenge.shoppingCart.category.infrastructure.gateways;
 
 import com.store.soattechchallenge.shoppingCart.category.domain.entities.Category;
-import com.store.soattechchallenge.shoppingCart.category.application.gateways.CategoryGateway;
+import com.store.soattechchallenge.shoppingCart.category.gateways.CategoryGateway;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryProductProjectionDTO;
-import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryResponseDTO;
-import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryWithProductsDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.jpa.JpaCategory;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.mappers.CategoryMapper;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.jpa.CategoryAdaptersRepository;
@@ -65,18 +63,8 @@ public class CategoryGatewayGateway implements CategoryGateway {
 
     @Override
     public void save(Category category) {
-        JpaCategory exists;
-        try {
-         exists = repository.findByCategoryName(category.getCategoryName());
-        }catch (Exception e) {
-            throw new CustomException(
-                    "Erro ao buscar por nome categoria: " + e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                    LocalDateTime.now(),
-                    UUID.randomUUID()
-            );
-        }
+        JpaCategory exists = repository.findByCategoryName(category.getCategoryName());
+
         if (exists != null) {
             throw new CustomException(
                     "Categoria já existe",
@@ -90,7 +78,7 @@ public class CategoryGatewayGateway implements CategoryGateway {
     }
 
     @Override
-    public CategoryResponseDTO update(Category category, Long id) {
+    public Boolean update(Category category, Long id) {
         Optional<JpaCategory> entity = repository.findById(id);
         if (entity.isEmpty()) {
             throw new CustomException(
@@ -122,13 +110,13 @@ public class CategoryGatewayGateway implements CategoryGateway {
             );
         }
         if(updated.get()) {
-            return new CategoryResponseDTO("Categoria atualizada");
+            return Boolean.TRUE;
         }
-        return new CategoryResponseDTO("Categoria não atualizada");
+        return Boolean.FALSE;
     }
 
     @Override
-    public CategoryResponseDTO deleteById(Long id) {
+    public Boolean deleteById(Long id) {
         Optional<JpaCategory> entity = repository.findById(id);
         if (entity.isEmpty()) {
             throw new CustomException(
@@ -143,7 +131,7 @@ public class CategoryGatewayGateway implements CategoryGateway {
             try {
             repository.deleteProductsByCategoryId(id);
             repository.deleteCategoryById(id);
-            return new CategoryResponseDTO("Categoria deletada");
+            return Boolean.TRUE;
             }catch (Exception e) {
                 throw new CustomException(
                         "Erro ao atualizar categoria: " + e.getMessage(),
@@ -154,12 +142,12 @@ public class CategoryGatewayGateway implements CategoryGateway {
                 );
             }
         }else {
-            return new CategoryResponseDTO("Categoria não existe");
+            return Boolean.FALSE;
         }
     }
 
     @Override
-    public Optional<CategoryWithProductsDTO> findProductsByCategoryId(Long id) {
+    public List<CategoryProductProjectionDTO> findProductsByCategoryId(Long id) {
         List<Object[]> results;
         try {
         results = repository.findCategoryWithProducts(id);
@@ -183,6 +171,6 @@ public class CategoryGatewayGateway implements CategoryGateway {
                         (Date) obj[6]
                 ))
                 .toList();
-        return mapper.toProductCategoryEntity(dtos);
+        return dtos;
     }
 }
