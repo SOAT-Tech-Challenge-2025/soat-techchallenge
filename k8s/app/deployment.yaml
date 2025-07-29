@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+  namespace: tech-challenge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tech-challenge-app
+  template:
+    metadata:
+      labels:
+        app: tech-challenge-app
+    spec:
+      containers:
+        - name: tech-challenge-app
+          image: public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1"
+
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: SPRING_DATASOURCE_URL
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: SPRING_DATASOURCE_USERNAME
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: SPRING_DATASOURCE_PASSWORD
+
+            - name: MERCADO_PAGO_ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: MERCADO_PAGO_ACCESS_TOKEN
+
+            - name: MERCADO_PAGO_CALLBACK_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MERCADO_PAGO_CALLBACK_URL
+
+            - name: MERCADO_PAGO_POS
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: MERCADO_PAGO_POS
+
+            - name: MERCADO_PAGO_USER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: MERCADO_PAGO_USER_ID
+
+            - name: MERCADO_PAGO_WEBHOOK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: MERCADO_PAGO_WEBHOOK_TOKEN
+
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: JWT_SECRET_KEY
+
+            - name: JWT_EXPIRATION_TIME
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: JWT_EXPIRATION_TIME

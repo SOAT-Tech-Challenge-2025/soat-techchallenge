@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-db
+    image: public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge-db:latest
     env_file:
       - soat.env
     ports:
@@ -18,6 +19,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-app
+    image: public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge:latest
     env_file:
       - soat.env
     ports:
