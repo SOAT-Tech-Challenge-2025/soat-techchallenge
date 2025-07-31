@@ -40,12 +40,11 @@ public class IdentificationConfig {
 
     @Bean
     IdentificationController identificationController(
-            CreateClientUseCase createClientUseCase,
-            GetClientUseCase getClientUseCase
+            IdentificationRepositoryGateway identificationRepositoryGateway, JwtTokenSecurity jwtTokenSecurity
     ) {
         return new IdentificationController(
-                createClientUseCase,
-                getClientUseCase
+                identificationRepositoryGateway,
+                jwtTokenSecurity
         );
     }
 
