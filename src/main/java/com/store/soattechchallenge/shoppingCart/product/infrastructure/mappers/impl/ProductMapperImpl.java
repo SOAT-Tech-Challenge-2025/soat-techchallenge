@@ -12,7 +12,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-@Component
 public class ProductMapperImpl implements ProductMapper {
 
     public Page<ProductGetResponseDTO> modelToProductGetResponseDTO(Page<JpaProduct> products) {

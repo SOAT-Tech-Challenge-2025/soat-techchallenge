@@ -1,9 +1,7 @@
 package com.store.soattechchallenge.shoppingCart.order.infrastructure.api.dto;
 
-import org.springframework.stereotype.Component;
 import java.util.List;
 
-@Component
 public class OrderRequestDTO {
     private String clientId;
     private List<ProductRequest> products;

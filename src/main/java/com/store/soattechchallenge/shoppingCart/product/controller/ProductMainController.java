@@ -1,8 +1,8 @@
 package com.store.soattechchallenge.shoppingCart.product.controller;
 
-import com.store.soattechchallenge.shoppingCart.order.infrastructure.mappers.OrderMapper;
 import com.store.soattechchallenge.shoppingCart.product.gateways.ProductRepositoryGateway;
-import com.store.soattechchallenge.shoppingCart.product.infrastructure.gateways.ProductRepositoryGatewayGateways;
+import com.store.soattechchallenge.shoppingCart.product.infrastructure.api.dto.ProductGetResponseDTO;
+import com.store.soattechchallenge.shoppingCart.product.infrastructure.api.dto.ProductPostUpResponseDTO;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.jpa.JpaProduct;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.mappers.ProductMapper;
 import com.store.soattechchallenge.shoppingCart.product.presenters.ProductHttpPresenter;
@@ -11,15 +11,12 @@ import com.store.soattechchallenge.shoppingCart.product.usecases.DeleteProductUs
 import com.store.soattechchallenge.shoppingCart.product.usecases.FindProductUseCase;
 import com.store.soattechchallenge.shoppingCart.product.usecases.UpdateProductUseCase;
 import com.store.soattechchallenge.shoppingCart.product.usecases.command.ProductRequestCommand;
-import com.store.soattechchallenge.shoppingCart.product.infrastructure.api.dto.ProductGetResponseDTO;
-import com.store.soattechchallenge.shoppingCart.product.infrastructure.api.dto.ProductPostUpResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component
 public class ProductMainController {
 
     public final ProductRepositoryGateway adaptersRepository;

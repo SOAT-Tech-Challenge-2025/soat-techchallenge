@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Repository
 public interface CategoryAdaptersRepository extends JpaRepository<JpaCategory,Long> {
     @Query(value = "SELECT c.id AS categoriaId, c.nm_categoria AS nomeCategoria, " +
             "p.id AS produtoId, p.nm_produto AS nomeProduto, " +

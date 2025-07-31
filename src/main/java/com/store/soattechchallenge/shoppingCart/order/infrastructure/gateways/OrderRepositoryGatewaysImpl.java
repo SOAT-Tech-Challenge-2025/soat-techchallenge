@@ -13,8 +13,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
-@Component
- public class OrderRepositoryGatewaysImpl implements OrderRepositoryGateways {
+public class OrderRepositoryGatewaysImpl implements OrderRepositoryGateways {
 
     private final OrderAdaptersGetRepository repository;
     public final OrderMapper mapper;

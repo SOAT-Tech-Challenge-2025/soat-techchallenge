@@ -1,10 +1,7 @@
 package com.store.soattechchallenge.shoppingCart.product.infrastructure.api.dto;
 
-import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 
-@Component
 public class ProductRequestDTO {
 
     private String productName;

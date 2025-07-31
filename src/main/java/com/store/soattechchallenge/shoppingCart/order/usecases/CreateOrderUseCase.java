@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Component
 public class CreateOrderUseCase {
     public final OrderRepositoryGateways adaptersRepository;
 

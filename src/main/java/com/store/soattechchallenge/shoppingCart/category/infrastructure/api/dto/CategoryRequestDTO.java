@@ -2,7 +2,6 @@ package com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto
 
 import org.springframework.stereotype.Component;
 
-@Component
 public class CategoryRequestDTO {
     private String categoryName;
 

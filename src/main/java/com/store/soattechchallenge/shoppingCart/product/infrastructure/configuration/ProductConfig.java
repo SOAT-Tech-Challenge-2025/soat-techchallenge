@@ -1,6 +1,7 @@
 package com.store.soattechchallenge.shoppingCart.product.infrastructure.configuration;
 
 
+import com.store.soattechchallenge.shoppingCart.product.infrastructure.mappers.impl.ProductMapperImpl;
 import com.store.soattechchallenge.shoppingCart.product.usecases.CreateProductUseCase;
 import com.store.soattechchallenge.shoppingCart.product.usecases.DeleteProductUseCase;
 import com.store.soattechchallenge.shoppingCart.product.usecases.FindProductUseCase;
@@ -37,6 +38,11 @@ public class ProductConfig {
     @Bean
     ProductRepositoryGatewayGateways productRepositoryGatewayGateways(ProductAdaptersGetRepository repository, ProductMapper mapper) {
         return new ProductRepositoryGatewayGateways(repository, mapper);
+    }
+
+    @Bean
+    ProductMapper productMapper() {
+        return new ProductMapperImpl();
     }
 
 }

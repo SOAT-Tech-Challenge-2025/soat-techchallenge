@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-@Component
 public class FindOrdersUseCase {
 
     public final OrderRepositoryGateways adaptersRepository;
