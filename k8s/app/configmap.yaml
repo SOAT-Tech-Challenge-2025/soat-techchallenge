@@ -4,5 +4,5 @@ metadata:
   name: app-config
   namespace: tech-challenge
 data:
-  MERCADO_PAGO_CALLBACK_URL: https://02ccd79acb1838.lhr.life/soat-fast-food/payment/notifications/mercado-pago
+  MERCADO_PAGO_CALLBACK_URL: http://XXX.us-east-1.elb.amazonaws.com/soat-fast-food/payment/notifications/mercado-pago
   JWT_EXPIRATION_TIME: "3600"

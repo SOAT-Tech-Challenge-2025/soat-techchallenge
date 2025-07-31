@@ -12,24 +12,166 @@
    - Discord: CarlosLaet
 - Lucas Martins Barroso:
    - RM362732
-   - Discord: Lucas
+   - Discord: Lucas Barroso - RM362732
 
-## Startar o Banco de Dados e Aplicação
-1. Comando para rodar o docker-compose para subir o banco de dados e a aplicação. Força a reconstrução das imagens dos serviços definidos no arquivo docker-compose.yml, mesmo que já existam imagens anteriores (o recomendado para utilizar):
 
-```bash
-docker compose up --build
+## Build das imagens
+
+> ⚠️ **Pré requisitos**
+> - AWS CLI: [Instalação](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+> - Docker: [Instalação](https://docs.docker.com/engine/install/)
+
+As imagens da aplicação já estão publicadas em um repositório no Elastic Container Registry (ECR - AWS). Para realizar o push de novas imagens, primeiro realize os builds e crie as tags necessárias:
+
+```sh
+# Banco de dados
+docker build -t fiap-soat-techchallenge-db:latest . -f Dockerfile-db
+docker tag fiap-soat-techchallenge-db:latest public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge-db:latest
 ```
 
-2. Para subir o Docker Compose (não reconstroe as imagens):
-
-```bash
-docker compose up -d
+```sh
+# Aplicação
+docker build -t fiap-soat-techchallenge:latest . -f Dockerfile-app
+docker tag fiap-soat-techchallenge:latest public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge:latest
 ```
-3. Para parar e remover todos os containers, redes e volumes criados pelo Docker Compose:
 
-```bash
-docker compose down
+Em seguida, faça login:
+
+```sh
+aws configure
+aws ecr-public get-login-password --region us-east-1
+aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+```
+
+Por fim, faça o push:
+
+```sh
+# Banco de dados
+docker push public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge-db:latest
+```
+
+```sh
+# Aplicação
+docker push public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge-app:latest
+```
+
+## Implantação com Kubernetes
+
+A aplicação está pronta para ser implantada em um cluster de Kubernetes. Para isso, basta utilizar os YAMLs presentes na pasta `k8s`. Esses arquivos estão organizados por aplicação: `app` (API REST) `db` (PostgresSQL). Em cada pasta há um arquivo para cada tipo de recurso do Kubernetes, como `deployment.yaml`, `configmap.yaml`, entre outros. Vamos apresentar o processo de implantação no Elastic Kubernetes Service (EKS), da AWS.
+
+> ⚠️ **Pré requisitos**
+> - AWS CLI: [Instalação](https://docs.aws.amazon.com/cli/latest/userguide/> getting-started-install.html)
+> - EKSCTL: [Instalação](https://eksctl.io/installation/)
+> - Kubectl: [Instalação](https://kubernetes.io/docs/tasks/tools/#kubectl)
+
+### Passo a passo
+
+1. Configure suas credenciais AWS:
+    ```sh
+    aws configure
+    ```
+
+2. Crie o cluster, o control plane e os nodes:
+    ```sh
+    eksctl create cluster --name tech-challenge-eks-01 --region us-east-1
+    ```
+
+3. Conecte o kubectl ao cluster:
+    ```sh
+    aws eks update-kubeconfig --name tech-challenge-eks-01 --region us-east-1
+    ```
+
+4. Clone o repositório do projeto:
+    ```sh
+    # via SSH
+    git clone git@github.com:KarenL19/soat-techchallenge.git
+
+    # via HTTPS
+    git clone https://github.com/KarenL19/soat-techchallenge.git
+
+    # acesse a pasta do repositório
+    cd soat-techchallenge
+    ```
+
+5. Aplique os manifestos na seguinte ordem:
+   1. Namespace:
+      ```sh
+      kubectl apply -f k8s/namespace.yaml
+      ```
+
+   2. Secrets do banco de dados:
+      ```sh
+      kubectl apply -f k8s/db/secret.yaml
+      ```
+
+   3. Deployment do banco de dados:
+      ```sh
+      kubectl apply -f k8s/db/deployment.yaml
+      ```
+
+   4. Service do banco de dados (ClusterIP):
+      ```sh
+      kubectl apply -f k8s/db/service.yaml
+      ```
+
+   5. Service da aplicação (LoadBalancer), para obter o IP público:
+
+      ```sh
+      # cria o service
+      kubectl apply -f k8s/app/service.yaml
+
+      # obtém o IP público da aplicação
+      kubectl get service --namespace tech-challenge
+      ```
+
+      Exemplo de saída:
+      ```
+      NAME          TYPE           CLUSTER-IP      EXTERNAL-IP                       PORT(S)        AGE
+      app-service   LoadBalancer   10.100.4.138    XXX.us-east-1.elb.amazonaws.com   80:31387/TCP   20s
+      ```
+
+   6. Edite o `configmap` com o IP obtido acima no arquivo `k8s/app/configmap.yaml`:
+      
+      ```yaml
+          data:
+            MERCADO_PAGO_CALLBACK_URL: http://XXX.us-east-1.elb.amazonaws.com/soat-fast-food/payment/notifications/mercado-pago
+      ```
+
+   7. Aplique o configmap da aplicação:
+      ```sh
+      kubectl apply -f k8s/app/configmap.yaml
+      ```
+
+   8. Secrets da aplicação:
+      ```sh
+      kubectl apply -f k8s/app/secret.yaml
+      ```
+
+   9. Deployment da aplicação:
+      ```sh
+      kubectl apply -f k8s/app/deployment.yaml
+      ```
+
+   10. Horizontal Pod Autoscaler (HPA) da aplicação:
+      ```sh
+      kubectl apply -f k8s/app/hpa.yaml
+      ```
+
+6. Consulte os pods:
+    ```sh
+    kubectl get pods --namespace tech-challenge
+    ```
+
+7. Consulte o HPA:
+    ```sh
+    kubectl get hpa --namespace tech-challenge
+    ```
+
+### Limpando recursos
+
+Para excluir todos os recursos e evitar cobranças na AWS:
+```sh
+eksctl delete cluster --name tech-challenge-eks-01 --region us-east-1
 ```
 
 ---
@@ -1093,7 +1235,7 @@ Atualiza um pedido de preparação com o status "Pronto", indicando que o pedido
 }
 ```
 
-#### `POST /preparation/{preparation_id}/finalize`
+#### `POST /preparation/{preparation_id}/complete`
 Atualiza um pedido de preparação com o status "Finalizado", indicando que o pedido foi entregue ao cliente.
 
 **Response:**
@@ -1134,89 +1276,91 @@ Obtém a lista de pedidos de preparação ordenados da seguinte forma:
 
 **Response:**
 ```json
-[
-	{
-		"id": "A004",
-		"preparationPosition": null,
-		"preparationTime": 3,
-		"estimatedReadyTime": "2025-05-31T00:53:30.101797",
-		"preparationStatus": "READY",
-		"createdAt": "2025-05-31T00:49:32.62829",
-		"timestamp": "2025-05-31T00:50:48.241601"
-	},
-	{
-		"id": "A002",
-		"preparationPosition": null,
-		"preparationTime": 5,
-		"estimatedReadyTime": "2025-05-31T00:55:29.71201",
-		"preparationStatus": "IN_PREPARATION",
-		"createdAt": "2025-05-31T00:49:18.283901",
-		"timestamp": "2025-05-31T00:50:29.712026"
-	},
-	{
-		"id": "A005",
-		"preparationPosition": null,
-		"preparationTime": 6,
-		"estimatedReadyTime": "2025-05-31T00:56:30.70522",
-		"preparationStatus": "IN_PREPARATION",
-		"createdAt": "2025-05-31T00:49:38.246773",
-		"timestamp": "2025-05-31T00:50:30.705237"
-	},
-	{
-		"id": "A006",
-		"preparationPosition": null,
-		"preparationTime": 10,
-		"estimatedReadyTime": "2025-05-31T01:00:31.298067",
-		"preparationStatus": "IN_PREPARATION",
-		"createdAt": "2025-05-31T00:49:43.814773",
-		"timestamp": "2025-05-31T00:50:31.298083"
-	},
-	{
-		"id": "A007",
-		"preparationPosition": 1,
-		"preparationTime": 2,
-		"estimatedReadyTime": null,
-		"preparationStatus": "RECEIVED",
-		"createdAt": "2025-05-31T00:49:54.869954",
-		"timestamp": "2025-05-31T00:49:54.869954"
-	},
-	{
-		"id": "A008",
-		"preparationPosition": 2,
-		"preparationTime": 8,
-		"estimatedReadyTime": null,
-		"preparationStatus": "RECEIVED",
-		"createdAt": "2025-05-31T00:50:03.727758",
-		"timestamp": "2025-05-31T00:50:03.727758"
-	},
-	{
-		"id": "A009",
-		"preparationPosition": 3,
-		"preparationTime": 3,
-		"estimatedReadyTime": null,
-		"preparationStatus": "RECEIVED",
-		"createdAt": "2025-05-31T00:50:08.975707",
-		"timestamp": "2025-05-31T00:50:08.975707"
-	},
-	{
-		"id": "A010",
-		"preparationPosition": 4,
-		"preparationTime": 5,
-		"estimatedReadyTime": null,
-		"preparationStatus": "RECEIVED",
-		"createdAt": "2025-05-31T00:50:16.123321",
-		"timestamp": "2025-05-31T00:50:16.123321"
-	},
-	{
-		"id": "A011",
-		"preparationPosition": 5,
-		"preparationTime": 2,
-		"estimatedReadyTime": null,
-		"preparationStatus": "RECEIVED",
-		"createdAt": "2025-05-31T00:50:21.327085",
-		"timestamp": "2025-05-31T00:50:21.327085"
-	}
-]
+{
+  "items": [
+    {
+      "id": "A004",
+      "preparationPosition": null,
+      "preparationTime": 3,
+      "estimatedReadyTime": "2025-05-31T00:53:30.101797",
+      "preparationStatus": "READY",
+      "createdAt": "2025-05-31T00:49:32.62829",
+      "timestamp": "2025-05-31T00:50:48.241601"
+    },
+    {
+      "id": "A002",
+      "preparationPosition": null,
+      "preparationTime": 5,
+      "estimatedReadyTime": "2025-05-31T00:55:29.71201",
+      "preparationStatus": "IN_PREPARATION",
+      "createdAt": "2025-05-31T00:49:18.283901",
+      "timestamp": "2025-05-31T00:50:29.712026"
+    },
+    {
+      "id": "A005",
+      "preparationPosition": null,
+      "preparationTime": 6,
+      "estimatedReadyTime": "2025-05-31T00:56:30.70522",
+      "preparationStatus": "IN_PREPARATION",
+      "createdAt": "2025-05-31T00:49:38.246773",
+      "timestamp": "2025-05-31T00:50:30.705237"
+    },
+    {
+      "id": "A006",
+      "preparationPosition": null,
+      "preparationTime": 10,
+      "estimatedReadyTime": "2025-05-31T01:00:31.298067",
+      "preparationStatus": "IN_PREPARATION",
+      "createdAt": "2025-05-31T00:49:43.814773",
+      "timestamp": "2025-05-31T00:50:31.298083"
+    },
+    {
+      "id": "A007",
+      "preparationPosition": 1,
+      "preparationTime": 2,
+      "estimatedReadyTime": null,
+      "preparationStatus": "RECEIVED",
+      "createdAt": "2025-05-31T00:49:54.869954",
+      "timestamp": "2025-05-31T00:49:54.869954"
+    },
+    {
+      "id": "A008",
+      "preparationPosition": 2,
+      "preparationTime": 8,
+      "estimatedReadyTime": null,
+      "preparationStatus": "RECEIVED",
+      "createdAt": "2025-05-31T00:50:03.727758",
+      "timestamp": "2025-05-31T00:50:03.727758"
+    },
+    {
+      "id": "A009",
+      "preparationPosition": 3,
+      "preparationTime": 3,
+      "estimatedReadyTime": null,
+      "preparationStatus": "RECEIVED",
+      "createdAt": "2025-05-31T00:50:08.975707",
+      "timestamp": "2025-05-31T00:50:08.975707"
+    },
+    {
+      "id": "A010",
+      "preparationPosition": 4,
+      "preparationTime": 5,
+      "estimatedReadyTime": null,
+      "preparationStatus": "RECEIVED",
+      "createdAt": "2025-05-31T00:50:16.123321",
+      "timestamp": "2025-05-31T00:50:16.123321"
+    },
+    {
+      "id": "A011",
+      "preparationPosition": 5,
+      "preparationTime": 2,
+      "estimatedReadyTime": null,
+      "preparationStatus": "RECEIVED",
+      "createdAt": "2025-05-31T00:50:21.327085",
+      "timestamp": "2025-05-31T00:50:21.327085"
+    }
+  ]
+}
 ```
 **Status:**
 
@@ -1260,52 +1404,6 @@ A URL configurada em `MERCADO_PAGO_CALLBACK_URL` deve ser:
 ```
 https://{ENDERECO_DA_API}/soat-fast-food/payment/notifications/mercado-pago
 ```
-
-#### Usando o localhost.run
-
-Durante o desenvolvimento, utilizamos o [localhost.run](https://localhost.run), um túnel SSH que expõe sua aplicação local para a internet.
-
-##### Passo a passo:
-
-1. [Configure uma chave SSH](https://admin.localhost.run/) para manter a mesma URL por mais tempo com o localhost.run
-
-2. **Abra um terminal** e execute:
-```bash
-ssh -R 80:localhost:8080 {ID_DA_CHAVE_SSH}@localhost.run
-```
-
-3. O terminal mostrará uma URL pública semelhante a:
-```
-https://456we13dsc23.lhr.life
-```
-
-4. Use essa URL pública para configurar, no arquivo `soat.env`:
-- Combine-a com `/soat-fast-food/payment/notifications/mercado-pago` e use esse valor para a variável `MERCADO_PAGO_ACCESS_TOKEN`. Por exemplo:
-  ```
-  https://456we13dsc23.lhr.life/soat-fast-food/payment/notifications/mercado-pago 
-  ```
-
-5. Faça o build da aplicação em **outro terminal**:
-```bash
-docker-compose build
-```
-
-6. **Inicie a aplicação**, normalmente:
-```bash
-docker-compose up -d
-```
-
-7. Crie um pagamento no endpoint POST `/soat-fast-food/payment`
-
-8. Com o ID gerado na etapa anterior, renderize o código QR no endpoint GET `/soat-fast-food/payment/{PAYMENT_ID}/qr`.
-
-9. Acesse o aplicativo do Mercado Pago com o usuário comprador de teste mencionado nos pré-requisitos dos testes.
-
-10. Utilize o endpoint GET `/soat-fast-food/payment/{PAYMENT_ID}` para verificar o status do pagamento.
-
-##### Observação importante:
-
-- Deixe o terminal do `localhost.run` aberto enquanto estiver testando. Fechar ele derruba o túnel.
 
 ### Explicação das variáveis de ambiente
 
