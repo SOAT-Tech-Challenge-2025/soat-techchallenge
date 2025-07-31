@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-@Component
 public class JwtTokenSecurity {
     @Value("${jwt.secret}")
     private String secret;

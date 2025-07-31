@@ -1,6 +1,7 @@
 package com.store.soattechchallenge.identification.infrastructure.configuration;
 
 import com.store.soattechchallenge.identification.gateways.IdentificationRepositoryGateway;
+import com.store.soattechchallenge.identification.infrastructure.security.JwtRequestFilterSecurity;
 import com.store.soattechchallenge.identification.usecases.CreateClientUseCase;
 import com.store.soattechchallenge.identification.usecases.GetClientUseCase;
 import com.store.soattechchallenge.identification.controller.IdentificationController;
@@ -46,5 +47,17 @@ public class IdentificationConfig {
                 createClientUseCase,
                 getClientUseCase
         );
+    }
+
+    @Bean
+    public JwtTokenSecurity jwtTokenSecurity() {
+        return new JwtTokenSecurity();
+    }
+
+    @Bean
+    public JwtRequestFilterSecurity jwtRequestFilterSecurity(JwtTokenSecurity jwtTokenSecurity, IdentificationRepositoryGateway identificationRepositoryGateway) {
+        return new JwtRequestFilterSecurity(
+                jwtTokenSecurity,
+                identificationRepositoryGateway);
     }
 }
