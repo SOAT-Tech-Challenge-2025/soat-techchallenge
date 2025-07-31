@@ -1,5 +1,6 @@
 package com.store.soattechchallenge.shoppingCart.category.usecases;
 
+import com.store.soattechchallenge.shoppingCart.category.gateways.CategoryGateway;
 import com.store.soattechchallenge.shoppingCart.category.usecases.commands.CategoryCommand;
 import com.store.soattechchallenge.shoppingCart.category.domain.entities.Category;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryMessagerResponseDTO;
@@ -7,9 +8,9 @@ import com.store.soattechchallenge.shoppingCart.category.infrastructure.gateways
 
 
 public class UpdateCategoryUseCase {
-    private final CategoryGatewayGateway adaptersRepository;
+    private final CategoryGateway adaptersRepository;
 
-    public UpdateCategoryUseCase(CategoryGatewayGateway adaptersRepository) {
+    public UpdateCategoryUseCase(CategoryGateway adaptersRepository) {
         this.adaptersRepository = adaptersRepository;
     }
 

@@ -1,5 +1,6 @@
 package com.store.soattechchallenge.shoppingCart.category.controller;
 
+import com.store.soattechchallenge.shoppingCart.category.gateways.CategoryGateway;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryProductProjectionDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.gateways.CategoryGatewayGateway;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class CategoryAppController {
-    private final CategoryGatewayGateway adaptersRepository;
+    private final CategoryGateway adaptersRepository;
     private final CategoryMapper categoryMapper;
 
     public CategoryAppController(CategoryGatewayGateway adaptersRepository, CategoryMapper categoryMapper) {

@@ -1,6 +1,7 @@
 package com.store.soattechchallenge.shoppingCart.product.controller;
 
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.mappers.OrderMapper;
+import com.store.soattechchallenge.shoppingCart.product.gateways.ProductRepositoryGateway;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.gateways.ProductRepositoryGatewayGateways;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.jpa.JpaProduct;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.mappers.ProductMapper;
@@ -21,10 +22,10 @@ import java.util.Optional;
 @Component
 public class ProductMainController {
 
-    public final ProductRepositoryGatewayGateways adaptersRepository;
+    public final ProductRepositoryGateway adaptersRepository;
     private final ProductMapper productMapper;
 
-    public ProductMainController(ProductRepositoryGatewayGateways adaptersRepository,ProductMapper productMapper) {
+    public ProductMainController(ProductRepositoryGateway adaptersRepository, ProductMapper productMapper) {
         this.adaptersRepository = adaptersRepository;
         this.productMapper = productMapper;
 

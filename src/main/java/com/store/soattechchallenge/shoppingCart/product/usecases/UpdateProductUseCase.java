@@ -1,5 +1,6 @@
 package com.store.soattechchallenge.shoppingCart.product.usecases;
 
+import com.store.soattechchallenge.shoppingCart.product.gateways.ProductRepositoryGateway;
 import com.store.soattechchallenge.shoppingCart.product.usecases.command.ProductRequestCommand;
 import com.store.soattechchallenge.shoppingCart.product.domain.entities.Product;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.api.dto.ProductPostUpResponseDTO;
@@ -7,9 +8,9 @@ import com.store.soattechchallenge.shoppingCart.product.infrastructure.gateways.
 
 
 public class UpdateProductUseCase {
-    public final ProductRepositoryGatewayGateways adaptersRepository;
+    public final ProductRepositoryGateway adaptersRepository;
 
-    public UpdateProductUseCase(ProductRepositoryGatewayGateways adaptersRepository) {
+    public UpdateProductUseCase(ProductRepositoryGateway adaptersRepository) {
         this.adaptersRepository = adaptersRepository;
     }
 

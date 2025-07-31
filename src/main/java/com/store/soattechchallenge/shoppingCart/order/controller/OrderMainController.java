@@ -1,5 +1,6 @@
 package com.store.soattechchallenge.shoppingCart.order.controller;
 
+import com.store.soattechchallenge.shoppingCart.order.gateways.OrderRepositoryGateways;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.gateways.OrderRepositoryGatewaysImpl;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.jpa.JPAOrderEntity;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.mappers.OrderMapper;
@@ -23,11 +24,11 @@ import java.util.UUID;
 
 public class OrderMainController {
 
-    public final OrderRepositoryGatewaysImpl adaptersRepository;
+    public final OrderRepositoryGateways adaptersRepository;
     public final OrderMapper orderMapper;
 
 
-    public OrderMainController(OrderRepositoryGatewaysImpl adaptersRepository, OrderMapper orderMapper) {
+    public OrderMainController(OrderRepositoryGateways adaptersRepository, OrderMapper orderMapper) {
         this.adaptersRepository = adaptersRepository;
         this.orderMapper = orderMapper;
     }

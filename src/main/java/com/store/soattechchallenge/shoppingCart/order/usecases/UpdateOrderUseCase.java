@@ -2,6 +2,7 @@ package com.store.soattechchallenge.shoppingCart.order.usecases;
 
 import com.store.soattechchallenge.shoppingCart.order.domain.entities.Order;
 import com.store.soattechchallenge.shoppingCart.order.domain.entities.OrderProduct;
+import com.store.soattechchallenge.shoppingCart.order.gateways.OrderRepositoryGateways;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.dto.OrderRequestDTO;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.dto.OrderResponseDTO;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.utils.OrderUtils;
@@ -18,9 +19,9 @@ import java.util.UUID;
 
 @Component
 public class UpdateOrderUseCase {
-    public final OrderRepositoryGatewaysImpl adaptersRepository;
+    public final OrderRepositoryGateways adaptersRepository;
 
-    public UpdateOrderUseCase(OrderRepositoryGatewaysImpl adaptersRepository) {
+    public UpdateOrderUseCase(OrderRepositoryGateways adaptersRepository) {
         this.adaptersRepository = adaptersRepository;
     }
 
