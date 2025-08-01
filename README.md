@@ -60,7 +60,7 @@ docker push public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge-app:latest
 A aplicação está pronta para ser implantada em um cluster de Kubernetes. Para isso, basta utilizar os YAMLs presentes na pasta `k8s`. Esses arquivos estão organizados por aplicação: `app` (API REST) `db` (PostgresSQL). Em cada pasta há um arquivo para cada tipo de recurso do Kubernetes, como `deployment.yaml`, `configmap.yaml`, entre outros. Vamos apresentar o processo de implantação no Elastic Kubernetes Service (EKS), da AWS.
 
 > ⚠️ **Pré requisitos**
-> - AWS CLI: [Instalação](https://docs.aws.amazon.com/cli/latest/userguide/> getting-started-install.html)
+> - AWS CLI: [Instalação](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 > - EKSCTL: [Instalação](https://eksctl.io/installation/)
 > - Kubectl: [Instalação](https://kubernetes.io/docs/tasks/tools/#kubectl)
 
