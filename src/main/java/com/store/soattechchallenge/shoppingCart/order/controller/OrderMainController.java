@@ -2,8 +2,6 @@ package com.store.soattechchallenge.shoppingCart.order.controller;
 
 import com.store.soattechchallenge.shoppingCart.order.domain.entities.Order;
 import com.store.soattechchallenge.shoppingCart.order.gateways.OrderRepositoryGateways;
-import com.store.soattechchallenge.shoppingCart.order.infrastructure.gateways.OrderRepositoryGatewaysImpl;
-import com.store.soattechchallenge.shoppingCart.order.infrastructure.jpa.JPAOrderEntity;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.mappers.OrderMapper;
 import com.store.soattechchallenge.shoppingCart.order.presenters.OrderHttpPresenter;
 import com.store.soattechchallenge.shoppingCart.order.usecases.CreateOrderUseCase;
@@ -25,38 +23,38 @@ import java.util.UUID;
 
 public class OrderMainController {
 
-    public final OrderRepositoryGateways adaptersRepository;
+    public final OrderRepositoryGateways orderRepositoryGateways;
     public final OrderMapper orderMapper;
 
 
-    public OrderMainController(OrderRepositoryGateways adaptersRepository, OrderMapper orderMapper) {
-        this.adaptersRepository = adaptersRepository;
+    public OrderMainController(OrderRepositoryGateways orderRepositoryGateways, OrderMapper orderMapper) {
+        this.orderRepositoryGateways = orderRepositoryGateways;
         this.orderMapper = orderMapper;
     }
 
     public Optional<OrderResponseDTO> createProduct(OrderRequestCommand command) {
-        CreateOrderUseCase createOrderUseCase = new CreateOrderUseCase(this.adaptersRepository);
+        CreateOrderUseCase createOrderUseCase = new CreateOrderUseCase(this.orderRepositoryGateways);
         OrderHttpPresenter orderHttpPresenter = new OrderHttpPresenter(this.orderMapper);
         Optional<Order>order = createOrderUseCase.saveOrder(command);
         return orderHttpPresenter.execute(order);
     }
 
     public Page<OrderResponseDTO> getAllOrders(Pageable pageable) {
-        FindOrdersUseCase findOrdersUseCase = new FindOrdersUseCase(this.adaptersRepository);
+        FindOrdersUseCase findOrdersUseCase = new FindOrdersUseCase(this.orderRepositoryGateways);
         OrderHttpPresenter orderHttpPresenter = new OrderHttpPresenter(this.orderMapper);
         Page<Order> jpaOrderEntity =  findOrdersUseCase.getAllOrders(pageable);
         return orderHttpPresenter.execute(jpaOrderEntity);
     }
 
     public Optional<OrderResponseDTO> getOrdeById(String id) {
-        FindOrdersUseCase findOrdersUseCase = new FindOrdersUseCase(this.adaptersRepository);
+        FindOrdersUseCase findOrdersUseCase = new FindOrdersUseCase(this.orderRepositoryGateways);
         OrderHttpPresenter orderHttpPresenter = new OrderHttpPresenter(this.orderMapper);
         Optional<Order> jpaOrderEntity =  findOrdersUseCase.getOrdeById(id);
         return orderHttpPresenter.execute(jpaOrderEntity);
     }
 
     public Optional<OrderResponseDTO> updateOrder(String id, OrderRequestDTO orderRequestDTO){
-        UpdateOrderUseCase updateOrderUseCase = new UpdateOrderUseCase(this.adaptersRepository);
+        UpdateOrderUseCase updateOrderUseCase = new UpdateOrderUseCase(this.orderRepositoryGateways);
         OrderHttpPresenter orderHttpPresenter = new OrderHttpPresenter(this.orderMapper);
 
          getOrdeById(id).orElseThrow(() -> new CustomException(
