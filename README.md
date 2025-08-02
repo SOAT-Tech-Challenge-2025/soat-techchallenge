@@ -14,6 +14,19 @@
    - RM362732
    - Discord: Lucas Barroso - RM362732
 
+## Desenho da Arquitetura - Requisitos do Negócio
+
+> - Arquivo do desenho da arquitetura de negócio: [Tech Challenge.excalidraw](../../../Users/Carlos/Downloads/Tech%20Challenge.excalidraw)
+
+![img.png](img.png)
+
+![img_1.png](img_1.png)
+
+![img_2.png](img_2.png)
+
+![img_3.png](img_3.png)
+
+![img_4.png](img_4.png)
 
 ## Build das imagens
 
