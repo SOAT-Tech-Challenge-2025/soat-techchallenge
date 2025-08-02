@@ -2,7 +2,6 @@ package com.store.soattechchallenge.shoppingCart.category.usecases;
 
 import com.store.soattechchallenge.shoppingCart.category.gateways.CategoryGateway;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryProductProjectionDTO;
-import com.store.soattechchallenge.shoppingCart.category.infrastructure.gateways.CategoryGatewayGateway;
 
 import java.util.List;
 

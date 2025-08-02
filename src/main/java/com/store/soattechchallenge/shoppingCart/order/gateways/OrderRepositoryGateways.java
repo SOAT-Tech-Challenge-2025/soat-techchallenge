@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface OrderRepositoryGateways {
 
     void save(Order Order);
-    Optional<JPAOrderEntity>  findOrderById(String orderId);
-    Page<JPAOrderEntity> findAll(Pageable pageable);
+    Optional<Order>  findOrderById(String orderId);
+    Page<Order> findAll(Pageable pageable);
     String orderId();
 }

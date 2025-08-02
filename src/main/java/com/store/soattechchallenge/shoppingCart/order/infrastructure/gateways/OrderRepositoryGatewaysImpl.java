@@ -30,14 +30,16 @@ public class OrderRepositoryGatewaysImpl implements OrderRepositoryGateways {
     }
 
     @Override
-    public Page<JPAOrderEntity> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<Order> findAll(Pageable pageable) {
+        Page<JPAOrderEntity> jpaOrderEntities = repository.findAll(pageable);
+        return this.mapper.entitiesToOrders(jpaOrderEntities);
     }
 
 
     @Override
-    public Optional<JPAOrderEntity> findOrderById(String orderId) {
-        return repository.findById(orderId);
+    public Optional<Order> findOrderById(String orderId) {
+        Optional<JPAOrderEntity> jpaOrderEntity = repository.findById(orderId);
+        return this.mapper.entityToOrder(jpaOrderEntity);
     }
 
     @Override

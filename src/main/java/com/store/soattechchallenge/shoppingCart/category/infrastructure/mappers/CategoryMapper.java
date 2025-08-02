@@ -14,7 +14,9 @@ public interface CategoryMapper {
 
     JpaCategory toCategoryEntityMap(Category category);
     JpaCategory toCategoryUpdateMap(Category category, Long id);
-    Page<CategoryDTO> toCategoryDTO(Page<JpaCategory> jpaCategory);
-    CategoryDTO toCategoryDTO(JpaCategory jpaCategory);
+    Page<CategoryDTO> toCategoryDTO(Page<Category> categories);
+    CategoryDTO toCategoryDTO(Category category);
     Optional<CategoryWithProductsDTO> toProductCategoryEntity(List<CategoryProductProjectionDTO> projectionDTOList);
+    Page<Category> entitiesToCategory(Page<JpaCategory> entityPage);
+    Optional<Category> entityToCategory(Optional<JpaCategory> entity);
 }

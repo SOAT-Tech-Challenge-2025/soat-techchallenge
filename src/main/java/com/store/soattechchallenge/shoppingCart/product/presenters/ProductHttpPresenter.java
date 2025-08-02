@@ -3,6 +3,7 @@ package com.store.soattechchallenge.shoppingCart.product.presenters;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.dto.OrderResponseDTO;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.jpa.JPAOrderEntity;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.mappers.OrderMapper;
+import com.store.soattechchallenge.shoppingCart.product.domain.entities.Product;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.api.dto.ProductGetResponseDTO;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.api.dto.ProductPostUpResponseDTO;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.jpa.JpaProduct;
@@ -38,12 +39,12 @@ public class ProductHttpPresenter {
         }
     }
 
-    public Page<ProductGetResponseDTO> executeGetAllProducts(Page<JpaProduct> jpaProducts){
-        return productMapper.modelToProductGetResponseDTO(jpaProducts);
+    public Page<ProductGetResponseDTO> executeGetAllProducts(Page<Product> products){
+        return productMapper.modelToProductGetResponsePageDTO(products);
     }
 
-    public Optional<ProductGetResponseDTO> executeGetProductById(Optional<JpaProduct> jpaProduct) {
-        return productMapper.modelToProductGetResponseDTO(jpaProduct);
+    public Optional<ProductGetResponseDTO> executeGetProductById(Optional<Product> product) {
+        return productMapper.modelToProductGetResponseOptionalDTO(product);
     }
 
 }

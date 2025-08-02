@@ -1,5 +1,6 @@
 package com.store.soattechchallenge.shoppingCart.category.presenters;
 
+import com.store.soattechchallenge.shoppingCart.category.domain.entities.Category;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryMessagerResponseDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryProductProjectionDTO;
@@ -26,18 +27,18 @@ public class CategoryHttpPresenter {
         return new CategoryMessagerResponseDTO("Categoria criada com sucesso");
     }
 
-    public Page<CategoryDTO> findAllCategories(Page<JpaCategory> jpaCategory) {
-        if (jpaCategory == null || jpaCategory.isEmpty()) {
+    public Page<CategoryDTO> findAllCategories(Page<Category> categories) {
+        if (categories == null || categories.isEmpty()) {
             return Page.empty();
         }
-        return categoryMapper.toCategoryDTO(jpaCategory);
+        return categoryMapper.toCategoryDTO(categories);
     }
 
-    public Optional<CategoryDTO> findCategoryById(Optional<JpaCategory> jpaCategory) {
-        if (jpaCategory.isEmpty()) {
+    public Optional<CategoryDTO> findCategoryById(Optional<Category> category) {
+        if (category.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(categoryMapper.toCategoryDTO(jpaCategory.get()));
+        return Optional.of(categoryMapper.toCategoryDTO(category.get()));
     }
 
     public CategoryMessagerResponseDTO updateCategory(Boolean updateCategory) {

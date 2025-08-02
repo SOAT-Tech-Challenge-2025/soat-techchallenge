@@ -1,5 +1,6 @@
 package com.store.soattechchallenge.shoppingCart.order.presenters;
 
+import com.store.soattechchallenge.shoppingCart.order.domain.entities.Order;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.dto.OrderResponseDTO;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.jpa.JPAOrderEntity;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.mappers.OrderMapper;
@@ -14,12 +15,12 @@ public class OrderHttpPresenter {
         this.orderMapper = orderMapper;
     }
 
-    public Optional<OrderResponseDTO> execute(Optional<JPAOrderEntity>jpaOrderEntity){
-        return orderMapper.toOrderGetResponseDTO(jpaOrderEntity);
+    public Optional<OrderResponseDTO> execute(Optional<Order>order){
+        return orderMapper.toOrderGetResponseDTO(order);
     }
 
-    public Page<OrderResponseDTO> execute(Page<JPAOrderEntity> jpaOrderEntityPage) {
-        return orderMapper.toOrderGetResponseDTO(jpaOrderEntityPage);
+    public Page<OrderResponseDTO> execute(Page<Order> orders) {
+        return orderMapper.toOrderGetResponseDTO(orders);
     }
 
 

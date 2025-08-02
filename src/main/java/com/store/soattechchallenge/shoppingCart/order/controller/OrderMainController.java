@@ -1,5 +1,6 @@
 package com.store.soattechchallenge.shoppingCart.order.controller;
 
+import com.store.soattechchallenge.shoppingCart.order.domain.entities.Order;
 import com.store.soattechchallenge.shoppingCart.order.gateways.OrderRepositoryGateways;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.gateways.OrderRepositoryGatewaysImpl;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.jpa.JPAOrderEntity;
@@ -36,21 +37,21 @@ public class OrderMainController {
     public Optional<OrderResponseDTO> createProduct(OrderRequestCommand command) {
         CreateOrderUseCase createOrderUseCase = new CreateOrderUseCase(this.adaptersRepository);
         OrderHttpPresenter orderHttpPresenter = new OrderHttpPresenter(this.orderMapper);
-        Optional<JPAOrderEntity>jpaOrderEntity = createOrderUseCase.saveOrder(command);
-        return orderHttpPresenter.execute(jpaOrderEntity);
+        Optional<Order>order = createOrderUseCase.saveOrder(command);
+        return orderHttpPresenter.execute(order);
     }
 
     public Page<OrderResponseDTO> getAllOrders(Pageable pageable) {
         FindOrdersUseCase findOrdersUseCase = new FindOrdersUseCase(this.adaptersRepository);
         OrderHttpPresenter orderHttpPresenter = new OrderHttpPresenter(this.orderMapper);
-        Page<JPAOrderEntity> jpaOrderEntity =  findOrdersUseCase.getAllOrders(pageable);
+        Page<Order> jpaOrderEntity =  findOrdersUseCase.getAllOrders(pageable);
         return orderHttpPresenter.execute(jpaOrderEntity);
     }
 
     public Optional<OrderResponseDTO> getOrdeById(String id) {
         FindOrdersUseCase findOrdersUseCase = new FindOrdersUseCase(this.adaptersRepository);
         OrderHttpPresenter orderHttpPresenter = new OrderHttpPresenter(this.orderMapper);
-        Optional<JPAOrderEntity> jpaOrderEntity =  findOrdersUseCase.getOrdeById(id);
+        Optional<Order> jpaOrderEntity =  findOrdersUseCase.getOrdeById(id);
         return orderHttpPresenter.execute(jpaOrderEntity);
     }
 
@@ -66,7 +67,7 @@ public class OrderMainController {
                 UUID.randomUUID()
         ));
 
-        Optional<JPAOrderEntity> jpaOrderEntity =  updateOrderUseCase.updateOrder(id, orderRequestDTO);
+        Optional<Order> jpaOrderEntity =  updateOrderUseCase.updateOrder(id, orderRequestDTO);
         return orderHttpPresenter.execute(jpaOrderEntity);
     }
 }

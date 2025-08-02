@@ -1,5 +1,6 @@
 package com.store.soattechchallenge.shoppingCart.product.controller;
 
+import com.store.soattechchallenge.shoppingCart.product.domain.entities.Product;
 import com.store.soattechchallenge.shoppingCart.product.gateways.ProductRepositoryGateway;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.api.dto.ProductGetResponseDTO;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.api.dto.ProductPostUpResponseDTO;
@@ -38,14 +39,14 @@ public class ProductMainController {
     public Page<ProductGetResponseDTO> getAllProducts(Pageable pageable) {
         FindProductUseCase findProductUseCase = new FindProductUseCase(this.adaptersRepository);
         ProductHttpPresenter productHttpPresenter = new ProductHttpPresenter(this.productMapper);
-        Page<JpaProduct> jpaProducts = findProductUseCase.getAllProducts(pageable);
+        Page<Product> jpaProducts = findProductUseCase.getAllProducts(pageable);
         return productHttpPresenter.executeGetAllProducts(jpaProducts);
     }
 
     public Optional<ProductGetResponseDTO> getProductById(Long id) {
         FindProductUseCase findProductUseCase = new FindProductUseCase(this.adaptersRepository);
         ProductHttpPresenter productHttpPresenter = new ProductHttpPresenter(this.productMapper);
-        Optional<JpaProduct> jpaProduct = findProductUseCase.getProductById(id);
+        Optional<Product> jpaProduct = findProductUseCase.getProductById(id);
         return productHttpPresenter.executeGetProductById(jpaProduct);
     }
 

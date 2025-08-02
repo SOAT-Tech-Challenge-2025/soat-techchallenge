@@ -1,5 +1,6 @@
 package com.store.soattechchallenge.shoppingCart.category.controller;
 
+import com.store.soattechchallenge.shoppingCart.category.domain.entities.Category;
 import com.store.soattechchallenge.shoppingCart.category.gateways.CategoryGateway;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryProductProjectionDTO;
@@ -37,14 +38,14 @@ public class CategoryAppController {
     public Page<CategoryDTO> getAllCategories(Pageable pageable) {
         FindCategoryUseCase findCategoryUseCase = new FindCategoryUseCase(this.adaptersRepository);
         CategoryHttpPresenter categoryHttpPresenter = new CategoryHttpPresenter(this.categoryMapper);
-        Page<JpaCategory> jpaCategories = findCategoryUseCase.getAllCategories(pageable);
+        Page<Category> jpaCategories = findCategoryUseCase.getAllCategories(pageable);
         return categoryHttpPresenter.findAllCategories(jpaCategories);
     }
 
     public Optional<CategoryDTO> getCategoryById(Long id) {
         FindCategoryUseCase findCategoryUseCase = new FindCategoryUseCase(this.adaptersRepository);
         CategoryHttpPresenter categoryHttpPresenter = new CategoryHttpPresenter(this.categoryMapper);
-        Optional<JpaCategory> jpaCategory = findCategoryUseCase.getCategoryById(id);
+        Optional<Category> jpaCategory = findCategoryUseCase.getCategoryById(id);
         return categoryHttpPresenter.findCategoryById(jpaCategory);
     }
 

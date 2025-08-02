@@ -1,5 +1,6 @@
 package com.store.soattechchallenge.shoppingCart.order.usecases;
 
+import com.store.soattechchallenge.shoppingCart.order.domain.entities.Order;
 import com.store.soattechchallenge.shoppingCart.order.gateways.OrderRepositoryGateways;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.dto.OrderResponseDTO;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.gateways.OrderRepositoryGatewaysImpl;
@@ -23,7 +24,7 @@ public class FindOrdersUseCase {
     }
 
 
-    public Page<JPAOrderEntity> getAllOrders(Pageable pageable) {
+    public Page<Order> getAllOrders(Pageable pageable) {
         try {
             return adaptersRepository.findAll(pageable);
         }catch (Exception e) {
@@ -37,7 +38,7 @@ public class FindOrdersUseCase {
         }
     }
 
-    public Optional<JPAOrderEntity> getOrdeById(String id) {
+    public Optional<Order> getOrdeById(String id) {
         return adaptersRepository.findOrderById(id);
     }
 }

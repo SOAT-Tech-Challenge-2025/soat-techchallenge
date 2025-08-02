@@ -2,6 +2,7 @@ package com.store.soattechchallenge.shoppingCart.category.infrastructure.gateway
 
 import com.store.soattechchallenge.shoppingCart.category.domain.entities.Category;
 import com.store.soattechchallenge.shoppingCart.category.gateways.CategoryGateway;
+import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryProductProjectionDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.jpa.JpaCategory;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.mappers.CategoryMapper;
@@ -32,7 +33,7 @@ public class CategoryGatewayGateway implements CategoryGateway {
     }
 
     @Override
-    public Optional<JpaCategory> findById(Long id) {
+    public Optional<Category> findById(Long id) {
         Optional<JpaCategory> entity = repository.findById(id);
         if (entity.isEmpty()) {
             throw new CustomException(
@@ -43,11 +44,11 @@ public class CategoryGatewayGateway implements CategoryGateway {
                     UUID.randomUUID()
             );
         }
-        return entity;
+        return this.mapper.entityToCategory(entity);
     }
 
     @Override
-    public Page<JpaCategory> findAll(Pageable pageable) {
+    public Page<Category> findAll(Pageable pageable) {
         Page<JpaCategory> entityPage = repository.findAll(pageable);
         if (entityPage.isEmpty()) {
             throw new CustomException(
@@ -58,7 +59,7 @@ public class CategoryGatewayGateway implements CategoryGateway {
                     UUID.randomUUID()
             );
         }
-        return entityPage;
+        return this.mapper.entitiesToCategory(entityPage);
     }
 
     @Override

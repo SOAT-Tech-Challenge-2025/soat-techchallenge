@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 public class Product {
 
+    private Long id;
     private String productName;
     private Long idCategory;
     private BigDecimal unitPrice;
@@ -74,6 +75,13 @@ public class Product {
         this.timestamp = timestamp;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {

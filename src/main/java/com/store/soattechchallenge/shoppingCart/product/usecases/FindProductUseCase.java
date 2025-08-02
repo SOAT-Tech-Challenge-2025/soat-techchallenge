@@ -1,5 +1,6 @@
 package com.store.soattechchallenge.shoppingCart.product.usecases;
 
+import com.store.soattechchallenge.shoppingCart.product.domain.entities.Product;
 import com.store.soattechchallenge.shoppingCart.product.gateways.ProductRepositoryGateway;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.api.dto.ProductGetResponseDTO;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.gateways.ProductRepositoryGatewayGateways;
@@ -12,17 +13,17 @@ import java.util.Optional;
 
 public class FindProductUseCase {
 
-    public final ProductRepositoryGateway adaptersRepository;
+    public final ProductRepositoryGateway producrRepositoryCateway;
 
-    public FindProductUseCase(ProductRepositoryGateway adaptersRepository) {
-        this.adaptersRepository = adaptersRepository;
+    public FindProductUseCase(ProductRepositoryGateway producrRepositoryCateway) {
+        this.producrRepositoryCateway = producrRepositoryCateway;
     }
 
-    public Page<JpaProduct> getAllProducts(Pageable pageable) {
-        return adaptersRepository.findAll(pageable);
+    public Page<Product> getAllProducts(Pageable pageable) {
+        return producrRepositoryCateway.findAll(pageable);
     }
-    public Optional<JpaProduct> getProductById(Long id) {
-        return adaptersRepository.findById(id);
+    public Optional<Product> getProductById(Long id) {
+        return producrRepositoryCateway.findById(id);
     }
 
 }

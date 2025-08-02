@@ -36,12 +36,17 @@ public class CategoryMapperImpl implements CategoryMapper{
     }
 
     @Override
-    public Page<CategoryDTO> toCategoryDTO(Page<JpaCategory> jpaCategory) {
-        return jpaCategory.map(this::toCategoryDTO);
+    public Page<CategoryDTO> toCategoryDTO(Page<Category> categories) {
+        return categories.map(category -> new CategoryDTO(
+                category.getId(),
+                category.getCategoryName(),
+                category.getDateInclusion(),
+                category.getTimestamp()
+        ));
     }
 
     @Override
-    public CategoryDTO toCategoryDTO(JpaCategory jpaCategory) {
+    public CategoryDTO toCategoryDTO(Category jpaCategory) {
         if (jpaCategory == null) {
             return null;
         }
@@ -74,6 +79,26 @@ public class CategoryMapperImpl implements CategoryMapper{
                         .toList()
         );
         return Optional.of(dto);
+    }
+
+    @Override
+    public Page<Category> entitiesToCategory(Page<JpaCategory> entityPage) {
+        return entityPage.map(jpaCategory -> new Category(
+                jpaCategory.getId(),
+                jpaCategory.getCategoryName(),
+                jpaCategory.getDateInclusion(),
+                jpaCategory.getTimestamp()
+        ));
+    }
+
+    @Override
+    public Optional<Category> entityToCategory(Optional<JpaCategory> entity) {
+        return entity.map(jpaCategory -> new Category(
+                jpaCategory.getId(),
+                jpaCategory.getCategoryName(),
+                jpaCategory.getDateInclusion(),
+                jpaCategory.getTimestamp()
+        ));
     }
 
 }

@@ -30,7 +30,7 @@ public class ProductRepositoryGatewayGateways implements ProductRepositoryGatewa
     }
 
     @Override
-    public Optional<JpaProduct> findById(Long id) {
+    public Optional<Product> findById(Long id) {
         Optional<JpaProduct> productEntity = repository.findById(id);
         if (productEntity.isEmpty()) {
             throw new CustomException(
@@ -41,11 +41,11 @@ public class ProductRepositoryGatewayGateways implements ProductRepositoryGatewa
                     UUID.randomUUID()
             );
         }
-        return productEntity;
+        return this.mapper.productEntityToProduct(productEntity);
     }
 
     @Override
-    public Page<JpaProduct> findAll(Pageable pageable) {
+    public Page<Product> findAll(Pageable pageable) {
         Page<JpaProduct> productGetResponseDTOPage = repository.findAll(pageable);
         if (productGetResponseDTOPage.isEmpty()) {
             throw new CustomException(
@@ -56,7 +56,7 @@ public class ProductRepositoryGatewayGateways implements ProductRepositoryGatewa
                     UUID.randomUUID()
             );
         }
-        return productGetResponseDTOPage;
+        return this.mapper.productEntityToProduct(productGetResponseDTOPage);
     }
 
     @Override

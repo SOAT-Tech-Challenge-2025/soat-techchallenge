@@ -20,11 +20,12 @@ import java.util.UUID;
 public class CreateOrderUseCase {
     public final OrderRepositoryGateways adaptersRepository;
 
+
     public CreateOrderUseCase(OrderRepositoryGateways adaptersRepository) {
         this.adaptersRepository = adaptersRepository;
     }
 
-    public Optional<JPAOrderEntity> saveOrder(OrderRequestCommand command) {
+    public Optional<Order> saveOrder(OrderRequestCommand command) {
         String orderId = adaptersRepository.orderId();
         List<OrderProduct> orderProducts = OrderUtils.groupAndSumProducts(command.products(), orderId);
         double totalOrder = orderProducts.stream()

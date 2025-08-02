@@ -12,8 +12,8 @@ import java.util.Optional;
 
 public interface ProductRepositoryGateway {
 
-    Optional<JpaProduct> findById(Long id);
-    Page<JpaProduct> findAll(Pageable pageable);
+    Optional<Product> findById(Long id);
+    Page<Product> findAll(Pageable pageable);
     void save(Product Product);
     Boolean update(Product Product, Long id);
     Boolean deleteById(Long id);

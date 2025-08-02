@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class ProductMapperImpl implements ProductMapper {
 
-    public Page<ProductGetResponseDTO> modelToProductGetResponseDTO(Page<JpaProduct> products) {
+    public Page<ProductGetResponseDTO> modelToProductGetResponsePageDTO(Page<Product> products) {
         List<ProductGetResponseDTO> sortedList = products.getContent().stream()
                 .map(product -> {
                     ProductGetResponseDTO dto = new ProductGetResponseDTO();
@@ -30,7 +30,7 @@ public class ProductMapperImpl implements ProductMapper {
         return new PageImpl<>(sortedList, products.getPageable(), products.getTotalElements());
     }
 
-    public Optional<ProductGetResponseDTO> modelToProductGetResponseDTO(Optional<JpaProduct> product) {
+    public Optional<ProductGetResponseDTO> modelToProductGetResponseOptionalDTO(Optional<Product> product) {
         return product.map(p -> {
             ProductGetResponseDTO productGetResponseDTO = new ProductGetResponseDTO();
             productGetResponseDTO.setId(p.getId());
@@ -64,6 +64,34 @@ public class ProductMapperImpl implements ProductMapper {
         jpaProduct.setInclusionDate(product.getDateInclusion());
         jpaProduct.setTimestamp(product.getTimestamp());
         return jpaProduct;
+    }
+
+    @Override
+    public Page<Product> productEntityToProduct(Page<JpaProduct> jpaProducts) {
+        if (jpaProducts == null) {
+            return null;
+        }
+        return jpaProducts.map(this::productEntityToProduct);
+    }
+
+    @Override
+    public Optional<Product> productEntityToProduct(Optional<JpaProduct> jpaProduct) {
+        return jpaProduct.map(this::productEntityToProduct);
+    }
+
+    public Product productEntityToProduct(JpaProduct jpaProduct) {
+        if (jpaProduct == null) {
+            return null;
+        }
+        Product product = new Product();
+        product.setId(jpaProduct.getId());
+        product.setProductName(jpaProduct.getProductName());
+        product.setIdCategory(jpaProduct.getIdCategory());
+        product.setUnitPrice(jpaProduct.getUnitPrice());
+        product.setPreparationTime(jpaProduct.getPreparationTime() != null ? jpaProduct.getPreparationTime().longValue() : null);
+        product.setDateInclusion(jpaProduct.getInclusionDate());
+        product.setTimestamp(jpaProduct.getTimestamp());
+        return product;
     }
 
 }

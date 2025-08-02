@@ -10,7 +10,8 @@ import java.util.Optional;
 public interface OrderMapper {
 
     JPAOrderEntity toJPAOrderEntity(Order order);
-    Page<OrderResponseDTO> toOrderGetResponseDTO(Page<JPAOrderEntity> jpaOrderEntityPage);
-    Optional<OrderResponseDTO> toOrderGetResponseDTO(Optional<JPAOrderEntity> jpaOrderEntity);
-
+    Page<OrderResponseDTO> toOrderGetResponseDTO(Page<Order> orders);
+    Optional<OrderResponseDTO> toOrderGetResponseDTO(Optional<Order> order);
+    Optional<Order> entityToOrder(Optional<JPAOrderEntity> jpaOrderEntity);
+    Page<Order> entitiesToOrders(Page<JPAOrderEntity> jpaOrderEntities);
 }

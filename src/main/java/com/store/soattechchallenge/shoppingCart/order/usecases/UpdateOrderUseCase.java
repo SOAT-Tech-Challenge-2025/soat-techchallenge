@@ -24,7 +24,7 @@ public class UpdateOrderUseCase {
         this.adaptersRepository = adaptersRepository;
     }
 
-    public  Optional<JPAOrderEntity>  updateOrder(String id, OrderRequestDTO orderRequestDTO){
+    public  Optional<Order>  updateOrder(String id, OrderRequestDTO orderRequestDTO){
         List<OrderProduct> orderProducts = OrderUtils.groupAndSumProducts(orderRequestDTO.getProducts(), id);
         double totalOrder = orderProducts.stream()
                 .mapToDouble(OrderProduct::getVlQtItem)

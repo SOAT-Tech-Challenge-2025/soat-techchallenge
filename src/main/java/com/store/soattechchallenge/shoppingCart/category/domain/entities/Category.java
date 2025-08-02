@@ -7,6 +7,7 @@ import java.util.Objects;
 
 public class Category {
 
+    private Long id;
     private String categoryName;
     private Date dateInclusion;
     private Timestamp timestamp;
@@ -19,6 +20,29 @@ public class Category {
 
     public Category(){
 
+    }
+
+    public Category(Long id, String categoryName, Date dateInclusion, Timestamp timestamp) {
+        this.id = id;
+        this.categoryName = categoryName;
+        this.dateInclusion = dateInclusion;
+        this.timestamp = timestamp;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setDateInclusion(Date dateInclusion) {
+        this.dateInclusion = dateInclusion;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getCategoryName() {
