@@ -20,20 +20,20 @@
 
 > - Arquivo do desenho da arquitetura de negócio: [Tech Challenge.excalidraw](../../../Users/Carlos/Downloads/Tech%20Challenge.excalidraw)
 
-![img.png](docs/business-digram/img.png)
+![img.png](docs/business-diagram/img.png)
 
-![img_1.png](docs/business-digram/img_1.png)
+![img_1.png](docs/business-diagram/img_1.png)
 
-![img_2.png](docs/business-digram/img_2.png)
+![img_2.png](docs/business-diagram/img_2.png)
 
-![img_3.png](docs/business-digram/img_3.png)
+![img_3.png](docs/business-diagram/img_3.png)
 
-![img_4.png](docs/business-digram/img_4.png)
+![img_4.png](docs/business-diagram/img_4.png)
 
 
 ### Requisitos de Infraestrutura
 
-> - Arquivo do desenho da arquitetura de infraestrutura: [drawio.drawio](docs/infra-digram/drawio.drawio)
+> - Arquivo do desenho da arquitetura de infraestrutura: [drawio.drawio](docs/infra-diagram/drawio.drawio)
 
 ![img.jpg](docs/infra-diagram/img.jpg)
 
