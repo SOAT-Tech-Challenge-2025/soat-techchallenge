@@ -37,9 +37,15 @@
 As imagens da aplicação já estão publicadas em um repositório no Elastic Container Registry (ECR - AWS). Para realizar o push de novas imagens, primeiro realize os builds e crie as tags necessárias:
 
 ```sh
-# Banco de dados
+# Banco de dados (PostgresSQL)
 docker build -t fiap-soat-techchallenge-db:latest . -f Dockerfile-db
 docker tag fiap-soat-techchallenge-db:latest public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge-db:latest
+```
+
+```sh
+# Broker (RabbitMQ)
+docker build -t fiap-soat-techchallenge-broker:latest . -f Dockerfile-broker
+docker tag fiap-soat-techchallenge-broker:latest public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge-broker:latest
 ```
 
 ```sh
@@ -64,13 +70,18 @@ docker push public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge-db:latest
 ```
 
 ```sh
+# Broker
+docker push public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge-broker:latest
+```
+
+```sh
 # Aplicação
-docker push public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge-app:latest
+docker push public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge:latest
 ```
 
 ## Implantação com Kubernetes
 
-A aplicação está pronta para ser implantada em um cluster de Kubernetes. Para isso, basta utilizar os YAMLs presentes na pasta `k8s`. Esses arquivos estão organizados por aplicação: `app` (API REST) `db` (PostgresSQL). Em cada pasta há um arquivo para cada tipo de recurso do Kubernetes, como `deployment.yaml`, `configmap.yaml`, entre outros. Vamos apresentar o processo de implantação no Elastic Kubernetes Service (EKS), da AWS.
+A aplicação está pronta para ser implantada em um cluster de Kubernetes. Para isso, basta utilizar os YAMLs presentes na pasta `k8s`. Esses arquivos estão organizados por aplicação: `app` (API REST), `db` (PostgresSQL), `broker` (RabbitMQ). Em cada pasta há um arquivo para cada tipo de recurso do Kubernetes, como `deployment.yaml`, `configmap.yaml`, entre outros. Vamos apresentar o processo de implantação no Elastic Kubernetes Service (EKS), da AWS.
 
 > ⚠️ **Pré requisitos**
 > - AWS CLI: [Instalação](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
@@ -126,8 +137,18 @@ A aplicação está pronta para ser implantada em um cluster de Kubernetes. Para
       ```sh
       kubectl apply -f k8s/db/service.yaml
       ```
+    
+   5. Deployment do broker:
+      ```sh
+      kubectl apply -f k8s/broker/deployment.yaml
+      ```
 
-   5. Service da aplicação (LoadBalancer), para obter o IP público:
+   6. Service do broker (ClusterIP):
+      ```sh
+      kubectl apply -f k8s/broker/service.yaml
+      ```
+
+   7. Service da aplicação (LoadBalancer), para obter o IP público:
 
       ```sh
       # cria o service
@@ -143,29 +164,28 @@ A aplicação está pronta para ser implantada em um cluster de Kubernetes. Para
       app-service   LoadBalancer   10.100.4.138    XXX.us-east-1.elb.amazonaws.com   80:31387/TCP   20s
       ```
 
-   6. Edite o `configmap` com o IP obtido acima no arquivo `k8s/app/configmap.yaml`:
-      
+   8. Edite o `configmap` com o IP obtido acima no arquivo `k8s/app/configmap.yaml`:
       ```yaml
           data:
             MERCADO_PAGO_CALLBACK_URL: http://XXX.us-east-1.elb.amazonaws.com/soat-fast-food/payment/notifications/mercado-pago
       ```
 
-   7. Aplique o configmap da aplicação:
+   9. Aplique o configmap da aplicação:
       ```sh
       kubectl apply -f k8s/app/configmap.yaml
       ```
 
-   8. Secrets da aplicação:
+   10. Secrets da aplicação:
       ```sh
       kubectl apply -f k8s/app/secret.yaml
       ```
 
-   9. Deployment da aplicação:
+   11. Deployment da aplicação:
       ```sh
       kubectl apply -f k8s/app/deployment.yaml
       ```
 
-   10. Horizontal Pod Autoscaler (HPA) da aplicação:
+   12. Horizontal Pod Autoscaler (HPA) da aplicação:
       ```sh
       kubectl apply -f k8s/app/hpa.yaml
       ```

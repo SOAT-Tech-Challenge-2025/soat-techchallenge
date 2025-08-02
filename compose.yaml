@@ -17,15 +17,16 @@ services:
       retries: 5
 
   broker:
-    image: rabbitmq:management-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile-broker
+    image: public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge-broker:latest
     container_name: soat-broker
     hostname: soat-broker
     restart: always
     expose:
       - 5672
-      - 15672
     ports:
-      - "15672:15672"
       - "5672:5672"
     depends_on:
       - db

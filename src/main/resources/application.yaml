@@ -25,10 +25,10 @@ spring:
     webhook-token: ${MERCADO_PAGO_WEBHOOK_TOKEN}
 
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+    host: ${BROKER_HOST}
+    port: ${BROKER_PORT}
+    username: ${BROKER_USERNAME}
+    password: ${BROKER_PASSWORD}
 
   cloud:
     function:

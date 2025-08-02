@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: broker-service
+  namespace: tech-challenge
+spec:
+  type: ClusterIP
+  selector:
+    app: tech-challenge-broker
+  ports:
+    - port: 5672
+      targetPort: 5672

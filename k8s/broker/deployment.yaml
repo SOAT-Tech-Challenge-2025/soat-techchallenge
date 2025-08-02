@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broker-deployment
+  namespace: tech-challenge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tech-challenge-broker
+  template:
+    metadata:
+      labels:
+        app: tech-challenge-broker
+    spec:
+      containers:
+        - name: tech-challenge-broker
+          image: public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge-broker:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5672
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1"

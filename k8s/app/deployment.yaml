@@ -87,3 +87,27 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: JWT_EXPIRATION_TIME
+
+            - name: BROKER_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: BROKER_HOST
+
+            - name: BROKER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: BROKER_PORT
+
+            - name: BROKER_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: BROKER_USERNAME
+
+            - name: BROKER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: BROKER_PASSWORD
