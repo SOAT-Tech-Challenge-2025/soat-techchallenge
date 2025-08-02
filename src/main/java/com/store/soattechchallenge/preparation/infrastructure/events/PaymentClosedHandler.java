@@ -10,6 +10,7 @@ import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.dto.Ord
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.gateways.OrderRepositoryGatewaysImpl;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.jpa.OrderAdaptersGetRepository;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.mappers.OrderMapper;
+import org.springframework.cloud.stream.function.StreamBridge;
 
 import java.util.Optional;
 
@@ -21,14 +22,15 @@ public class PaymentClosedHandler {
             PreparationJpaRepository preparationJpaRepository,
             PreparationMapper preparationMapper,
             OrderAdaptersGetRepository ordersJpaRepository,
-            OrderMapper orderMapper
+            OrderMapper orderMapper,
+            StreamBridge streamBridge
     ) {
         OrderRepositoryGateways orderRepositoryGateways = new OrderRepositoryGatewaysImpl(
                 ordersJpaRepository, orderMapper
         );
 
         this.preparationController = new PreparationController(preparationJpaRepository, preparationMapper);
-        this.orderController = new OrderMainController(orderRepositoryGateways, orderMapper);
+        this.orderController = new OrderMainController(orderRepositoryGateways, orderMapper, streamBridge);
     }
 
     public void handle(PaymentClosedEvent event) {

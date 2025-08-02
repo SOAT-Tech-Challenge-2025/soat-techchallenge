@@ -6,6 +6,7 @@ import com.store.soattechchallenge.preparation.infrastructure.jpa.PreparationJpa
 import com.store.soattechchallenge.preparation.infrastructure.mappers.PreparationMapper;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.jpa.OrderAdaptersGetRepository;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.mappers.OrderMapper;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,10 +24,11 @@ public class PreparationConfig {
             PreparationJpaRepository preparationJpaRepository,
             PreparationMapper preparationMapper,
             OrderAdaptersGetRepository orderJpaRepository,
-            OrderMapper orderMapper
+            OrderMapper orderMapper,
+            StreamBridge streamBridge
     ) {
         PaymentClosedHandler handler = new PaymentClosedHandler(
-                preparationJpaRepository, preparationMapper, orderJpaRepository, orderMapper
+                preparationJpaRepository, preparationMapper, orderJpaRepository, orderMapper, streamBridge
         );
 
         return handler::handle;

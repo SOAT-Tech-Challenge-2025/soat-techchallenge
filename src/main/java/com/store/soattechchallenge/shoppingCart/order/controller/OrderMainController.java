@@ -1,7 +1,9 @@
 package com.store.soattechchallenge.shoppingCart.order.controller;
 
 import com.store.soattechchallenge.shoppingCart.order.domain.entities.Order;
+import com.store.soattechchallenge.shoppingCart.order.gateways.EventPublisherGateway;
 import com.store.soattechchallenge.shoppingCart.order.gateways.OrderRepositoryGateways;
+import com.store.soattechchallenge.shoppingCart.order.infrastructure.gateways.StreamEventPublisherGateway;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.mappers.OrderMapper;
 import com.store.soattechchallenge.shoppingCart.order.presenters.OrderHttpPresenter;
 import com.store.soattechchallenge.shoppingCart.order.usecases.CreateOrderUseCase;
@@ -11,6 +13,7 @@ import com.store.soattechchallenge.shoppingCart.order.usecases.command.OrderRequ
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.dto.OrderRequestDTO;
 import com.store.soattechchallenge.shoppingCart.order.infrastructure.api.dto.OrderResponseDTO;
 import com.store.soattechchallenge.utils.exception.CustomException;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -25,15 +28,21 @@ public class OrderMainController {
 
     public final OrderRepositoryGateways orderRepositoryGateways;
     public final OrderMapper orderMapper;
+    private final EventPublisherGateway eventPublisherGateway;
 
 
-    public OrderMainController(OrderRepositoryGateways orderRepositoryGateways, OrderMapper orderMapper) {
+    public OrderMainController(
+            OrderRepositoryGateways orderRepositoryGateways,
+            OrderMapper orderMapper,
+            StreamBridge streamBridge
+    ) {
         this.orderRepositoryGateways = orderRepositoryGateways;
         this.orderMapper = orderMapper;
+        this.eventPublisherGateway = new StreamEventPublisherGateway(streamBridge);
     }
 
     public Optional<OrderResponseDTO> createProduct(OrderRequestCommand command) {
-        CreateOrderUseCase createOrderUseCase = new CreateOrderUseCase(this.orderRepositoryGateways);
+        CreateOrderUseCase createOrderUseCase = new CreateOrderUseCase(this.orderRepositoryGateways, this.eventPublisherGateway);
         OrderHttpPresenter orderHttpPresenter = new OrderHttpPresenter(this.orderMapper);
         Optional<Order>order = createOrderUseCase.saveOrder(command);
         return orderHttpPresenter.execute(order);
