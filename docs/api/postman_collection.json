@@ -1,0 +1,625 @@
+{
+	"info": {
+		"_postman_id": "7c59febd-a421-4742-8b16-f0f3d18b2632",
+		"name": "Soat Tech Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8366299"
+	},
+	"item": [
+		{
+			"name": "Identification",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Obter token",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"documentNumber\": \"48425226821\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/auth/login",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Cadastrar cliente",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nameClient\": \"Carlos Eduardo\",\r\n  \"numberDocument\": \"48425226821\",\r\n  \"email\": \"carlos@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/identifications",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"identifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar cliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/identifications/48425226821",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"identifications",
+								"48425226821"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Cadastrar categoria",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"categoryName\": \"LANCHES\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/category",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar categoria",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/category/3",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"category",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remover categoria",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/category/3",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"category",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar categorias",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/category",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar categoria",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"categoryName\": \"Acompanhamentos\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/category/3",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"category",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Cadastrar produto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nameProduct\": \"X-Burguer\",\r\n  \"unitPrice\": 22.90,\r\n  \"preparationTime\": 10,\r\n  \"categoryId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/product",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar produto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/product/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remover produto",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/product/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar produtos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/product",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar produto",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nameProduct\": \"X-Burguer Especial\",\r\n  \"unitPrice\": 25.90,\r\n  \"preparationTime\": 12,\r\n  \"categoryId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/product/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Criar pedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"clientId\": \"123e4567-e89b-12d3-a456-426614174000\",\r\n    \"products\": [\r\n        {\r\n            \"productId\": 1,\r\n            \"vlUnitProduct\": 20,\r\n            \"preparationTime\": 10\r\n        },\r\n\t\t\t{\r\n            \"productId\": 2,\r\n            \"vlUnitProduct\": 15,\r\n            \"preparationTime\": 3\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/order",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar pedido",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/order/A001",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"order",
+								"A001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remover pedido",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/order/A001",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"order",
+								"A001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar pedidos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/order",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar pedido",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"clientId\": \"123e4567-e89b-12d3-a456-426614174000\",\r\n    \"products\": [\r\n        {\r\n            \"productId\": 1,\r\n            \"vlUnitProduct\": 20,\r\n            \"preparationTime\": 10\r\n        },\r\n\t\t\t{\r\n            \"productId\": 2,\r\n            \"vlUnitProduct\": 15,\r\n            \"preparationTime\": 3\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/order/A001",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"order",
+								"A001"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "Criar ordem de pagamento",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"id\": \"A001\",\r\n\t\"totalOrderValue\": 35.00,\r\n\t\"products\": [\r\n\t\t{\r\n\t\t\t\"name\": \"HAMBURGUER\",\r\n\t\t\t\"category\": \"LANCHES\",\r\n\t\t\t\"unitPrice\": 20.00,\r\n\t\t\t\"quantity\": 1\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"name\": \"BATATA FRITA\",\r\n\t\t\t\"category\": \"ACOMPANHAMENTOS\",\r\n\t\t\t\"unitPrice\": 15.00,\r\n\t\t\t\"quantity\": 1\r\n\t\t}\r\n\t]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/payment",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Renderizar QR code da ordem de pagamento",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/payment/A001/qr",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"payment",
+								"A001",
+								"qr"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar status de pagamento",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/payment/A001",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"payment",
+								"A001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Webhook de pagamento",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"action\": \"payment.created\",\r\n\t\"type\": \"payment\",\r\n\t\"data\": {\r\n\t\t\"id\": \"31023442055\"\r\n\t}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/payment/notifications/mercado-pago",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"payment",
+								"notifications",
+								"mercado-pago"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Preparation",
+			"item": [
+				{
+					"name": "Criar preparação",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"id\": \"A001\",\r\n\t\"preparationTime\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/preparation",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"preparation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Iniciar próxima preparação",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/preparation/start-next",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"preparation",
+								"start-next"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Marcar preparação pronta",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/preparation/A001/ready",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"preparation",
+								"A001",
+								"ready"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Marcar preparação como finalizada",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/preparation/A001/complete",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"preparation",
+								"A001",
+								"complete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fila de espera",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/preparation/waiting-list",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"preparation",
+								"waiting-list"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

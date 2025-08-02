@@ -216,6 +216,16 @@ Para excluir todos os recursos e evitar cobranças na AWS:
 eksctl delete cluster --name tech-challenge-eks-01 --region us-east-1
 ```
 
+## Documentação dos endpoints
+
+Nas seções a seguir, detalhamos os módulos da aplicação, explicando o funcionamento de cada conjunto de endpoints expostos pela API.
+
+Além disso, estão disponíveis duas ferramentas para facilitar a exploração e os testes:
+
+- **Swagger UI**: acessível através da URL `/soat-fast-food/swagger-ui/index.html`, onde é possível visualizar e testar os endpoints diretamente pela interface web.
+
+- **Collection do Postman**: disponível neste repositório, no caminho [`docs/api/postman_collection.json`](docs/api/postman_collection.json). Para utilizá-la, importe a collection no Postman e configure a variável URL com a URL base da API, por exemplo: `http://XXX.us-east-1.elb.amazonaws.com/soat-fast-food`. Nesta collection, há exemplos para todas as requisições, inclusive body para `POST` e `PUT` quando necessário.
+
 ---
 ## 📁 Identification
 
@@ -1184,6 +1194,14 @@ Responsável pelo gerenciamento da **preparação** dos produtos pela **cozinha*
 
 #### `POST /preparation`
 Cria um novo pedido de preparação após o pagamento ser realizado com sucesso.
+
+**Request:**
+```json
+{
+	"id": "A001",
+	"preparationTime": 10
+}
+```
 
 **Response:**
 ```json
