@@ -1,5 +1,7 @@
 package com.store.soattechchallenge.shoppingCart.product.infrastructure.api.controller;
 
+import com.store.soattechchallenge.shoppingCart.product.gateways.ProductRepositoryGateway;
+import com.store.soattechchallenge.shoppingCart.product.infrastructure.mappers.ProductMapper;
 import com.store.soattechchallenge.shoppingCart.product.usecases.command.ProductRequestCommand;
 import com.store.soattechchallenge.shoppingCart.product.controller.ProductMainController;
 import com.store.soattechchallenge.shoppingCart.product.infrastructure.api.dto.ProductGetResponseDTO;
@@ -20,8 +22,8 @@ public class ProductController {
     private final ProductMainController controller;
 
 
-    public ProductController(ProductMainController controller1) {
-        this.controller = controller1;
+    public ProductController(ProductRepositoryGateway productRepositoryGateway, ProductMapper productMapper) {
+        this.controller = new  ProductMainController(productRepositoryGateway, productMapper);
     }
 
 

@@ -21,8 +21,8 @@ public class CategoryAppController {
     private final CategoryGateway categoryGateway;
     private final CategoryMapper categoryMapper;
 
-    public CategoryAppController(CategoryGatewayGateway categoryGatewayGateway, CategoryMapper categoryMapper) {
-        this.categoryGateway = categoryGatewayGateway;
+    public CategoryAppController(CategoryGateway categoryGateway, CategoryMapper categoryMapper) {
+        this.categoryGateway = categoryGateway;
         this.categoryMapper = categoryMapper;
     }
 

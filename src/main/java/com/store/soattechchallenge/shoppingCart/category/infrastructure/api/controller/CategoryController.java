@@ -1,13 +1,14 @@
 package com.store.soattechchallenge.shoppingCart.category.infrastructure.api.controller;
 
 
+import com.store.soattechchallenge.shoppingCart.category.gateways.CategoryGateway;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryDTO;
+import com.store.soattechchallenge.shoppingCart.category.infrastructure.mappers.CategoryMapper;
 import com.store.soattechchallenge.shoppingCart.category.usecases.commands.CategoryCommand;
 import com.store.soattechchallenge.shoppingCart.category.controller.CategoryAppController;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryRequestDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryMessagerResponseDTO;
 import com.store.soattechchallenge.shoppingCart.category.infrastructure.api.dto.CategoryWithProductsDTO;
-import com.store.soattechchallenge.shoppingCart.category.infrastructure.jpa.JpaCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,9 +23,8 @@ import java.util.Optional;
 public class CategoryController {
 
     private final CategoryAppController categoryAppController;
-
-    public CategoryController(CategoryAppController categoryAppController) {
-        this.categoryAppController = categoryAppController;
+    public CategoryController(CategoryGateway categoryGateway, CategoryMapper categoryMapper) {
+        this.categoryAppController = new CategoryAppController(categoryGateway, categoryMapper);
     }
 
 
