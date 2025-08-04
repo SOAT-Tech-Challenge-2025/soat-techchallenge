@@ -18,7 +18,7 @@
 
 ### Requisitos do Negócio
 
-> - Arquivo do desenho da arquitetura de negócio: [Tech Challenge.excalidraw](../../../Users/Carlos/Downloads/Tech%20Challenge.excalidraw)
+> - Arquivo do desenho da arquitetura de negócio: [Tech Challenge.excalidraw](docs/business-diagram/Tech%20Challenge.excalidraw)
 
 ![img.png](docs/business-diagram/img.png)
 
