@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "7c59febd-a421-4742-8b16-f0f3d18b2632",
+		"_postman_id": "e5a2e79c-b881-4058-bff8-b459e30b21bd",
 		"name": "Soat Tech Challenge",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "8366299"
+		"_exporter_id": "40026200"
 	},
 	"item": [
 		{
@@ -208,7 +208,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"nameProduct\": \"X-Burguer\",\r\n  \"unitPrice\": 22.90,\r\n  \"preparationTime\": 10,\r\n  \"categoryId\": 1\r\n}",
+							"raw": "{\r\n    \"productName\": \"teste 2\",\r\n    \"idCategory\": 5,\r\n    \"unitPrice\": 20.00,\r\n    \"preparationTime\": 5\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -287,7 +287,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"nameProduct\": \"X-Burguer Especial\",\r\n  \"unitPrice\": 25.90,\r\n  \"preparationTime\": 12,\r\n  \"categoryId\": 1\r\n}",
+							"raw": "{\r\n    \"productName\": \"product 4\",\r\n    \"idCategory\": 1,\r\n    \"unitPrice\": 288.033,\r\n    \"preparationTime\": 133\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
