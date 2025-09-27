@@ -97,14 +97,14 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ vars.BROKER_IMAGE }}
+          tags: ${{ env.BROKER_IMAGE }}
           file: ./Dockerfile-broker
 
       - name: Build and push App Image
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ vars.APP_IMAGE }}
+          tags: ${{ env.APP_IMAGE }}
           file: ./Dockerfile-app
 
   terraform-apply:
