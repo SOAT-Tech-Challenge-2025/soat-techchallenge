@@ -1,0 +1,67 @@
+name: Destroy Infrastructure
+on:
+  workflow_dispatch:
+
+env:
+  APP_IMAGE: "public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge:latest"
+  BROKER_IMAGE: "public.ecr.aws/p6c0d2v5/fiap-soat-techchallenge-broker:latest"
+
+jobs:
+  terraform-destroy:
+    name: Terraform Destroy
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      
+      - name: Checkout to terraform directory
+        run: cd terraform
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.13"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5.0.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET }}
+
+      - name: Create backend.hcl configuration file
+        run: |
+          cat << EOF > backend.hcl
+          bucket         = "${{ vars.TF_BACKEND_BUCKET }}"
+          key            = "${{ vars.TF_BACKEND_KEY }}"
+          region         = "${{ vars.AWS_REGION }}"
+          dynamodb_table = "${{ vars.TF_BACKEND_DYNAMO_TABLE }}"
+          encrypt        = true
+          EOF
+      
+      - name: Terraform Init
+        run: terraform init -backend-config=backend.hcl
+      
+      - name: Terraform Destroy
+        run: |
+          terraform destroy -auto-approve \
+            -var region="${{ vars.AWS_REGION }}" \
+            -var app_image="${{ env.APP_IMAGE }}" \
+            -var broker_image="${{ env.BROKER_IMAGE }}" \
+            -var db_user="${{ secrets.DB_USER }}" \
+            -var db_password="${{ secrets.DB_PASSWORD }}" \
+            -var jwt_expiration_time="${{ vars.JWT_TOKEN_EXPIRATION_TIME }}" \
+            -var mercado_pago_access_token="${{ secrets.MERCADO_PAGO_ACCESS_TOKEN }}" \
+            -var mercado_pago_pos="${{ secrets.MERCADO_PAGO_POS }}" \
+            -var mercado_pago_user_id="${{ secrets.MERCADO_PAGO_USER_ID }}" \
+            -var mercado_pago_webhook_token="${{ secrets.MERCADO_PAGO_WEBHOOK_TOKEN }}" \
+            -var jwt_secret_key="${{ secrets.MERCADO_PAGO_WEBHOOK_TOKEN }}" \
+            -var broker_host="${{ vars.BROKER_HOST }}" \
+            -var broker_port="${{ vars.BROKER_PORT }}" \
+            -var broker_username="${{ vars.BROKER_USERNAME }}" \
+            -var broker_password="${{ vars.BROKER_PASSWORD }}"
