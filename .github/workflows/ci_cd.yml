@@ -170,5 +170,5 @@ jobs:
             -var broker_host="${{ vars.BROKER_HOST }}" \
             -var broker_port="${{ vars.BROKER_PORT }}" \
             -var broker_username="${{ secrets.BROKER_USERNAME }}" \
-            -var broker_password="${{ secrets.BROKER_PASSWORD }}"
+            -var broker_password="${{ secrets.BROKER_PASSWORD }}" \
             -var force_rollout="$(date +%s)"
