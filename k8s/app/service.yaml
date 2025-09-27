@@ -4,7 +4,7 @@ metadata:
   name: app-service
   namespace: tech-challenge
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: tech-challenge-app
   ports:
