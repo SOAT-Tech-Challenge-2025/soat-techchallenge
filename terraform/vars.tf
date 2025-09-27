@@ -5,8 +5,8 @@ variable "region" {
 
 variable "force_rollout" {
   description = "A dummy variable to force redeployment of resources"
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "broker_image" {
