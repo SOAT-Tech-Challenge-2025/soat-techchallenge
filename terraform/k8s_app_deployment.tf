@@ -6,7 +6,9 @@ resource "kubernetes_deployment" "app" {
 
   spec {
     replicas = 1
-
+    strategy {
+      type = "Recreate"
+    }
     selector {
       match_labels = {
         app = "tech-challenge-app"

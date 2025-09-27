@@ -9,6 +9,9 @@ resource "kubernetes_deployment" "broker" {
 
   spec {
     replicas = 1
+    strategy {
+      type = "Recreate"
+    }
 
     selector {
       match_labels = {
