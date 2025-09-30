@@ -17,6 +17,10 @@ Este repositório contém o código da API da lanchonete desenvolvida como parte
   - [Identification](#-identification)
   - [Category](#-category)
   - [Product](#-product)
+  - [Order](#-order)
+  - [Payment](#-payment)
+  - [Preparation](#-preparation)
+- [Integração com o Mercado Pago](#integração-com-o-mercado-pago)
 
 ## Integrantes
 
