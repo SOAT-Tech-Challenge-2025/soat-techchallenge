@@ -1,18 +1,23 @@
 # SOAT Tech Challenge Fast Food
 
-## Integrantes:
-- Karen Lais Martins Pontes de Fávere Orrico:
-   - RM361158
-   - Discord: Karen Pontes
-- Raphael Oliver:
-   - RM362129
-   - Discord: Raphael Oliver - RM362129
-- Carlos Eduardo Bastos Laet:
-   - RM361151
-   - Discord: CarlosLaet
-- Lucas Martins Barroso:
-   - RM362732
-   - Discord: Lucas Barroso - RM362732
+Este repositório contém o código da API da lanchonete desenvolvida como parte da pós-graduação em **Arquitetura de Software** da **FIAP**.
+
+## Integrantes
+
+| Nome                                       | RM       | Discord                   |
+| ------------------------------------------ | -------- | ------------------------- |
+| Karen Lais Martins Pontes de Fávere Orrico | RM361158 | Karen Pontes              |
+| Raphael Oliver                             | RM362129 | Raphael Oliver - RM362129 |
+| Carlos Eduardo Bastos Laet                 | RM361151 | CarlosLaet                |
+| Lucas Martins Barroso                      | RM362732 | Lucas Barroso - RM362732  |
+
+## Repositórios
+
+A partir da terceira fase da pós-graduação, este repositório foi dividido em quatro, todos com suas respectivas pipelines de CI/CD no Github Actions para implantação com Terraform na AWS:
+- Neste repositório: A API RESTful (projeto inicial) e o RabbitMQ (broker)
+- [Infraestrutura](https://github.com/SOAT-Tech-Challenge-2025/infrastructure): Terraform para implantação da infraestrutura do sistema (VPC, EKS, API Gateway)
+- [Database](https://github.com/SOAT-Tech-Challenge-2025/database): PostgresSQL utilizando RDS como serviço de banco de dados.
+- [Lamda de identificação](https://github.com/SOAT-Tech-Challenge-2025/lambda-identification-auth): Uma function serveless especializada em identificar/autorizar os usuários da aplicação.
 
 ## Arquitetura
 
@@ -215,6 +220,144 @@ Para excluir todos os recursos e evitar cobranças na AWS:
 ```sh
 eksctl delete cluster --name tech-challenge-eks-01 --region us-east-1
 ```
+
+## Implantação com Terraform
+
+A partir da terceira fase da pós-graduação, foi introduzida a implantação com Terraform. Toda a estrutura para deploy dessa forma está no diretório `terraform`, que é utilizado na pipeline de CI/CD.
+
+### Estrutura de arquivos
+
+```
+.
+├── backend.hcl                       # Configuração atual do backend (não versionado)
+├── backend.hcl.example               # Exemplo de configuração do backend
+├── backend.tf                        # Configuração do backend do Terraform
+├── data.tf                           # Data sources do Terraform
+├── k8s_app_configmap.tf              # Configuração do configmap da aplicação
+├── k8s_app_deployment.tf             # Configuração do deployment da aplicação
+├── k8s_app_hpa.tf                    # Configuração do HPA da aplicação
+├── k8s_app_ingress_controller.tf     # Configuração do ingress controller da aplicação
+├── k8s_app_secrets.tf                # Configuração dos secrets da aplicação
+├── k8s_app_service.tf                # Configuração do service da aplicação
+├── k8s_broker_deployment.tf          # Configuração do deployment do broker
+├── k8s_broker_service.tf             # Configuração do service do broker
+├── k8s_namespace.tf                  # Configuração do namespace
+├── locals.tf                         # Variáveis locais do Terraform
+├── providers.tf                      # Configuração dos providers
+└── vars.tf                           # Variáveis do Terraform
+```
+
+### Requisitos
+
+- Terraform ~> 1.13
+- AWS CLI configurado
+
+### Configuração do Backend
+
+O estado do Terraform é armazenado remotamente no Amazon S3 com bloqueio através do DynamoDB para garantir operações seguras em equipe. A infraestrutura do backend (bucket S3 e tabela DynamoDB) está provisionada em outro repositório: [Terraform State Backend Infrastructure](https://github.com/SOAT-Tech-Challenge-2025/tf-states).
+Para configurar:
+
+1. Copie o arquivo de exemplo:
+   ```bash
+   cp backend.hcl.example backend.hcl
+   ```
+
+2. Configure as seguintes variáveis no `backend.hcl`:
+   ```hcl
+   bucket         = ""      # Bucket S3 para armazenar o estado
+   key            = ""      # Caminho do arquivo de estado
+   region         = ""      # Região AWS
+   dynamodb_table = ""      # Tabela DynamoDB para locks
+   encrypt        = true    # Habilita criptografia do estado
+   ```
+
+### Pré-requisitos
+
+Antes de iniciar, certifique-se de ter instalado:
+
+- [Terraform](https://developer.hashicorp.com/terraform/downloads) >= 1.13.1
+- [AWS CLI](https://aws.amazon.com/cli/) configurado com as credenciais apropriadas
+- [kubectl](https://kubernetes.io/docs/tasks/tools/) para interação com o cluster
+- [Git](https://git-scm.com/) para versionamento do código
+
+### Como usar
+
+1. Clone o repositório:
+   ```bash
+   git clone git@github.com:SOAT-Tech-Challenge-2025/soat-techchallenge.git
+   cd soat-techchallenge
+   ```
+
+2. Configure o AWS CLI:
+   ```bash
+      aws configure
+   ```
+
+3. Configure o backend:
+   ```bash
+   cp backend.hcl.example backend.hcl
+   # Edite backend.hcl com as configurações apropriadas
+   ```
+
+4. Inicialize o Terraform:
+   ```bash
+   terraform init -backend-config=backend.hcl
+   ```
+
+5. Verifique o plano de execução:
+   ```bash
+   terraform plan \
+     -var region="us-east-1" \
+     -var app_image="my-app-image:latest" \
+     -var broker_image="rabbitmq:latest" \
+     -var db_user="db_user" \
+     -var db_password="sua_senha_segura" \
+     -var jwt_expiration_time="3600" \
+     -var mercado_pago_access_token="1234567890" \
+     -var mercado_pago_pos="134" \
+     -var mercado_pago_user_id="64234" \
+     -var mercado_pago_webhook_token="um_token_seguro" \
+     -var jwt_secret_key="um_secret_para_jwt" \
+     -var broker_host="broker" \
+     -var broker_port="5672" \
+     -var broker_username="guest" \
+     -var broker_password="guest"
+   ```
+
+6. Aplique as mudanças:
+   ```bash
+   terraform apply \
+     -var region="us-east-1" \
+     -var app_image="my-app-image:latest" \
+     -var broker_image="rabbitmq:latest" \
+     -var db_user="db_user" \
+     -var db_password="sua_senha_segura" \
+     -var jwt_expiration_time="3600" \
+     -var mercado_pago_access_token="1234567890" \
+     -var mercado_pago_pos="134" \
+     -var mercado_pago_user_id="64234" \
+     -var mercado_pago_webhook_token="um_token_seguro" \
+     -var jwt_secret_key="um_secret_para_jwt" \
+     -var broker_host="broker" \
+     -var broker_port="5672" \
+     -var broker_username="guest" \
+     -var broker_password="guest"
+     -var force_rollout="$(date +%s)"
+   ```
+
+## GitHub Workflows
+
+O repositório conta com dois workflows automatizados:
+
+### CI/CD (`ci_cd.yml`)
+Workflow principal de integração contínua e implantação contínua que:
+- É acionado em todas as branches para validação da sintaxe dos arquivos Terraform e para execução do planejamento das alterações.
+- Quando acionado na branch `main`, faz o build e publica as imagens do RabbitMQ e da aplicação. Depois, aplica os manifestos com Terraform.
+
+### Destruição da Infraestrutura (`destroy.yml`)
+Workflow para destruição controlada da infraestrutura que:
+- É acionado manualmente através de workflow_dispatch
+- Executa o comando terraform destroy
 
 ## Documentação dos endpoints
 
