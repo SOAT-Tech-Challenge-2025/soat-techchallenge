@@ -2,6 +2,22 @@
 
 Este repositório contém o código da API da lanchonete desenvolvida como parte da pós-graduação em **Arquitetura de Software** da **FIAP**.
 
+## 📌 Menu
+
+- [Integrantes](#integrantes)
+- [Repositórios](#repositórios)
+- [Arquitetura](#arquitetura)
+  - [Requisitos do Negócio](#requisitos-do-negócio)
+  - [Requisitos de Infraestrutura](#requisitos-de-infraestrutura)
+- [Build das imagens](#build-das-imagens)
+- [Implantação com Kubernetes](#implantação-com-kubernetes)
+- [Implantação com Terraform](#implantação-com-terraform)
+- [GitHub Workflows](#github-workflows)
+- [Documentação dos endpoints](#documentação-dos-endpoints)
+  - [Identification](#-identification)
+  - [Category](#-category)
+  - [Product](#-product)
+
 ## Integrantes
 
 | Nome                                       | RM       | Discord                   |
