@@ -62,6 +62,38 @@ A partir da terceira fase da pós-graduação, este repositório foi dividido em
 
 ![img.jpg](docs/infra-diagram/img.jpg)
 
+
+
+## Documentação Banco de Dados
+
+O banco de dados do sistema Fast Food Tech Challenge foi projetado para gerenciar o fluxo completo de pedidos — desde o cadastro do cliente até a finalização do pagamento e preparo do produto.
+O modelo relacional foi estruturado com base em princípios de normalização e integridade referencial, garantindo consistência e desempenho nas operações.
+As principais entidades incluem:
+- Cliente: armazena dados de identificação e contato dos clientes.
+- Categoria de Itens e Produto: definem o catálogo de produtos disponíveis, vinculando cada item à sua respectiva categoria.
+- Carrinho de Pedido e Carrinho x Produto: representam o processo de compra e a associação entre pedidos e produtos selecionados.
+- Pagamento: registra informações de transações e status de pagamento.
+- Preparação: controla o status e o tempo estimado de preparo dos pedidos.
+- Geração de Pedido: auxilia no controle de criação e rastreamento de novos pedidos.
+
+| Entidade              | Atributos principais                                                                                 | Observações                                                                                               |
+| --------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `tb_cliente`          | `id`, `nm_cliente`, `ds_email`, `nr_documento`, `dt_inclusao`                                        | PK: `id`                                                                                                  |
+| `tb_categoria_itens`  | `id`, `nm_categoria`, `dt_inclusao`                                                                  | PK: `id`                                                                                                  |
+| `tb_produto`          | `id`, `nm_produto`, `id_categoria`, `vl_unitario_produto`, `tempo_de_preparo_produto`, `dt_inclusao` | PK: `id`, FK: `id_categoria` → `tb_categoria_itens(id)`                                                   |
+| `tb_carrinho_pedido`  | `id`, `vl_total_pedido`, `tempo_de_preparo_pedido`, `id_cliente`                                     | PK: `id`, FK: `id_cliente` → `tb_cliente(id)` (não declarada como FK, mas pode ser)                       |
+| `tb_carrinho_produto` | `id`, `id_produto`, `qt_item`, `vl_qt_item`                                                          | PK composta: `(id, id_produto)`, FK: `id` → `tb_carrinho_pedido(id)`, FK: `id_produto` → `tb_produto(id)` |
+| `tb_pagamento`        | `id`, `id_externo`, `st_pagamento`, `vl_total_pedido`, `codigo_qr`, `expiracao`                      | PK: `id`                                                                                                  |
+| `tb_preparacao`       | `id`, `posicao_preparacao`, `estimativa_de_pronto`, `tempo_de_preparacao`, `st_preparacao`           | PK: `id`                                                                                                  |
+| `tb_gera_pedido`      | `id`                                                                                                 | PK: `id` (apenas para gerar IDs únicos)                                                                   |
+
+### Diagrama MER
+![img.jpg](docs/db-diagrama/mer.png)
+
+### Diagrama DER
+![img_1.jpg](docs/db-diagrama/der.png)
+
+
 ## Build das imagens
 
 > ⚠️ **Pré requisitos**
